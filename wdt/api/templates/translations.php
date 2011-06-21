@@ -1,5 +1,7 @@
+<?php
+
 /* **************************************************************************
- * The WowDataTooltip plugin handles the display of tooltips for World of
+ * The wowdatatooltip plugin handles the display of tooltips for World of
  * Warcraft related data.
  * 
  * Copyright (C) 2011  Martin Gelder
@@ -18,47 +20,28 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
-jQuery(document).ready(function($) {
-	
-	$('[data-wowdatatooltip]').each(function() {
-		
-		var query = $(this).data('wowdatatooltip');
-		
-			$(this).qtip({
-				content: {
-					text: 'Loading...',
-					url: 'wdt/api/tooltip_api.php',
-					data: {
-						query: encodeURIComponent(query),
-					},
-					method: 'get'
-				},
-				position: {
-					corner: {
-						target:  'rightMiddle',
-						tooltip: 'leftMiddle'
-					},
-					adjust: {
-						screen: true
-					}
-				},
-				show: 'mouseover',
-				hide: 'mouseout',
-				style: {
-					background: 'rgba(32, 32, 32, 0.66)',
-					border: {
-						width:  3,
-						radius: 3,
-						color:  'rgb(96, 96, 96)'
-					},
-					padding: '4px 8px',
-					width:  400,
-					name:   'dark'
-				}
-			});
-		
-	});
-	
-	
-	
-});
+return(array(
+	'realm' => array(
+		'notfound' => 'Realm not found!',
+		'status' => array(
+			0 => 'Offline',
+			1 => 'Online',
+		),
+		'queue' => array(
+			0 => 'No Queue',
+			1 => 'Queue'
+		),
+		'type' => array(
+			'pve'   => 'PvE',
+			'pvp'   => 'PvP',
+			'rp'    => 'RP',
+			'rppvp' => 'RPPvP',
+		),
+		'population' => array(
+			'low'    => 'Low population',
+			'medium' => 'Medium population',
+			'high'   => 'High population',
+			'n/a'    => 'Population not available',
+		),
+	),
+));

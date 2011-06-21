@@ -20,11 +20,14 @@
 			font-family: monospace;
 			font-size: 14px;
 		}
+		
+		span.realm {
+			text-decoration: underline;
+		}
 	</style>
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
-	<script type="text/javascript" src="tooltipsy/jquery.tooltipsy.js"></script>
-	<!-- <script type="text/javascript" src="wdt/jquery.wowdatatooltip.js"></script> -->
+	<script type="text/javascript" src="qtip/jquery.qtip-1.0.0-rc3.min.js"></script>
 	<script type="text/javascript" src="wdt/init.js"></script>
 	
 </head>
@@ -36,7 +39,8 @@
 	<hr />
 	
 	<h2>Realm Tooltips:</h2>
-	<p>Besucht mich doch mal auf <span data-wowdatatooltip="eu.gilneas/de">Gilneas</span>, meinem Heimatrealm.</p>
+	<p>Besucht mich doch mal auf <span class="realm" data-wowdatatooltip="realm:eu.gilneas/de">Gilneas</span>, meinem Heimatrealm.</p>
+	<p>Oder auf <span class="realm" data-wowdatatooltip="realm:eu.rawglrgrlrrrlrlrlll/de">Rawglrgrlrrrlrlrlll</span>, einem nicht vorhandenen Realm... ;-)</p>
 	
 </body>
 </html>
