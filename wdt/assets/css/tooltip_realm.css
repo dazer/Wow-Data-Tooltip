@@ -1,5 +1,3 @@
-<?php
-
 /* **************************************************************************
  * The wowdatatooltip plugin handles the display of tooltips for World of
  * Warcraft related data.
@@ -20,28 +18,18 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
-return(array(
-	'realm' => array(
-		'notfound' => 'Realm not found!',
-		'status' => array(
-			0 => 'Offline',
-			1 => 'Online',
-		),
-		'queue' => array(
-			0 => 'No Queue',
-			1 => 'Queue'
-		),
-		'type' => array(
-			'pve'   => 'PvE',
-			'pvp'   => 'PvP',
-			'rp'    => 'RP',
-			'rppvp' => 'RPPvP',
-		),
-		'population' => array(
-			'low'    => 'Low population',
-			'medium' => 'Medium population',
-			'high'   => 'High population',
-			'n/a'    => 'Population not available',
-		),
-	),
-));
+.tooltip_realm.notfound {
+	color: rgb(255, 128, 128);
+}
+
+.tooltip_realm .status.online {
+	color: rgb(96, 255, 96);
+}
+
+.tooltip_realm .status.online.queue {
+	color: rgb(255, 192, 0);
+}
+
+.tooltip_realm .status.offline {
+	color: rgb(255, 96, 96);
+}

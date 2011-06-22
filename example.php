@@ -26,9 +26,11 @@
 		}
 	</style>
 	
+	<link rel="stylesheet" type="text/css" media="all" href="wdt/assets/css/tooltip_realm.css" />
+	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
 	<script type="text/javascript" src="qtip/jquery.qtip-1.0.0-rc3.min.js"></script>
-	<script type="text/javascript" src="wdt/init.js"></script>
+	<script type="text/javascript" src="wdt/assets/js/init.js"></script>
 	
 </head>
 <body>
@@ -40,6 +42,7 @@
 	
 	<h2>Realm Tooltips:</h2>
 	<p>Besucht mich doch mal auf <span class="realm" data-wowdatatooltip="realm:eu.gilneas/de">Gilneas</span>, meinem Heimatrealm.</p>
+	<p>Alternativ auch gerne auf <span class="realm" data-wowdatatooltip="realm:eu.amanthul/de">hier</span>.</p>
 	<p>Oder auf <span class="realm" data-wowdatatooltip="realm:eu.rawglrgrlrrrlrlrlll/de">Rawglrgrlrrrlrlrlll</span>, einem nicht vorhandenen Realm... ;-)</p>
 	
 </body>

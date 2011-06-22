@@ -20,14 +20,36 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
-require_once(dirname(__FILE__).'/_init.php');
-
-$html  = '';
-
-$html .= '<div class="tooltip_realm notfound">';
-$html .= '<div class="notfound">'.$l->t(array('realm', 'notfound')).'</div>';
-$html .= '</div>';
-
-return($html);
+class Localizer {
+	
+	protected $locale     = 'en';
+	protected $repository = array();
+	
+	public function __construct($locale) {
+		$this->locale     = $locale;
+		$this->repository = include(dirname(__FILE__).'/../config/translations.php');
+	}
+	
+	public function t($query, $locale = null) {
+		if($locale === null) $locale = $this->locale;
+		if(isset($this->repository[$locale])) {
+			$rpos = $this->repository[$locale];
+		} else {
+			$rpos = reset($this->repository);
+		}
+		if(!empty($query)) {
+			foreach($query as $e) {
+				if(isset($rpos[$e])) {
+					$rpos = $rpos[$e];
+				} else {
+					// If nothing was found, return the last query element
+					return(end($query));
+				}
+			}
+			return($rpos);
+		}
+		return(null);
+	}
+}
 
 ?>

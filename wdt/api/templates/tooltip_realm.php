@@ -20,16 +20,26 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
-$now   = time();
-
-$t     = include(dirname(__FILE__).'/translations.php');
+require_once(dirname(__FILE__).'/_init.php');
 
 $html  = '';
 
 $html .= '<div class="tooltip_realm">';
-$html .= '<div class="name">'.$realm['name'].' <span class="type">('.$t['realm']['type'][$realm['type']].')</span></div>';
-$html .= '<div class="status">'.($realm['status'] ? ('Online' . ($realm['queue'] ? ' <span class="queue">(Queue)</span>' : '')) : 'Offline').'</div>';
-$html .= '<div class="population">'.$t['realm']['population'][$realm['population']].'</div>';
+
+$html .= '<div class="name">'.$realm['name'].' <span class="type">('.$l->t(array('realm', 'type', $realm['type'])).')</span></div>';
+
+if($realm['status']) {
+	if($realm['queue']) {
+		$html .= '<div class="status online queue">'.$l->t(array('realm', 'status', 'true')).' <span class="queue">('.$l->t(array('realm', 'queue', 'true')).')</span></div>';
+	} else {
+		$html .= '<div class="status online">'.$l->t(array('realm', 'status', 'true')).'</div>';
+	}
+} else {
+	$html .= '<div class="status offline">'.$l->t(array('realm', 'status', 'false')).'</div>';
+}
+
+$html .= '<div class="population">'.$l->t(array('realm', 'population', $realm['population'])).'</div>';
+
 $html .= '</div>';
 
 return($html);

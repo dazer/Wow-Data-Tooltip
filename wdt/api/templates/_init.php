@@ -20,14 +20,9 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
-require_once(dirname(__FILE__).'/_init.php');
+require_once(dirname(__FILE__).'/../lib/translate.lib.php');
 
-$html  = '';
-
-$html .= '<div class="tooltip_realm notfound">';
-$html .= '<div class="notfound">'.$l->t(array('realm', 'notfound')).'</div>';
-$html .= '</div>';
-
-return($html);
+$l     = new Localizer('en');
+$now   = time();
 
 ?>
