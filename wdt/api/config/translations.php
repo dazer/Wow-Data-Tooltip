@@ -45,6 +45,9 @@ return(array(
 				'n/a'    => 'Bevölkerung nicht verfügbar',
 			),
 		),
+		'icon' => array(
+			'notfound' => 'Icon nicht gefunden!',
+		),
 	),
 	'en' => array(
 		'realm' => array(
@@ -69,6 +72,9 @@ return(array(
 				'high'   => 'High population',
 				'n/a'    => 'Population not available',
 			),
+		),
+		'icon' => array(
+			'notfound' => 'Icon not found!',
 		),
 	),
 ));

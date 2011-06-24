@@ -57,8 +57,8 @@ jQuery(document).ready(function($) {
 						color:  'rgb(96, 96, 96)'
 					},
 					padding: '4px 8px',
-					width:  260,
-					name:   'dark'
+					width:   260,
+					name:    'dark'
 				}
 			});
 		}

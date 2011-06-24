@@ -27,6 +27,10 @@ $repository = array(
 		'regex' => '/realm:(eu|us)\.([a-z\-]+)\/(de|en|fr|es|)/siu',
 		'api'   => 'http://{region}.battle.net/api/wow/realm/status?realm={slug}',
 	),
+	'icon' => array(
+		'regex' => '/icon:(eu|us)\.([0-9a-z\-_]+)/siu',
+		'api'   => 'http://{region}.battle.net/wow-assets/static/images/icons/56/{icon}.jpg',
+	),
 );
 
 if(isset($_REQUEST['query']) && !empty($_REQUEST['query'])) {
@@ -54,18 +58,56 @@ if(isset($_REQUEST['query']) && !empty($_REQUEST['query'])) {
 			$repository['realm']['api']
 		);
 		
-		$result = file_get_contents($url);
+		$result = @file_get_contents($url);
 		
 		$parsed = json_decode($result, true);
 		
 		$locale = $realm_data['locale'];
+		
 		if(isset($parsed['realms']) && is_array($parsed['realms']) && (count($parsed['realms']) == 1)) {
+			
 			$realm = $parsed['realms'][0];
 			die(include(dirname(__FILE__).'/templates/tooltip_realm.php'));
+			
 		} else {
+			
 			die(include(dirname(__FILE__).'/templates/tooltip_realm_404.php'));
+			
 		}
 		
+	}
+	
+	if(preg_match($repository['icon']['regex'], $query, $matches)) {
+		
+		$icon_data = array(
+			'region' => $matches[1],
+			'icon'   => $matches[2],
+		);
+		
+		$url = preg_replace(
+			array(
+				0 => '/\{region\}/siu',
+				1 => '/\{icon\}/siu',
+			),
+			array(
+				0 => urlencode($icon_data['region']),
+				1 => urlencode($icon_data['icon']),
+			),
+			$repository['icon']['api']
+		);
+		
+		$result = @file_get_contents($url);
+		
+		if($result) {
+			
+			$icon = $result;
+			die(include(dirname(__FILE__).'/templates/tooltip_icon.php'));
+			
+		} else {
+			
+			die(include(dirname(__FILE__).'/templates/tooltip_icon_404.php'));
+			
+		}
 		
 	}
 	

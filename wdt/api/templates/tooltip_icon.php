@@ -20,13 +20,16 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
-require_once(dirname(__FILE__).'/../lib/translate.lib.php');
+require_once(dirname(__FILE__).'/_init.php');
 
-if(!isset($locale)) {
-	$locale = 'en';
-}
+$html  = '';
 
-$l     = new Localizer($locale);
-$now   = time();
+$html .= '<div class="tooltip_icon">';
+
+$html .= '<img src="data:image/jpeg;base64,'.base64_encode($icon).'" />';
+
+$html .= '</div>';
+
+return($html);
 
 ?>

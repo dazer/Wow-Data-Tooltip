@@ -42,9 +42,15 @@
 	
 	<h2>Realm Tooltips:</h2>
 	<p>Besucht mich doch mal auf <span class="realm" data-wowdatatooltip="realm:eu.gilneas/de">Gilneas</span>, meinem Heimatrealm.</p>
-	<p>Alternativ auch gerne auf <span class="realm" data-wowdatatooltip="realm:eu.amanthul/de">hier</span>.</p>
+	<p>Alternativ auch gerne auf <span class="realm" data-wowdatatooltip="realm:eu.amanthul/en">hier</span> (englisch).</p>
 	<p>Oder auf <span class="realm" data-wowdatatooltip="realm:eu.rawglrgrlrrrlrlrlll/de">Rawglrgrlrrrlrlrlll</span>, einem nicht vorhandenen Realm... ;-)</p>
 	<p>Hier ist noch ein ungültiger Server, aber diesmal auf englisch: <span class="realm" data-wowdatatooltip="realm:eu.foobar/en">Foobar</span></p>
+	
+	<hr />
+	
+	<h2>Icon Tooltips:</h2>
+	<p>Hier ist ein tolles <span class="realm" data-wowdatatooltip="icon:eu.inv_weapon_shortblade_92">Icon</span>.</p>
+	<p>Dieses Icon gibt es hingegen nicht: <span class="realm" data-wowdatatooltip="icon:eu.inv_weapon_shortblade_392">inv_weapon_shortblade_392</span>.</p>
 	
 </body>
 </html>
