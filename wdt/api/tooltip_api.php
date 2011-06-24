@@ -20,6 +20,8 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
+header('Access-Control-Allow-Origin: *');
+
 $repository = array(
 	'realm' => array(
 		'regex' => '/realm:(eu|us)\.([a-z\-]+)\/(de|en|fr|es|)/siu',

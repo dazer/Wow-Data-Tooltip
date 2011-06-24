@@ -20,45 +20,53 @@
 
 jQuery(document).ready(function($) {
 	
-	$('[data-wowdatatooltip]').each(function() {
+	$('body').delegate('[data-wowdatatooltip]', 'mouseover', function() {
 		
-		var query = $(this).data('wowdatatooltip');
+		// alert($(this).data('wowdatatooltip'));
 		
-			$(this).qtip({
-				content: {
-					text: 'Loading...',
-					url: 'wdt/api/tooltip_api.php',
-					data: {
-						query: encodeURIComponent(query),
-					},
-					method: 'get'
+		$(this).qtip({
+			overwrite: false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
+			show: {
+				ready: true // Needed to make it show on first mouseover event
+			},
+			content: {
+				text: 'Loading...',
+				// url: 'wdt/api/tooltip_api.php',
+				url: 'http://dev.dsitc.de/api/wdt/tooltip_api.php',
+				data: {
+					query: encodeURIComponent($(this).data('wowdatatooltip')),
 				},
-				position: {
-					corner: {
-						target:  'rightMiddle',
-						tooltip: 'leftMiddle'
-					},
-					adjust: {
-						screen: true
-					}
+				method: 'get'
+			},
+			position: {
+				corner: {
+					target:  'rightMiddle',
+					tooltip: 'leftMiddle'
 				},
-				show: 'mouseover',
-				hide: 'mouseout',
-				style: {
-					background: 'rgba(32, 32, 32, 0.66)',
-					border: {
-						width:  3,
-						radius: 3,
-						color:  'rgb(96, 96, 96)'
-					},
-					padding: '4px 8px',
-					width:  400,
-					name:   'dark'
+				adjust: {
+					screen: true
 				}
-			});
+			},
+			hide: 'mouseout',
+			style: {
+				background: 'rgba(32, 32, 32, 0.66)',
+				border: {
+					width:  3,
+					radius: 3,
+					color:  'rgb(96, 96, 96)'
+				},
+				padding: '4px 8px',
+				width:  400,
+				name:   'dark'
+			}
+		});
 		
 	});
 	
-	
+	$('body').delegate('[data-wowdatatooltip]', 'mouseout', function() {
+		
+		$(this).qtip('destroy');
+		
+	});
 	
 });
