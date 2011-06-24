@@ -22,50 +22,46 @@ jQuery(document).ready(function($) {
 	
 	$('body').delegate('[data-wowdatatooltip]', 'mouseover', function() {
 		
-		// alert($(this).data('wowdatatooltip'));
-		
-		$(this).qtip({
-			overwrite: false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
-			show: {
-				ready: true // Needed to make it show on first mouseover event
-			},
-			content: {
-				text: 'Loading...',
-				// url: 'wdt/api/tooltip_api.php',
-				url: 'http://dev.dsitc.de/api/wdt/tooltip_api.php',
-				data: {
-					query: encodeURIComponent($(this).data('wowdatatooltip')),
+		if('object' === typeof($(this).data('qtip'))) {
+			$(this).qtip('show');
+		} else {
+			$(this).qtip({
+				overwrite: false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
+				show: {
+					ready: true // Needed to make it show on first mouseover event
 				},
-				method: 'get'
-			},
-			position: {
-				corner: {
-					target:  'rightMiddle',
-					tooltip: 'leftMiddle'
+				content: {
+					text: '<div class="ajaxloading">Loading...</div>',
+					url: 'wdt/api/tooltip_api.php',
+					// url: 'http://dev.dsitc.de/api/wdt/tooltip_api.php',
+					data: {
+						query: encodeURIComponent($(this).data('wowdatatooltip')),
+					},
+					method: 'get'
 				},
-				adjust: {
-					screen: true
+				position: {
+					corner: {
+						target:  'rightMiddle',
+						tooltip: 'leftMiddle'
+					},
+					adjust: {
+						screen: true
+					}
+				},
+				hide: 'mouseout',
+				style: {
+					background: 'rgba(32, 32, 32, 0.66)',
+					border: {
+						width:  3,
+						radius: 3,
+						color:  'rgb(96, 96, 96)'
+					},
+					padding: '4px 8px',
+					width:  260,
+					name:   'dark'
 				}
-			},
-			hide: 'mouseout',
-			style: {
-				background: 'rgba(32, 32, 32, 0.66)',
-				border: {
-					width:  3,
-					radius: 3,
-					color:  'rgb(96, 96, 96)'
-				},
-				padding: '4px 8px',
-				width:  400,
-				name:   'dark'
-			}
-		});
-		
-	});
-	
-	$('body').delegate('[data-wowdatatooltip]', 'mouseout', function() {
-		
-		$(this).qtip('destroy');
+			});
+		}
 		
 	});
 	

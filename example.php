@@ -44,6 +44,7 @@
 	<p>Besucht mich doch mal auf <span class="realm" data-wowdatatooltip="realm:eu.gilneas/de">Gilneas</span>, meinem Heimatrealm.</p>
 	<p>Alternativ auch gerne auf <span class="realm" data-wowdatatooltip="realm:eu.amanthul/de">hier</span>.</p>
 	<p>Oder auf <span class="realm" data-wowdatatooltip="realm:eu.rawglrgrlrrrlrlrlll/de">Rawglrgrlrrrlrlrlll</span>, einem nicht vorhandenen Realm... ;-)</p>
+	<p>Hier ist noch ein ungültiger Server, aber diesmal auf englisch: <span class="realm" data-wowdatatooltip="realm:eu.foobar/en">Foobar</span></p>
 	
 </body>
 </html>

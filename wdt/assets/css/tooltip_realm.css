@@ -18,8 +18,24 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
+.ajaxloading,
+.tooltip_realm {
+	font-family: Cambria, Verdana, Arial, sans-serif;
+	font-size: 12px;
+	overflow: hidden;
+}
+
 .tooltip_realm.notfound {
 	color: rgb(255, 128, 128);
+}
+
+.tooltip_realm .name {
+	margin-bottom: 4px;
+	font-weight: bold;
+}
+
+.tooltip_realm .name .type {
+	font-weight: normal;
 }
 
 .tooltip_realm .status.online {
@@ -32,4 +48,12 @@
 
 .tooltip_realm .status.offline {
 	color: rgb(255, 96, 96);
+}
+
+.tooltip_realm .status {
+	float: left;
+}
+
+.tooltip_realm .population {
+	float: right;
 }

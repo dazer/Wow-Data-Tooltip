@@ -58,9 +58,9 @@ if(isset($_REQUEST['query']) && !empty($_REQUEST['query'])) {
 		
 		$parsed = json_decode($result, true);
 		
+		$locale = $realm_data['locale'];
 		if(isset($parsed['realms']) && is_array($parsed['realms']) && (count($parsed['realms']) == 1)) {
 			$realm = $parsed['realms'][0];
-			#$realm['queue'] = true;
 			die(include(dirname(__FILE__).'/templates/tooltip_realm.php'));
 		} else {
 			die(include(dirname(__FILE__).'/templates/tooltip_realm_404.php'));

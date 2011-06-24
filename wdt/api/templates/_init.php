@@ -22,7 +22,7 @@
 
 require_once(dirname(__FILE__).'/../lib/translate.lib.php');
 
-$l     = new Localizer('en');
+$l     = new Localizer($locale);
 $now   = time();
 
 ?>
