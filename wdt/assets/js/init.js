@@ -50,7 +50,7 @@ jQuery(document).ready(function($) {
 				},
 				hide: 'mouseout',
 				style: {
-					background: 'rgba(0, 0, 0, 0.66)',
+					background: 'rgba(0, 0, 0, 0.55)',
 					border: {
 						width:  3,
 						radius: 3,
