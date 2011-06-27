@@ -44,19 +44,20 @@
 
 /* --- Tooltip Design WDT - light : Content Styles -------------------------- */
 
-.tooltip_realm.notfound {
+.ui-tooltip-wdt-dark .tooltip_realm.notfound,
+.ui-tooltip-wdt-dark .tooltip_icon.notfound {
 	color: rgb(255, 128, 128);
 }
 
-.tooltip_realm .status.online {
+.ui-tooltip-wdt-dark .tooltip_realm .status.online {
 	color: rgb(96, 255, 96);
 }
 
-.tooltip_realm .status.online.queue {
+.ui-tooltip-wdt-dark .tooltip_realm .status.online.queue {
 	color: rgb(255, 192, 0);
 }
 
-.tooltip_realm .status.offline {
+.ui-tooltip-wdt-dark .tooltip_realm .status.offline {
 	color: rgb(255, 96, 96);
 }
 
@@ -86,19 +87,20 @@
 
 /* --- Tooltip Design WDT - light : Content Styles -------------------------- */
 
-.tooltip_realm.notfound {
+.ui-tooltip-wdt-light .tooltip_realm.notfound,
+.ui-tooltip-wdt-light .tooltip_icon.notfound {
 	color: rgb(224, 0, 0);
 }
 
-.tooltip_realm .status.online {
+.ui-tooltip-wdt-light .tooltip_realm .status.online {
 	color: rgb(0, 160, 0);
 }
 
-.tooltip_realm .status.online.queue {
+.ui-tooltip-wdt-light .tooltip_realm .status.online.queue {
 	color: rgb(192, 96, 0);
 }
 
-.tooltip_realm .status.offline {
+.ui-tooltip-wdt-light .tooltip_realm .status.offline {
 	color: rgb(224, 0, 0);
 }
 
