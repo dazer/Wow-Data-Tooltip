@@ -26,7 +26,7 @@ $html  = '';
 
 $html .= '<div class="tooltip_icon">';
 
-$html .= '<img src="data:image/jpeg;base64,'.base64_encode($icon).'" />';
+$html .= '<img class="icon-56" src="data:image/jpeg;base64,'.base64_encode($icon).'" />';
 
 $html .= '</div>';
 

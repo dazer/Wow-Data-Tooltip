@@ -42,7 +42,8 @@
 
 
 .ajaxloading,
-.tooltip_realm {
+.tooltip_realm,
+.tooltip_icon {
 	font-family: Cambria, Verdana, Arial, sans-serif;
 	font-size: 12px;
 	overflow: hidden;
@@ -81,4 +82,9 @@
 
 .tooltip_realm .population {
 	float: right;
+}
+
+.tooltip_icon img.icon-56 {
+	width: 56px;
+	height: 56px;
 }
