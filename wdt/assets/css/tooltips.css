@@ -18,11 +18,35 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
+.ui-tooltip-wdt-dark .ui-tooltip-titlebar,
+.ui-tooltip-wdt-dark .ui-tooltip-content{
+	border-color: #333;
+	color: #fff;
+}
+
+	.ui-tooltip-wdt-dark .ui-tooltip-content{
+		background-color: rgba(0, 0, 0, 0.8);
+	}
+
+	.ui-tooltip-wdt-dark .ui-tooltip-titlebar{
+		background-color: #404040;
+	}
+
+	.ui-tooltip-wdt-dark .ui-tooltip-icon{
+		border-color: #444;
+	}
+
+	.ui-tooltip-wdt-dark .ui-tooltip-titlebar .ui-state-hover{
+		border-color: #303030;
+	}
+
+
 .ajaxloading,
 .tooltip_realm {
 	font-family: Cambria, Verdana, Arial, sans-serif;
 	font-size: 12px;
 	overflow: hidden;
+	padding-bottom: 0.2em;
 }
 
 .tooltip_realm.notfound {
@@ -52,6 +76,7 @@
 
 .tooltip_realm .status {
 	float: left;
+	margin-right: 2em;
 }
 
 .tooltip_realm .population {

@@ -32,33 +32,22 @@ jQuery(document).ready(function($) {
 				},
 				content: {
 					text: '<div class="ajaxloading">Loading...</div>',
-					url: 'wdt/api/tooltip_api.php',
-					// url: 'http://dev.dsitc.de/api/wdt/tooltip_api.php',
-					data: {
-						query: encodeURIComponent($(this).data('wowdatatooltip')),
-					},
-					method: 'get'
+					ajax: {
+						url: 'wdt/api/tooltip_api.php',
+						type: 'get',
+						data: {
+							query: encodeURIComponent($(this).data('wowdatatooltip')),
+						}
+					}
 				},
 				position: {
-					corner: {
-						target:  'rightMiddle',
-						tooltip: 'leftMiddle'
-					},
-					adjust: {
-						screen: true
-					}
+					my: 'top left',
+					at: 'bottom right',
+					viewport: jQuery(window)
 				},
 				hide: 'mouseout',
 				style: {
-					background: 'rgba(0, 0, 0, 0.55)',
-					border: {
-						width:  3,
-						radius: 3,
-						color:  'rgb(96, 96, 96)'
-					},
-					padding: '4px 8px',
-					width:   260,
-					name:    'dark'
+					classes: 'ui-tooltip-wdt-dark'
 				}
 			});
 		}

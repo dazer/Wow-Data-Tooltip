@@ -26,10 +26,12 @@
 		}
 	</style>
 	
-	<link rel="stylesheet" type="text/css" media="all" href="wdt/assets/css/tooltip_realm.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="qtip2/jquery.qtip.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="wdt/assets/css/tooltips.css" />
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
-	<script type="text/javascript" src="qtip/jquery.qtip-1.0.0-rc3.min.js"></script>
+	<!-- <script type="text/javascript" src="qtip/jquery.qtip-1.0.0-rc3.min.js"></script> -->
+	<script type="text/javascript" src="qtip2/jquery.qtip.min.js"></script>
 	<script type="text/javascript" src="wdt/assets/js/init.js"></script>
 	
 </head>
