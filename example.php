@@ -26,13 +26,10 @@
 		}
 	</style>
 	
-	<link rel="stylesheet" type="text/css" media="all" href="qtip2/jquery.qtip.min.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="wdt/assets/css/tooltips.css" />
-	
+	<!--
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
-	<!-- <script type="text/javascript" src="qtip/jquery.qtip-1.0.0-rc3.min.js"></script> -->
 	<script type="text/javascript" src="qtip2/jquery.qtip.min.js"></script>
-	<script type="text/javascript" src="wdt/assets/js/init.js"></script>
+	-->
 	
 </head>
 <body>
@@ -54,5 +51,6 @@
 	<p>Hier ist ein tolles <span class="realm" data-wowdatatooltip="icon:eu.inv_weapon_shortblade_92">Icon</span>.</p>
 	<p>Dieses Icon gibt es hingegen nicht: <span class="realm" data-wowdatatooltip="icon:eu.inv_weapon_shortblade_392">inv_weapon_shortblade_392</span>.</p>
 	
+	<script type="text/javascript" src="wdt/WowDataTooltip.js"></script>
 </body>
 </html>

@@ -1,0 +1,139 @@
+/* **************************************************************************
+ * The wowdatatooltip plugin handles the display of tooltips for World of
+ * Warcraft related data.
+ * 
+ * Copyright (C) 2011  Martin Gelder
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
+ * ************************************************************************** */
+
+/* --- Tooltip Design WDT - dark -------------------------------------------- */
+
+.ui-tooltip-wdt-dark .ui-tooltip-titlebar,
+.ui-tooltip-wdt-dark .ui-tooltip-content {
+	border-color: #333;
+	color: #fff;
+}
+
+.ui-tooltip-wdt-dark .ui-tooltip-content{
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.ui-tooltip-wdt-dark .ui-tooltip-titlebar{
+	background-color: #404040;
+}
+
+.ui-tooltip-wdt-dark .ui-tooltip-icon{
+	border-color: #444;
+}
+
+.ui-tooltip-wdt-dark .ui-tooltip-titlebar .ui-state-hover{
+	border-color: #303030;
+}
+
+/* --- Tooltip Design WDT - light : Content Styles -------------------------- */
+
+.ui-tooltip-wdt-dark .tooltip_realm.notfound,
+.ui-tooltip-wdt-dark .tooltip_icon.notfound {
+	color: rgb(255, 128, 128);
+}
+
+.ui-tooltip-wdt-dark .tooltip_realm .status.online {
+	color: rgb(96, 255, 96);
+}
+
+.ui-tooltip-wdt-dark .tooltip_realm .status.online.queue {
+	color: rgb(255, 192, 0);
+}
+
+.ui-tooltip-wdt-dark .tooltip_realm .status.offline {
+	color: rgb(255, 96, 96);
+}
+
+/* --- Tooltip Design WDT - light ------------------------------------------- */
+
+.ui-tooltip-wdt-light .ui-tooltip-titlebar,
+.ui-tooltip-wdt-light .ui-tooltip-content {
+	border-color: #ddd;
+	color: #000;
+}
+
+.ui-tooltip-wdt-light .ui-tooltip-content{
+	background-color: rgba(255, 255, 255, 0.85);
+}
+
+.ui-tooltip-wdt-light .ui-tooltip-titlebar{
+	background-color: #ccc;
+}
+
+.ui-tooltip-wdt-light .ui-tooltip-icon{
+	border-color: #ccc;
+}
+
+.ui-tooltip-wdt-light .ui-tooltip-titlebar .ui-state-hover{
+	border-color: #ccc;
+}
+
+/* --- Tooltip Design WDT - light : Content Styles -------------------------- */
+
+.ui-tooltip-wdt-light .tooltip_realm.notfound,
+.ui-tooltip-wdt-light .tooltip_icon.notfound {
+	color: rgb(224, 0, 0);
+}
+
+.ui-tooltip-wdt-light .tooltip_realm .status.online {
+	color: rgb(0, 160, 0);
+}
+
+.ui-tooltip-wdt-light .tooltip_realm .status.online.queue {
+	color: rgb(192, 96, 0);
+}
+
+.ui-tooltip-wdt-light .tooltip_realm .status.offline {
+	color: rgb(224, 0, 0);
+}
+
+/* --- Tooltip Layout ------------------------------------------------------- */
+
+.ajaxloading,
+.tooltip_realm,
+.tooltip_icon {
+	font-family: Cambria, Verdana, Arial, sans-serif;
+	font-size: 12px;
+	overflow: hidden;
+	padding-bottom: 0.2em;
+}
+
+.tooltip_realm .name {
+	margin-bottom: 4px;
+	font-weight: bold;
+}
+
+.tooltip_realm .name .type {
+	font-weight: normal;
+}
+
+.tooltip_realm .status {
+	float: left;
+	margin-right: 2em;
+}
+
+.tooltip_realm .population {
+	float: right;
+}
+
+.tooltip_icon img.icon-56 {
+	width: 56px;
+	height: 56px;
+}
