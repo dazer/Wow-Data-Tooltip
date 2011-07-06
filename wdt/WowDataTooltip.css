@@ -106,9 +106,21 @@
 
 /* --- Tooltip Layout ------------------------------------------------------- */
 
+.cclass-1  { /* Warrior      */ color: #C79C6E; }
+.cclass-2  { /* Paladin      */ color: #F58CBA; }
+.cclass-3  { /* Hunter       */ color: #ABD473; }
+.cclass-4  { /* Rogue        */ color: #FFF569; }
+.cclass-5  { /* Priest       */ color: #FFFFFF; }
+.cclass-6  { /* Death Knight */ color: #C41F3B; }
+.cclass-7  { /* Shaman       */ color: #0070DE; }
+.cclass-8  { /* Mage         */ color: #69CCF0; }
+.cclass-9  { /* Warlock      */ color: #9482C9; }
+.cclass-11 { /* Druid        */ color: #FF7D0A; }
+
 .ajaxloading,
 .tooltip_realm,
-.tooltip_icon {
+.tooltip_icon,
+.tooltip_character {
 	font-family: Cambria, Verdana, Arial, sans-serif;
 	font-size: 12px;
 	overflow: hidden;
@@ -136,4 +148,23 @@
 .tooltip_icon img.icon-56 {
 	width: 56px;
 	height: 56px;
+}
+
+.tooltip_character {
+	width: 300px;
+}
+
+.tooltip_character .avatar {
+	border: 4px solid rgba(0, 0, 0, 0.33);
+}
+
+.tooltip_character .name {
+	font-size: 120%;
+	font-weight: bold;
+	line-height: 130%;
+}
+
+.tooltip_character .guild {
+	float: right;
+	margin: 0 3em 0 2em;
 }

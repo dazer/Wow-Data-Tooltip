@@ -39,6 +39,10 @@
 	
 	<hr />
 	
+	<h2>Charakter Tooltips:</h2>
+	<p>Hallo, hier ist <a href="http://eu.battle.net/wow/de/character/gilneas/Rhil/simple">Rhil</a>!</p>
+	<p>Hier haben wir auch noch einen armen Tropf ohne Gilde: <a href="http://us.battle.net/wow/en/character/blackrock/Yarkuz/">Yarkuz</a></p>
+	
 	<h2>Realm Tooltips:</h2>
 	<p>Besucht mich doch mal auf <span class="realm" data-wowdatatooltip="realm:eu.gilneas/de">Gilneas</span>, meinem Heimatrealm.</p>
 	<p>Alternativ auch gerne auf <span class="realm" data-wowdatatooltip="realm:eu.amanthul/en">hier</span> (englisch).</p>
