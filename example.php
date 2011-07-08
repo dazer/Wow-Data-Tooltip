@@ -137,6 +137,13 @@
 	</div>
 	
 	<h2>Item und Realm Tooltips <span class="comment">( In Arbeit ^^ )</span></h2>
+	<p>Derzeit sind die API Funktionen für Items nur für authentifizierte Calls einsichtlich.</p>
+	<p>Ich habe mich per Mail um einen Zugang beworben und warte nun auf Feedback von Blizzard.</p>
+	
+	<h2>Realm Tooltips <span class="comment">( Evtl..... )</span></h2>
+	<p>Der Sinn und Zweck von Realm Tooltips steht bei mir noch nicht auf festen Füßen. Von daher stelle ich dieses Feature hinten an.</p>
+	<p>Vor allem da ich nicht wüsste mit welcher Battle.net URL ich diese verknüpfen müsste.</p>
+	
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script type="text/javascript">

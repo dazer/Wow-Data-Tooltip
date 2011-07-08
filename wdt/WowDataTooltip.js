@@ -53,9 +53,22 @@ var WowDataTooltip = {
 		}
 		return loc;
 	},
-	buildCharacterTooltip: function(loc, href, data) {
+	getTemplate: function(template, type) {
+		if('undefined' == typeof(WowDataTooltip['templates'][template])) {
+			return 'Template "'+template+'" not found!';
+		}
+		if('undefined' == typeof(WowDataTooltip['templates'][template][type])) {
+			return 'Type "'+type+'" not found in template "'+template+'"!';
+		}
+		return WowDataTooltip['templates'][template][type];
+	},
+	buildCharacterTooltip: function(region, loc, href, data) {
 		var content   = '';
-		var avataruri = href.replace(WowDataTooltip['patterns']['character']['regex'], WowDataTooltip['patterns']['character']['avatar']) + data['thumbnail'];
+		var avataruri = WowDataTooltip['patterns']['character']['avatar'];
+		avataruri     = avataruri.replace(/\{region\}/g,    region);
+		avataruri     = avataruri.replace(/\{thumbnail\}/g, data['thumbnail']);
+		avataruri     = avataruri.replace(/\{race\}/g,      data['race']);
+		avataruri     = avataruri.replace(/\{gender\}/g,    data['gender']);
 		if('object' === typeof(loc['class:'+data['class']])) {
 			var classname = loc['class:'+data['class']]['gender:'+data['gender']];
 		} else {
@@ -67,21 +80,22 @@ var WowDataTooltip = {
 			var racename = loc['race:'+data['race']];
 		}
 		var lrc = loc['format:level+class+race'];
-		lrc     = lrc.replace('{level}', data['level']);
-		lrc     = lrc.replace('{race}',  racename);
-		lrc     = lrc.replace('{class}', classname);
-		content = content + '<div class="tooltip_character">';
-		content = content + '<img class="avatar" src="'+avataruri+'" />';
-		content = content +	'<div class="data">';
-		content = content +	'<div class="name cclass-'+data['class']+'">'+data['name']+'</div>';
-		content = content +	'<div class="level class race">'+lrc+'</div>';
+		lrc     = lrc.replace(/\{level\}/g, data['level']);
+		lrc     = lrc.replace(/\{race\}/g,  racename);
+		lrc     = lrc.replace(/\{class\}/g, classname);
+		
+		content = WowDataTooltip.getTemplate('default', 'character');
+		content = content.replace(/\{avataruri\}/g,         avataruri);
+		content = content.replace(/\{classid\}/g,           data['class']);
+		content = content.replace(/\{name\}/g,              data['name']);
+		content = content.replace(/\{realm\}/g,             data['realm']);
+		content = content.replace(/\{achievementpoints\}/g, data['achievementPoints']);
+		content = content.replace(/\{lrc\}/g,               lrc);
 		if(data['guild']) {
-			content = content +	'<div class="guild">&lt;'+data['guild']['name']+'&gt;</div>';
+			content = content.replace(/\{guild\}/g, ('&lt;' + data['guild']['name'] + '&gt;'));
+		} else {
+			content = content.replace(/\{guild\}/g, '');
 		}
-		content = content + '<div class="realm">'+data['realm']+'</div>';
-		content = content + '<div class="achievementpoints">'+data['achievementPoints']+'</div>';
-		content = content +	'</div>';
-		content = content + '</div>';
 		return content;
 	},
 	addToCache: function(type, apicall, content) {
@@ -91,6 +105,7 @@ var WowDataTooltip = {
 	getCache: function(type, apicall) {
 		if('undefined' == typeof(WowDataTooltip['cache'][type])) {
 			WowDataTooltip['cache'][type] = {};
+			return false;
 		}
 		if('string' == typeof(WowDataTooltip['cache'][type][apicall])) {
 			return WowDataTooltip['cache'][type][apicall];
@@ -102,6 +117,22 @@ var WowDataTooltip = {
 		'qtip2.plugin': 'qtip2/jquery.qtip.min.js',
 		'qtip2.css'   : 'qtip2/jquery.qtip.min.css',
 		'wdt.css'     : 'wdt/WowDataTooltip.css'
+	},
+	'templates': {
+		'default': {
+			'character': (
+				'<div class="tooltip_character template-default">'                 + "\n" +
+			    '    <img class="avatar" src="{avataruri}" />'                     + "\n" +
+			    '    <div class="data">'                                           + "\n" +
+			    '        <div class="name cclass-{classid}">{name}</div>'          + "\n" +
+			    '        <div class="level class race">{lrc}</div>'                + "\n" +
+				'        <div class="guild">{guild}</div>'                         + "\n" +
+				'        <div class="realm">{realm}</div>'                         + "\n" +
+				'        <div class="achievementpoints">{achievementpoints}</div>' + "\n" +
+			    '    </div>'                                                       + "\n" +
+			    '</div>'
+			)
+		}
 	},
 	'i18n': {
 		'en': {
@@ -284,11 +315,11 @@ var WowDataTooltip = {
 		'character': {
 			'regex' : /http:\/\/(eu|us|kr|tw).battle.net\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
 			'api'   : 'http://$1.battle.net/api/wow/character/$3/$4?fields=guild,talents',
-			'avatar': 'http://$1.battle.net/static-render/$1/'
+			'avatar': 'http://{region}.battle.net/static-render/{region}/{thumbnail}?alt=/wow/static/images/2d/avatar/{race}-{gender}.jpg'
 		}
 	},
 	'cache': {
-		'characters': {}
+		'character': {}
 	}
 };
 
@@ -335,7 +366,7 @@ yepnope([{
 								apicall = href.replace(WowDataTooltip['patterns']['character']['regex'], WowDataTooltip['patterns']['character']['api']);
 								// console.log('API Calling: '+apicall);
 								
-								content = WowDataTooltip.getCache('characters', apicall);
+								content = WowDataTooltip.getCache('character', apicall);
 								
 								if(content != false) {
 									
@@ -352,11 +383,11 @@ yepnope([{
 										success: function(data) {
 											
 											var loc     = WowDataTooltip.getLocale(params['lang']);
-											var content = WowDataTooltip.buildCharacterTooltip(loc, href, data);
+											var content = WowDataTooltip.buildCharacterTooltip(params['region'], loc, href, data);
 											
 											WowDataTooltip.addTip(this, content);
 											
-											WowDataTooltip.addToCache('characters', apicall, content);
+											WowDataTooltip.addToCache('character', apicall, content);
 											
 										}
 									});
