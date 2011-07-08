@@ -28,6 +28,7 @@
 }
 
 .ui-tooltip-wdt-dark .ui-tooltip-content{
+	background-color: #000;
 	background-color: rgba(0, 0, 0, 0.85);
 }
 
@@ -71,6 +72,7 @@
 }
 
 .ui-tooltip-wdt-light .ui-tooltip-content{
+	background-color: #fff;
 	background-color: rgba(255, 255, 255, 0.85);
 }
 
@@ -175,7 +177,8 @@
  * -------------------------------------------------------------------------- */
 
 .tooltip_character {
-	min-height: 92px;
+	height: 92px;
+	width: 250px;
 	position: relative;
 }
 

@@ -35,8 +35,8 @@ var WowDataTooltip = {
 				text: tipcontent
 			},
 			position: {
-				my: 'bottom left',
-				at: 'top right',
+				my: 'bottom middle',
+				at: 'top middle',
 				viewport: jQuery(window)
 			},
 			hide: 'mouseout',
@@ -348,13 +348,15 @@ yepnope([{
 							
 						} else {
 							
-							var content = 'No valid Tooltip found!';
+							var content = 'Loading...';
 							var href    = new String(jQuery(this).attr('href'));
 							var apicall = null;
 							var params  = null;
 							
 							var result  = href.match(WowDataTooltip['patterns']['character']['regex']);
 							if(result) {
+								
+								WowDataTooltip.addTip(this, content);
 								
 								params = {
 									'region'   : result[1],
@@ -370,7 +372,8 @@ yepnope([{
 								
 								if(content != false) {
 									
-									WowDataTooltip.addTip(this, content);
+									// WowDataTooltip.addTip(this, content);
+									jQuery(this).qtip('api').set('content.text', content);
 									
 								} else {
 									
@@ -385,7 +388,8 @@ yepnope([{
 											var loc     = WowDataTooltip.getLocale(params['lang']);
 											var content = WowDataTooltip.buildCharacterTooltip(params['region'], loc, href, data);
 											
-											WowDataTooltip.addTip(this, content);
+											// WowDataTooltip.addTip(this, content);
+											jQuery(this).qtip('api').set('content.text', content);
 											
 											WowDataTooltip.addToCache('character', apicall, content);
 											
