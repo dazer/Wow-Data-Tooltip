@@ -476,6 +476,7 @@ var WowDataTooltip = {
 			'raceid': data['race'],
 			'genderid': data['gender'],
 			'achievementpoints': data['achievementPoints'],
+			'items': data['items'],
 			'lrc': lrc
 		};
 		
@@ -521,6 +522,9 @@ var WowDataTooltip = {
 			    	'<img class="thumbnail" src="{{path.host}}/static-render/{{region}}/{{thumbnail}}?alt=/wow/static/images/2d/avatar/{{raceid}}-{{genderid}}.jpg" />' +
 			    	'<div class="data">' +
 			    		'<div class="name cclass-{{classid}}">{{name}}</div>' +
+						'{{#items}}' +
+						'<div class="itemlevel wdt-show-only-extended">Avg. iLevel: {{averageItemLevelEquipped}} / {{averageItemLevel}}</div>' +
+						'{{/items}}' +
 			    		'<div class="level class race">{{lrc}}</div>' +
 						'{{#talents}}' +
 			    		'<div class="talentspec wdt-show-only-extended{{#selected}} active{{/selected}}">' +
@@ -528,12 +532,16 @@ var WowDataTooltip = {
 						'</div>' +
 						'{{/talents}}' +
 						'{{#guild}}' +
-						'<div class="guild">&lt;{{name}}&gt;{{#level}} ({{level}}){{/level}}</div>' +
+						'<div class="guild">' +
+						'<div class="guildname">&lt;{{name}}&gt;<span class="guildlevel wdt-show-only-extended"> ({{level}})</span></div>' +
+						'<div class="guildmembers wdt-show-only-extended">{{members}} Members</div>' +
+						'<div class="guildachievementpoints wdt-show-only-extended"><span class="achpoints">{{achievementPoints}}</span></div>' +
+						'</div>' +
 						'{{/guild}}' +
 						'<div class="realm">{{realm}}</div>' +
-						'<div class="achievementpoints">{{achievementpoints}}</div>' +
-						'<div class="info-meta wdt-show-only-simple">Hold [Shift] for extended mode!</div>' +
-						'<div class="info-meta wdt-show-only-extended">Relese [Shift] for simple mode!</div>' +
+						'<div class="achievementpoints"><span class="achpoints">{{achievementpoints}}</span></div>' +
+						'<div class="info-meta wdt-show-only-simple">Hold down [Shift] for extended mode!</div>' +
+						'<div class="info-meta wdt-show-only-extended">Release [Shift] for simple mode!</div>' +
 			    	'</div>' +
 			    '</div>'
 			)
