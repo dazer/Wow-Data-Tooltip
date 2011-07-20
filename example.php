@@ -99,9 +99,20 @@
 			color: #f66;
 		}
 		
+		#gplus1 {
+			padding: 10px;
+			border-radius: 4px;
+			background-color: #eee;
+			float: right;
+		}
+		
 	</style>
 </head>
 <body>
+	
+	<div id="gplus1">
+		<g:plusone href="http://dev.dsitc.de/demos/wow-data-tooltip/"></g:plusone>
+	</div>
 	
 	<h1>WowDataTooltip - Demo Page</h1>
 	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a> | <a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r25.zip" title="Dateidownload auf googlecode">Download! (alpha-r25)</a></p>	
@@ -216,6 +227,10 @@
 		
 	</script>
 	<script type="text/javascript" src="wdt/WowDataTooltip.js"></script>
+	
+	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+	  {lang: 'de'}
+	</script>
 
 </body>
 </html>
