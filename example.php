@@ -104,7 +104,7 @@
 <body>
 	
 	<h1>WowDataTooltip - Demo Page</h1>
-	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a></p>	
+	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a> | <a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r25.zip" title="Dateidownload auf googlecode">Download! (alpha-r25)</a></p>	
 	
 	<h2>Marketing Gesabbel a.k.a. "Warum ist dieses Tooltip Addon so toll?!":</h2>
 	<p>
@@ -122,7 +122,7 @@
 	<h2>Wie installiere ich dieses Ding?</h2>
 	<p>
 		<ol id="installation">
-			<li>Herunterladen des Dateien</li>
+			<li><a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r25.zip" title="Dateidownload auf googlecode">Herunterladen des Dateien</a></li>
 			<li>Entpacken und auf den eigenen Webserver hochladen</li>
 			<li>Anpassen der Pfade:
 				<pre>
