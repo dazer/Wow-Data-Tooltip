@@ -51,6 +51,14 @@
 			font-size: 130%;
 		}
 		
+		h2.hint {
+			padding: 10px 15px;
+			font-style: italic;
+			color: #b0f;
+			border-radius: 10px;
+			background-color: #406;
+		}
+		
 		h3 {
 			color: #BB7100;
 			margin-top: 2em;
@@ -88,7 +96,7 @@
 		}
 		
 		#issues li {
-			color: #f99;
+			color: #f66;
 		}
 		
 	</style>
@@ -135,6 +143,8 @@
 	
 	<h2>Erklärung &amp; Beispiele</h2>
 	
+	<h2 class="hint">Probiert es aus: Haltet [Shift] gedrückt während ein Tooltip angezeigt wird! :)</h2>
+	
 	<h3>Was wird mit einem Tooltip versehen?</h3>
 	<p>Das WowDataTooltip Plugin verpasst jedem Link dessen URL auf ein Battle.net Charakterprofil zeigt einen Tooltip. Zum Beispiel <a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Rhil/">http://eu.battle.net/wow/de/character/gilneas/Rhil/</a>.</p>
 	<p>Dabei ist es auch nicht wichtig ob der Link über weitere Parameter verfügt:</p>
@@ -173,7 +183,7 @@
 	
 	<h2>Item und Realm Tooltips <span class="comment">( In Arbeit ^^ )</span></h2>
 	<p>Derzeit sind die API Funktionen für Items nur für authentifizierte Calls einsichtlich.</p>
-	<p>Ich habe mich per Mail um einen Zugang beworben und warte nun auf Feedback von Blizzard.</p>
+	<p>Ich habe inzwischen Zugangsdaten erhalten und bin am Testen... :)</p>
 	
 	<h2>Realm Tooltips <span class="comment">( Evtl..... )</span></h2>
 	<p>Der Sinn und Zweck von Realm Tooltips steht bei mir noch nicht auf festen Füßen. Von daher stelle ich dieses Feature hinten an.</p>
@@ -183,7 +193,7 @@
 	<p>
 		<ol id="issues">
 			<li>Die Bezeichnung der Skillungen sind noch nicht lokalisiert und werden in der Standardsprache des Browsers geliefert. (theoretisch zumindest...)</li>
-			<li>Die Labels für Itemlevel und Gildeninfo sind noch nicht lokalisiert und werden in Englisch dargestellt.</li>
+			<li>Die Labels für Itemlevel, Gildeninfo sowie der Hilfe-text für den erweiterten Modus sind noch nicht lokalisiert und werden in Englisch dargestellt.</li>
 		</ol>
 	</p>
 	
