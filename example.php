@@ -79,6 +79,10 @@
 			font-size: 12px;
 		}
 		
+		.wdt-hover {
+			color: #0fb;
+		}
+		
 	</style>
 </head>
 <body>
@@ -93,6 +97,7 @@
 			<li><a href="http://yepnopejs.com/" title="yepnope.js | A Conditional Loader For Your Polyfills!">Asynchrones Laden von Ressourcen</a> <span class="comment">( = Ladezeit der Seite ändert sich nur minimal )</span></li>
 			<li>Basiert auf <a href="http://jquery.com/" title="jQuery: The Write Less, Do More, JavaScript Library">jQuery</a> <span class="comment">( = Browserübergreifend und zuverlässig )</span></li>
 			<li>Basiert auf <a href="http://craigsworks.com/projects/qtip2/" title="qTip2 - Pretty powerful tooltips" >qTip2</a> <span class="comment">( = Brandaktuell und sehr flexibel )</span></li>
+			<li>Integrierte Mini-Template Engine: <a href="https://github.com/janl/mustache.js" title="janl / mustache.js" >mustache</a></li>
 			<li>Direkter Zugriff auf die <a href="http://us.battle.net/wow/en/forum/2626217/" title="Community Platform API">Battle.net API</a> <span class="comment">( = Die aktuellste und zuverlässigste Datenquelle )</span></li>
 			<li></li>
 		</ul>
@@ -101,13 +106,13 @@
 	<h2>Erklärung &amp; Beispiele</h2>
 	
 	<h3>Was wird mit einem Tooltip versehen?</h3>
-	<p>Das WowDataTooltip Plugin verpasst jedem Link dessen URL auf ein Battle.net Charakterprofil zeigt einen Tooltip. Zum Beispiel <a href="http://eu.battle.net/wow/de/character/gilneas/Rhil/">http://eu.battle.net/wow/de/character/gilneas/Rhil/</a>.</p>
+	<p>Das WowDataTooltip Plugin verpasst jedem Link dessen URL auf ein Battle.net Charakterprofil zeigt einen Tooltip. Zum Beispiel <a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Rhil/">http://eu.battle.net/wow/de/character/gilneas/Rhil/</a>.</p>
 	<p>Dabei ist es auch nicht wichtig ob der Link über weitere Parameter verfügt:</p>
 	<p>
 		<ul>
-			<li><a href="http://eu.battle.net/wow/de/character/gilneas/Rhil/advanced">http://eu.battle.net/wow/de/character/gilneas/Rhil/advanced</a></li>
-			<li><a href="http://eu.battle.net/wow/de/character/gilneas/Rhil/talent/primary">http://eu.battle.net/wow/de/character/gilneas/Rhil/talent/primary</a></li>
-			<li><a href="http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883">http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Rhil/advanced">http://eu.battle.net/wow/de/character/gilneas/Rhil/advanced</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Rhil/talent/primary">http://eu.battle.net/wow/de/character/gilneas/Rhil/talent/primary</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883">http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883</a></li>
 		</ul>
 	</p>
 	
@@ -116,12 +121,12 @@
 	<p>Der Tooltip wird in derselben Sprache angezeigt wie die verlinkte Battl.net Profilseite:</p>
 	<p>
 		<ul>
-			<li><a href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">Deutsch: Agonya</a></li>
-			<li><a href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">Englisch: Rancora</a></li>
-			<li><a href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">Französisch: Rakel</a></li>
-			<li><a href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanisch: Nhyria</a></li>
-			<li><a href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russisch: Necry</a></li>
-			<li><a href="http://eu.battle.net/wow/ko/character/gilneas/Lhoyra/">Hanguk (Südkorea): Lhoyra</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">Deutsch: Agonya</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">Englisch: Rancora</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">Französisch: Rakel</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanisch: Nhyria</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russisch: Necry</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/ko/character/gilneas/Lhoyra/">Hanguk (Südkorea): Lhoyra</a></li>
 		</ul>
 	</p>
 	
@@ -155,7 +160,7 @@
 				var url = jQuery('#wdt-dynamic-character-profile-input').attr('value');
 				
 				if(url != '') {
-					jQuery('#wdt-dynamic-character-profile-hyperlinks').append('<li><a href="'+url+'">'+url+'</a></li>');
+					jQuery('#wdt-dynamic-character-profile-hyperlinks').append('<li><a class="wdt-hover" href="'+url+'">'+url+'</a></li>');
 				}
 				
 			});
@@ -164,5 +169,6 @@
 		
 	</script>
 	<script type="text/javascript" src="wdt/WowDataTooltip.js"></script>
+
 </body>
 </html>

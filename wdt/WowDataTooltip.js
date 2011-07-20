@@ -26,8 +26,179 @@ if(!window.yepnope) {
 
 var WowDataTooltip = {
 	
-	'activeTooltip': false,
+	'settings': {
+		'multiMode': true
+	},
 	
+	'resources': {
+		'jquery'         : 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+		'qtip2.plugin'   : 'qtip2/jquery.qtip.min.js',
+		'qtip2.css'      : 'qtip2/jquery.qtip.min.css',
+		'wdt.css'        : 'wdt/WowDataTooltip.css'
+	},
+	
+	addToActiveTooltips: function(id) {
+		var found = false;
+		for (var i = 0; i < WowDataTooltip.activeTooltip.length; i++) {
+			if(WowDataTooltip.activeTooltip[i] === id) {
+				found = true;
+			}
+		}
+		if(found === false) {
+			WowDataTooltip.activeTooltip.push(id);
+		}
+	},
+	
+	removeFromActiveTooltips: function(id) {
+		var found = false;
+		for (var i = 0; i < WowDataTooltip.activeTooltip.length; i++) {
+			if(WowDataTooltip.activeTooltip[i] === id) {
+				found = i;
+			}
+		}
+		if(found !== false) {
+			WowDataTooltip.activeTooltip.splice(i, 1);
+		}
+	},
+	
+	repositionActiveTooltips: function() {
+		// Find all active wdt tooltips and run .reposition on them
+		for (var i = 0; i < WowDataTooltip.activeTooltip.length; i++) {
+			jQuery('#ui-tooltip-'+WowDataTooltip.activeTooltip[i]).qtip('reposition');
+		}
+	},
+	
+	addTip: function(element, tipcontent) {
+		jQuery(element).qtip({
+			overwrite: false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
+			show: {
+				ready: true // Needed to make it show on first mouseover event
+			},
+			events: {
+				render: function(event, api) {
+					var tooltip = api.elements.tooltip;
+					tooltip.bind('tooltipshow', function(event, api) {
+						WowDataTooltip.addToActiveTooltips(api.id);
+					});
+					tooltip.bind('tooltiphide', function(event, api) {
+						WowDataTooltip.removeFromActiveTooltips(api.id);
+					});
+				},
+			},
+			content: {
+				text: tipcontent
+			},
+			position: {
+				my: 'bottom middle',
+				at: 'top middle',
+				viewport: jQuery(window),
+				effect: false
+			},
+			hide: 'mouseout',
+			style: {
+				classes: 'wdt-tooltip ui-tooltip-wdt-dark'
+			}
+		});
+	},
+	
+	getLocale: function(lang) {
+		if('object' === typeof(WowDataTooltip['i18n'][lang])) {
+			var loc = WowDataTooltip['i18n'][lang];
+		} else {
+			var loc = WowDataTooltip['i18n']['en'];
+		}
+		return loc;
+	},
+	
+	getTemplate: function(template, type) {
+		if('undefined' == typeof(WowDataTooltip['templates'][template])) {
+			return 'Template "'+template+'" not found!';
+		}
+		if('undefined' == typeof(WowDataTooltip['templates'][template][type])) {
+			return 'Type "'+type+'" not found in template "'+template+'"!';
+		}
+		return WowDataTooltip['templates'][template][type];
+	},
+	
+	localize: function(repository, keys, replacements) {
+		var temp   = repository;
+		var result = '';
+		
+		if('string' === typeof(keys)) {
+			keys = [keys]; 
+		}
+		
+		for (var i = 0; i < keys.length; i++) {
+			if('undefined' === typeof(temp[keys[i]])) {
+				result = '';
+				break;
+			} else {
+				if('object' === typeof(temp[keys[i]])) {
+					temp = temp[keys[i]];
+				} else {
+					result = temp[keys[i]];
+					break;
+				}
+			}
+		}
+		
+		if(('' !== result) && ('object' === typeof(replacements))) {
+			for (i in replacements) {
+				console.log({'i':i, 'replacements[i]': replacements[i]});
+				var regexp = new RegExp('\{'+i+'\}', 'gi');
+				result = result.replace(regexp, replacements[i]);
+			}
+		}
+		
+		return result;
+	},
+	
+	buildCharacterTooltip: function(region, loc, apicall, data) {
+		var content   = '';
+		
+		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
+		var racename  = this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])]);
+		var lrc       = this.localize(loc, 'format:level+class+race', {'level': data['level'], 'race': racename, 'class': classname});
+		
+		var host = apicall.replace(/\/api\/wow\/.+$/i, '');
+		
+		var tvars = {
+			'path.host':         host,
+			'region':            region,
+			'thumbnail':         data['thumbnail'],
+			'talents':           data['talents'],
+			'name':              data['name'],
+			'realm':             data['realm'],
+			'guild':             data['guild'],
+			'classid':           data['class'],
+			'raceid':            data['race'],
+			'genderid':          data['gender'],
+			'achievementpoints': data['achievementPoints'],
+			'items':             data['items'],
+			'lrc':               lrc
+		};
+		
+		var content = WowDataTooltip.mustache.to_html(WowDataTooltip.getTemplate('default', 'character'), tvars);
+		
+		return content;
+	},
+	
+	addToCache: function(type, apicall, content) {
+		WowDataTooltip['cache'][type][apicall] = content;
+		return true;
+	},
+	
+	getFromCache: function(type, apicall) {
+		if('undefined' == typeof(WowDataTooltip['cache'][type])) {
+			WowDataTooltip['cache'][type] = {};
+			return false;
+		}
+		if('string' == typeof(WowDataTooltip['cache'][type][apicall])) {
+			return WowDataTooltip['cache'][type][apicall];
+		}
+		return false;
+	},
+				
 	mustache: function() {
 		
 		var Renderer = function() {};
@@ -373,148 +544,6 @@ var WowDataTooltip = {
 		});
 	}(),
 	
-	addTip: function(element, tipcontent) {
-		jQuery(element).qtip({
-			overwrite: false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
-			show: {
-				ready: true // Needed to make it show on first mouseover event
-			},
-			events: {
-				render: function(event, api) {
-					var tooltip = api.elements.tooltip;
-					tooltip.bind('tooltipshow', function(event, api) {
-						WowDataTooltip.activeTooltip = api.id;
-					});
-					tooltip.bind('tooltiphide', function(event, api) {
-						WowDataTooltip.activeTooltip = false;
-					});
-				},
-			},
-			content: {
-				text: tipcontent
-			},
-			position: {
-				my: 'bottom middle',
-				at: 'top middle',
-				viewport: jQuery(window)
-			},
-			hide: 'mouseout',
-			style: {
-				classes: 'wdt-tooltip ui-tooltip-wdt-dark'
-			}
-		});
-	},
-	
-	getLocale: function(lang) {
-		if('object' === typeof(WowDataTooltip['i18n'][lang])) {
-			var loc = WowDataTooltip['i18n'][lang];
-		} else {
-			var loc = WowDataTooltip['i18n']['en'];
-		}
-		return loc;
-	},
-	
-	getTemplate: function(template, type) {
-		if('undefined' == typeof(WowDataTooltip['templates'][template])) {
-			return 'Template "'+template+'" not found!';
-		}
-		if('undefined' == typeof(WowDataTooltip['templates'][template][type])) {
-			return 'Type "'+type+'" not found in template "'+template+'"!';
-		}
-		return WowDataTooltip['templates'][template][type];
-	},
-	
-	localize: function(repository, keys, replacements) {
-		var temp   = repository;
-		var result = '';
-		
-		if('string' === typeof(keys)) {
-			keys = [keys]; 
-		}
-		
-		for (var i = 0; i < keys.length; i++) {
-			if('undefined' === typeof(temp[keys[i]])) {
-				result = '';
-			} else {
-				if('object' === typeof(temp[keys[i]])) {
-					temp = temp[keys[i]];
-				} else {
-					result = temp[keys[i]];
-				}
-			}
-		}
-		
-		if(('' !== result) && ('object' === typeof(replacements))) {
-			for (i in replacements) {
-				console.log({'i':i, 'replacements[i]': replacements[i]});
-				var regexp = new RegExp('\{'+i+'\}', 'gi');
-				result = result.replace(regexp, replacements[i]);
-			}
-		}
-		
-		return result;
-	},
-	
-	buildCharacterTooltip: function(region, loc, apicall, data) {
-		var content   = '';
-		
-		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
-		var racename  = this.localize(loc, [('race:'+data['class']),  ('gender:'+data['gender'])]);
-		var lrc       = this.localize(loc, 'format:level+class+race', {'level': data['level'], 'race': racename, 'class': classname});
-		
-		var host = apicall.replace(/\/api\/wow\/.+$/i, '');
-		
-		var tvars = {
-			'path.host': host,
-			'region': region,
-			'thumbnail': data['thumbnail'],
-			'talents': data['talents'],
-			'name': data['name'],
-			'realm': data['realm'],
-			'guild': data['guild'],
-			'classid': data['class'],
-			'raceid': data['race'],
-			'genderid': data['gender'],
-			'achievementpoints': data['achievementPoints'],
-			'items': data['items'],
-			'lrc': lrc
-		};
-		
-		var content = WowDataTooltip.mustache.to_html(WowDataTooltip.getTemplate('default', 'character'), tvars);
-		
-		return content;
-	},
-	
-	addToCache: function(type, apicall, content) {
-		WowDataTooltip['cache'][type][apicall] = content;
-		return true;
-	},
-	
-	getCache: function(type, apicall) {
-		if('undefined' == typeof(WowDataTooltip['cache'][type])) {
-			WowDataTooltip['cache'][type] = {};
-			return false;
-		}
-		if('string' == typeof(WowDataTooltip['cache'][type][apicall])) {
-			return WowDataTooltip['cache'][type][apicall];
-		}
-		return false;
-	},
-	
-	repositionActiveTooltips: function() {
-		// Find all active wdt tooltips and run .reposition on them
-		if(WowDataTooltip.activeTooltip !== false) {
-			jQuery('#ui-tooltip-'+WowDataTooltip.activeTooltip).qtip('reposition');
-		}
-	},
-	
-	'resources': {
-		'jquery'         : 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-		'qtip2.plugin'   : 'qtip2/jquery.qtip.min.js',
-		'qtip2.css'      : 'qtip2/jquery.qtip.min.css',
-		'wdt.css'        : 'wdt/WowDataTooltip.css'
-	},
-	
 	'templates': {
 		'default': {
 			'character': (
@@ -736,7 +765,10 @@ var WowDataTooltip = {
 	
 	'cache': {
 		'character': {}
-	}
+	},
+	
+	'activeTooltip': []
+	
 };
 
 yepnope([{
@@ -794,8 +826,6 @@ yepnope([{
 							var result  = href.match(WowDataTooltip['patterns']['character']['regex']);
 							if(result) {
 								
-								WowDataTooltip.addTip(this, 'Loading character...');
-								
 								params = {
 									'region'   : result[1],
 									'lang'     : result[2],
@@ -805,14 +835,15 @@ yepnope([{
 								
 								apicall = href.replace(WowDataTooltip['patterns']['character']['regex'], WowDataTooltip['patterns']['character']['api']);
 								
-								content = WowDataTooltip.getCache('character', apicall);
+								content = WowDataTooltip.getFromCache('character', apicall);
 								
 								if(content != false) {
 									
-									// WowDataTooltip.addTip(this, content);
-									jQuery(this).qtip('api').set('content.text', content);
+									WowDataTooltip.addTip(this, content);
 									
 								} else {
+									
+									WowDataTooltip.addTip(this, 'Loading character...');
 									
 									jQuery.ajax({
 										url: apicall,
