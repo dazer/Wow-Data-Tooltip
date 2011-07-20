@@ -83,6 +83,14 @@
 			color: #0fb;
 		}
 		
+		#installation pre {
+			color: #0bf;
+		}
+		
+		#issues li {
+			color: #f99;
+		}
+		
 	</style>
 </head>
 <body>
@@ -101,6 +109,28 @@
 			<li>Direkter Zugriff auf die <a href="http://us.battle.net/wow/en/forum/2626217/" title="Community Platform API">Battle.net API</a> <span class="comment">( = Die aktuellste und zuverlässigste Datenquelle )</span></li>
 			<li></li>
 		</ul>
+	</p>
+	
+	<h2>Wie installiere ich dieses Ding?</h2>
+	<p>
+		<ol id="installation">
+			<li>Herunterladen des Dateien</li>
+			<li>Entpacken und auf den eigenen Webserver hochladen</li>
+			<li>Anpassen der Pfade:
+				<pre>
+'resources': {
+	'jquery'         : 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+	'qtip2.plugin'   : '{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.js',
+	'qtip2.css'      : '{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.css',
+	'wdt.css'        : '{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.css'
+},</pre>
+			</li>
+			<li>Einbinden in die entsprechenden Webseiten:
+				<pre>
+&lt;script type="text/javascript" src="{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.js"&gt;&lt;/script&gt;
+				</pre>
+			</li>
+		</ol>
 	</p>
 	
 	<h2>Erklärung &amp; Beispiele</h2>
@@ -149,6 +179,13 @@
 	<p>Der Sinn und Zweck von Realm Tooltips steht bei mir noch nicht auf festen Füßen. Von daher stelle ich dieses Feature hinten an.</p>
 	<p>Vor allem da ich nicht wüsste mit welcher Battle.net URL ich diese verknüpfen müsste.</p>
 	
+	<h2>Bekannte "Features"... äh, Bugs! ^^</h2>
+	<p>
+		<ol id="issues">
+			<li>Die Bezeichnung der Skillungen sind noch nicht lokalisiert und werden in der Standardsprache des Browsers geliefert. (theoretisch zumindest...)</li>
+			<li>Die Labels für Itemlevel und Gildeninfo sind noch nicht lokalisiert und werden in Englisch dargestellt.</li>
+		</ol>
+	</p>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script type="text/javascript">
