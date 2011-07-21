@@ -144,7 +144,7 @@ var WowDataTooltip = {
 		
 		if(('' !== result) && ('object' === typeof(replacements))) {
 			for (i in replacements) {
-				console.log({'i':i, 'replacements[i]': replacements[i]});
+				// 	.log({'i':i, 'replacements[i]': replacements[i]});
 				var regexp = new RegExp('\{'+i+'\}', 'gi');
 				result = result.replace(regexp, replacements[i]);
 			}
@@ -569,8 +569,8 @@ var WowDataTooltip = {
 						'{{/guild}}' +
 						'<div class="realm">{{realm}}</div>' +
 						'<div class="achievementpoints"><span class="achpoints">{{achievementpoints}}</span></div>' +
-						'<div class="info-meta wdt-show-only-simple">Hold down [Shift] for extended mode!</div>' +
-						'<div class="info-meta wdt-show-only-extended">Release [Shift] for simple mode!</div>' +
+						'<div class="info-meta wdt-show-only-simple">Hold down [Alt] for extended mode!</div>' +
+						'<div class="info-meta wdt-show-only-extended">Release [Alt] for simple mode!</div>' +
 			    	'</div>' +
 			    '</div>'
 			)
@@ -789,8 +789,8 @@ yepnope([{
 					
 					jQuery('body').bind('keydown', function(event) {
 						
-						// Try to make shift key change the tooltip style
-						if(event.keyCode == 16) {
+						// Try to make ALT key change the tooltip style
+						if(event.keyCode == 18) {
 							// WowDataTooltip.extendedActive = true;
 							jQuery('body').addClass('wdt-show-extended');
 							WowDataTooltip.repositionActiveTooltips();
@@ -800,8 +800,8 @@ yepnope([{
 					
 					jQuery('body').bind('keyup', function(event) {
 						
-						// Try to make shift key change the tooltip style
-						if(event.keyCode == 16) {
+						// Try to make ALT key change the tooltip style
+						if(event.keyCode == 18) {
 							// WowDataTooltip.extendedActive = false;
 							jQuery('body').removeClass('wdt-show-extended');
 							WowDataTooltip.repositionActiveTooltips();

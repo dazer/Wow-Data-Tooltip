@@ -192,7 +192,7 @@
 		</ol>
 	</div>
 	
-	<h2>Item und Realm Tooltips <span class="comment">( In Arbeit ^^ )</span></h2>
+	<h2>Item Tooltips <span class="comment">( In Arbeit ^^ )</span></h2>
 	<p>Derzeit sind die API Funktionen für Items nur für authentifizierte Calls einsichtlich.</p>
 	<p>Ich habe inzwischen Zugangsdaten erhalten und bin am Testen... :)</p>
 	
@@ -205,6 +205,7 @@
 		<ol id="issues">
 			<li>Die Bezeichnung der Skillungen sind noch nicht lokalisiert und werden in der Standardsprache des Browsers geliefert. (theoretisch zumindest...)</li>
 			<li>Die Labels für Itemlevel, Gildeninfo sowie der Hilfe-text für den erweiterten Modus sind noch nicht lokalisiert und werden in Englisch dargestellt.</li>
+			<li>Firefox hat scheinbar Probleme mit dem Registrieren der Hotkeys für das Umschalten zwischen einfachem und erweitertem Modus. :-/</li>
 		</ol>
 	</p>
 	
