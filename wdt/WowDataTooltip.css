@@ -213,14 +213,15 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 
 .tooltip-character .talentspec {
 	color: #999;
-	padding-left: 12px;
+	padding: 2px 0 0 12px;
 }
 
 .tooltip-character .talentspec.active {
 	color: #00FFB1;
 }
 
-.tooltip-character .icon-talentspec {
+.tooltip-character .icon-talentspec,
+.tooltip-character .icon-profession {
 	height: 10px;
 }
 
@@ -240,8 +241,8 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 }
 
 .tooltip-character .itemlevel {
-	color: #00B1FF;
-	padding-bottom: 5px;
+	color: #00FFB1;
+	padding: 5px 0;
 }
 
 .tooltip-character .guildname {
@@ -252,6 +253,19 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 .tooltip-character .guildachievementpoints {
 	color: #996600;
 	padding-left: 12px;
+}
+
+.tooltip-character .professions {
+	padding: 4px 0;
+	line-height: 16px;
+}
+
+.tooltip-character .profession-primary {
+	color: #FFB100;
+}
+
+.tooltip-character .profession-secondary {
+	color: #996600;
 }
 
 .tooltip-character .realm {

@@ -99,6 +99,11 @@
 			color: #f66;
 		}
 		
+		#issues .fixed {
+			color: #6f6;
+			text-decoration: line-through;
+		}
+		
 		#gplus1 {
 			padding: 10px;
 			border-radius: 4px;
@@ -177,7 +182,14 @@
 			<li><a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">Französisch: Rakel</a></li>
 			<li><a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanisch: Nhyria</a></li>
 			<li><a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russisch: Necry</a></li>
-			<li><a class="wdt-hover" href="http://eu.battle.net/wow/ko/character/gilneas/Lhoyra/">Hanguk (Südkorea): Lhoyra</a></li>
+		</ul>
+	</p>
+	<p>Auch die etwas exotischeren Regionen sind verfügbar:</p>
+	<p>
+		<ul>
+			<li><a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk (Südkorea): 축복은셀프입니다</a></li>
+			<li><a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/尖石/茫然困惑少年/">Traditionells Chinesisch (Taiwan): 茫然困惑少年</a> (API returns 404, maybe not fully live here)</li>
+			<li><a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Vereinfachtes Chinesisch (China): 楼兰风行</a></li>
 		</ul>
 	</p>
 	
@@ -203,9 +215,9 @@
 	<h2>Bekannte "Features"... äh, Bugs! ^^</h2>
 	<p>
 		<ol id="issues">
-			<li>Die Bezeichnung der Skillungen sind noch nicht lokalisiert und werden in der Standardsprache des Browsers geliefert. (theoretisch zumindest...)</li>
+			<li class="fixed">Die Bezeichnung der Skillungen sind noch nicht lokalisiert und werden in der Standardsprache des Browsers geliefert. (theoretisch zumindest...)</li>
 			<li>Die Labels für Itemlevel, Gildeninfo sowie der Hilfe-text für den erweiterten Modus sind noch nicht lokalisiert und werden in Englisch dargestellt.</li>
-			<li>Firefox hat scheinbar Probleme mit dem Registrieren der Hotkeys für das Umschalten zwischen einfachem und erweitertem Modus. :-/</li>
+			<li class="fixed">Firefox hat scheinbar Probleme mit dem Registrieren der Hotkeys für das Umschalten zwischen einfachem und erweitertem Modus. :-/</li>
 		</ol>
 	</p>
 	

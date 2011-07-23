@@ -101,11 +101,11 @@ var WowDataTooltip = {
 		});
 	},
 	
-	getLocale: function(lang) {
-		if('object' === typeof(WowDataTooltip['i18n'][lang])) {
-			var loc = WowDataTooltip['i18n'][lang];
+	getLocale: function(locale) {
+		if('object' === typeof(WowDataTooltip['i18n'][locale])) {
+			var loc = WowDataTooltip['i18n'][locale];
 		} else {
-			var loc = WowDataTooltip['i18n']['en'];
+			var loc = WowDataTooltip['i18n']['en_US'];
 		}
 		return loc;
 	},
@@ -144,7 +144,6 @@ var WowDataTooltip = {
 		
 		if(('' !== result) && ('object' === typeof(replacements))) {
 			for (i in replacements) {
-				// 	.log({'i':i, 'replacements[i]': replacements[i]});
 				var regexp = new RegExp('\{'+i+'\}', 'gi');
 				result = result.replace(regexp, replacements[i]);
 			}
@@ -153,17 +152,18 @@ var WowDataTooltip = {
 		return result;
 	},
 	
-	buildCharacterTooltip: function(region, loc, apicall, data) {
+	buildCharacterTooltip: function(host, loc, apicall, data) {
 		var content   = '';
 		
 		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
 		var racename  = this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])]);
 		var lrc       = this.localize(loc, 'format:level+class+race', {'level': data['level'], 'race': racename, 'class': classname});
-		
-		var host = apicall.replace(/\/api\/wow\/.+$/i, '');
+		var region    = this.getRegionFromHost(host);
+		var mediahost = this.getMediahostFromRegion(region);
 		
 		var tvars = {
-			'path.host':         host,
+			'path.host':         ('http://' + host),
+			'path.host.media':   ('http://' + mediahost),
 			'region':            region,
 			'thumbnail':         data['thumbnail'],
 			'talents':           data['talents'],
@@ -175,6 +175,7 @@ var WowDataTooltip = {
 			'genderid':          data['gender'],
 			'achievementpoints': data['achievementPoints'],
 			'items':             data['items'],
+			'professions':       data['professions'],
 			'lrc':               lrc
 		};
 		
@@ -198,7 +199,34 @@ var WowDataTooltip = {
 		}
 		return false;
 	},
-				
+	
+	getRegionFromHost: function(host) {
+		if('undefined' !== typeof(this.maps['host2region'][host])) {
+			return(this.maps['host2region'][host]);
+		}
+		return '';
+	},
+	
+	getMediahostFromRegion: function(region) {
+		if('undefined' === typeof(this.maps['region2mediahost'][region])) {
+			return '';
+		} else {
+			return this.maps['region2mediahost'][region];
+		}
+	},
+	
+	getLocaleFromRegionLang: function(region, lang) {
+		if('undefined' === typeof(this.maps['regionlang2locale'][region])) {
+			return 'en_US';
+		} else {
+			if('undefined' == typeof(this.maps['regionlang2locale'][region][lang])) {
+				return 'en_US';
+			} else {
+				return this.maps['regionlang2locale'][region][lang];
+			}
+		}
+	},
+	
 	mustache: function() {
 		
 		var Renderer = function() {};
@@ -549,36 +577,52 @@ var WowDataTooltip = {
 			'character': (
 				'<div class="tooltip-character template-default">' +
 			    	'<img class="thumbnail" src="{{path.host}}/static-render/{{region}}/{{thumbnail}}?alt=/wow/static/images/2d/avatar/{{raceid}}-{{genderid}}.jpg" />' +
-			    	'<div class="data">' +
+			    	'<div class="data wdt-show-only-simple">' + // START simple mode
 			    		'<div class="name cclass-{{classid}}">{{name}}</div>' +
-						'{{#items}}' +
-						'<div class="itemlevel wdt-show-only-extended">Avg. iLevel: {{averageItemLevelEquipped}} / {{averageItemLevel}}</div>' +
-						'{{/items}}' +
 			    		'<div class="level class race">{{lrc}}</div>' +
 						'{{#talents}}' +
-			    		'<div class="talentspec wdt-show-only-extended{{#selected}} active{{/selected}}">' +
-							'<img class="icon-talentspec" src="http://{{region}}.media.blizzard.com/wow/icons/18/{{icon}}.jpg"/> {{name}}' +
-						'</div>' +
+			    			'<div class="talentspec {{#selected}} active{{/selected}}">' +
+								'<img class="icon-talentspec" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}' +
+							'</div>' +
 						'{{/talents}}' +
 						'{{#guild}}' +
-						'<div class="guild">' +
-						'<div class="guildname">&lt;{{name}}&gt;<span class="guildlevel wdt-show-only-extended"> ({{level}})</span></div>' +
-						'<div class="guildmembers wdt-show-only-extended">{{members}} Members</div>' +
-						'<div class="guildachievementpoints wdt-show-only-extended"><span class="achpoints">{{achievementPoints}}</span></div>' +
-						'</div>' +
+							'<div class="guild">' +
+								'<div class="guildname">&lt;{{name}}&gt;<span class="guildlevel"> ({{level}})</span></div>' +
+							'</div>' +
 						'{{/guild}}' +
 						'<div class="realm">{{realm}}</div>' +
 						'<div class="achievementpoints"><span class="achpoints">{{achievementpoints}}</span></div>' +
-						'<div class="info-meta wdt-show-only-simple">Hold down [Alt] for extended mode!</div>' +
-						'<div class="info-meta wdt-show-only-extended">Release [Alt] for simple mode!</div>' +
-			    	'</div>' +
+						'<div class="info-meta">Hold down [Shift] to switch modes!</div>' +
+			    	'</div>' + // END simple mode
+			    	'<div class="data wdt-show-only-extended">' + // START extended mode
+			    		'<div class="name cclass-{{classid}}">{{name}}</div>' +
+			    		'<div class="level class race">{{lrc}}</div>' +
+						'{{#items}}' +
+							'<div class="itemlevel">Avg. iLevel: {{averageItemLevelEquipped}} / {{averageItemLevel}}</div>' +
+						'{{/items}}' +
+						'{{#professions}}' +
+							'<div class="professions wdt-show-only-extended">' +
+								'{{#primary}}{{#rank}}' +
+									'<div class="profession-primary">' +
+										'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
+									'</div>' +
+								'{{/rank}}{{/primary}}' +
+								'{{#secondary}}{{#rank}}' +
+									'<div class="profession-secondary">' +
+										'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
+									'</div>' +
+								'{{/rank}}{{/secondary}}' +
+							'</div>' +
+						'{{/professions}}' +
+						'<div class="info-meta">Release [Shift] to switch modes!</div>' +
+			    	'</div>' + // END extended mode
 			    '</div>'
 			)
 		}
 	},
 	
 	'i18n': {
-		'en': {
+		'en_US': {
 			'format:level+class+race': '{level} {race} {class}',
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
@@ -603,57 +647,7 @@ var WowDataTooltip = {
 			'race:11' : 'Draenei',
 			'race:22' : 'Worgen',
 		},
-		'de': {
-			'format:level+class+race': '{level}, {race}, {class}',
-			'class:1' : {'gender:0': 'Krieger',      'gender:1': 'Kriegerin'},
-			'class:2' : {'gender:0': 'Paladin',      'gender:1': 'Paladin'},
-			'class:3' : {'gender:0': 'Jäger',        'gender:1': 'Jägerin'},
-			'class:4' : {'gender:0': 'Schurke',      'gender:1': 'Schurkin'},
-			'class:5' : {'gender:0': 'Priester',     'gender:1': 'Priesterin'},
-			'class:6' : {'gender:0': 'Todesritter',  'gender:1': 'Todesritter'},
-			'class:7' : {'gender:0': 'Schamane',     'gender:1': 'Schamanin'},
-			'class:8' : {'gender:0': 'Magier',       'gender:1': 'Magierin'},
-			'class:9' : {'gender:0': 'Hexenmeister', 'gender:1': 'Hexenmeisterin'},
-			'class:11': {'gender:0': 'Druide',       'gender:1': 'Druidin'},
-			'race:1'  : {'gender:0': 'Mensch',       'gender:1': 'Mensch'},
-			'race:2'  : {'gender:0': 'Orc',          'gender:1': 'Orc'},
-			'race:3'  : {'gender:0': 'Zwerg',        'gender:1': 'Zwerg'},
-			'race:4'  : {'gender:0': 'Nachtelf',     'gender:1': 'Nachtelfe'},
-			'race:5'  : {'gender:0': 'Untoter',      'gender:1': 'Untote'},
-			'race:6'  : {'gender:0': 'Tauren',       'gender:1': 'Tauren'},
-			'race:7'  : {'gender:0': 'Gnom',         'gender:1': 'Gnom'},
-			'race:8'  : {'gender:0': 'Troll',        'gender:1': 'Troll'},
-			'race:9'  : {'gender:0': 'Goblin',       'gender:1': 'Goblin'},
-			'race:10' : {'gender:0': 'Blutelf',      'gender:1': 'Blutelfe'},
-			'race:11' : {'gender:0': 'Draenei',      'gender:1': 'Draenei'},
-			'race:22' : {'gender:0': 'Worgen',       'gender:1': 'Worgen'},
-		},
-		'fr': {
-			'format:level+class+race': '{class} {race} niv. {level}',
-			'class:1' : {'gender:0': 'Guerrier',             'gender:1': 'Guerrière'},
-			'class:2' : {'gender:0': 'Paladin',              'gender:1': 'Paladin'},
-			'class:3' : {'gender:0': 'Chasseur',             'gender:1': 'Chasseresse'},
-			'class:4' : {'gender:0': 'Voleur',               'gender:1': 'Voleuse'},
-			'class:5' : {'gender:0': 'Prêtre',               'gender:1': 'Prêtresse'},
-			'class:6' : {'gender:0': 'Chevalier de la mort', 'gender:1': 'Chevalier de la mort'},
-			'class:7' : {'gender:0': 'Chaman',               'gender:1': 'Chamane'},
-			'class:8' : {'gender:0': 'Mage',                 'gender:1': 'Mage'},
-			'class:9' : {'gender:0': 'Démoniste',            'gender:1': 'Démoniste'},
-			'class:11': {'gender:0': 'Druide',               'gender:1': 'Druidesse'},
-			'race:1'  : {'gender:0': 'Humain',               'gender:1': 'Humaine'},
-			'race:2'  : {'gender:0': 'Orc',                  'gender:1': 'Orque'},
-			'race:3'  : {'gender:0': 'Nain',                 'gender:1': 'Naine'},
-			'race:4'  : {'gender:0': 'Elfe de la nuit',      'gender:1': 'Elfe de la nuit'},
-			'race:5'  : {'gender:0': 'Mort-vivant',          'gender:1': 'Morte-vivante'},
-			'race:6'  : {'gender:0': 'Tauren',               'gender:1': 'Tauren'},
-			'race:7'  : {'gender:0': 'Gnome',                'gender:1': 'Gnome'},
-			'race:8'  : {'gender:0': 'Troll',                'gender:1': 'Trollesse'},
-			'race:9'  : {'gender:0': 'Gobelin',              'gender:1': 'Gobeline'},
-			'race:10' : {'gender:0': 'Elfe de sang',         'gender:1': 'Elfe de sang'},
-			'race:11' : {'gender:0': 'Draeneï',              'gender:1': 'Draeneï'},
-			'race:22' : {'gender:0': 'Worgen',               'gender:1': 'Worgen'},
-		},
-		'es': {
+		'es_MX': {
 			'format:level+class+race': '{race} {class} {level}',
 			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
 			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
@@ -678,7 +672,82 @@ var WowDataTooltip = {
 			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
 			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
 		},
-		'ru': {
+		'en_GB': {
+			'format:level+class+race': '{level} {race} {class}',
+			'class:1' : 'Warrior',
+			'class:2' : 'Paladin',
+			'class:3' : 'Hunter',
+			'class:4' : 'Rogue',
+			'class:5' : 'Priest',
+			'class:6' : 'Death Knight',
+			'class:7' : 'Shaman',
+			'class:8' : 'Mage',
+			'class:9' : 'Warlock',
+			'class:11': 'Druid',
+			'race:1'  : 'Human',
+			'race:2'  : 'Orc',
+			'race:3'  : 'Dwarf',
+			'race:4'  : 'Night Elf',
+			'race:5'  : 'Forsaken',
+			'race:6'  : 'Tauren',
+			'race:7'  : 'Gnome',
+			'race:8'  : 'Troll',
+			'race:9'  : 'Goblin',
+			'race:10' : 'Blood Elf',
+			'race:11' : 'Draenei',
+			'race:22' : 'Worgen',
+		},
+		'es_ES': {
+			'format:level+class+race': '{race} {class} {level}',
+			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
+			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
+			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
+			'class:4' : {'gender:0': 'Pícaro',                 'gender:1': 'Pícara'},
+			'class:5' : {'gender:0': 'Sacerdote',              'gender:1': 'Sacerdotisa'},
+			'class:6' : {'gender:0': 'Caballero de la Muerte', 'gender:1': 'Caballero de la Muerte'},
+			'class:7' : {'gender:0': 'Chamán',                 'gender:1': 'Chamán'},
+			'class:8' : {'gender:0': 'Mago',                   'gender:1': 'Maga'},
+			'class:9' : {'gender:0': 'Brujo',                  'gender:1': 'Bruja'},
+			'class:11': {'gender:0': 'Druida',                 'gender:1': 'Druida'},
+			'race:1'  : {'gender:0': 'Humano',                 'gender:1': 'Humana'},
+			'race:2'  : {'gender:0': 'Orco',                   'gender:1': 'Orco'},
+			'race:3'  : {'gender:0': 'Enano',                  'gender:1': 'Enana'},
+			'race:4'  : {'gender:0': 'Elfo de la noche',       'gender:1': 'Elfa de la noche'},
+			'race:5'  : {'gender:0': 'No-muerto',              'gender:1': 'No-muerta'},
+			'race:6'  : {'gender:0': 'Tauren',                 'gender:1': 'Tauren'},
+			'race:7'  : {'gender:0': 'Gnomo',                  'gender:1': 'Gnoma'},
+			'race:8'  : {'gender:0': 'Trol',                   'gender:1': 'Trol'},
+			'race:9'  : {'gender:0': 'Goblin',                 'gender:1': 'Goblin'},
+			'race:10' : {'gender:0': 'Elfo de sangre',         'gender:1': 'Elfa de sangre'},
+			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
+			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
+		},
+		'fr_FR': {
+			'format:level+class+race': '{class} {race} niv. {level}',
+			'class:1' : {'gender:0': 'Guerrier',             'gender:1': 'Guerrière'},
+			'class:2' : {'gender:0': 'Paladin',              'gender:1': 'Paladin'},
+			'class:3' : {'gender:0': 'Chasseur',             'gender:1': 'Chasseresse'},
+			'class:4' : {'gender:0': 'Voleur',               'gender:1': 'Voleuse'},
+			'class:5' : {'gender:0': 'Prêtre',               'gender:1': 'Prêtresse'},
+			'class:6' : {'gender:0': 'Chevalier de la mort', 'gender:1': 'Chevalier de la mort'},
+			'class:7' : {'gender:0': 'Chaman',               'gender:1': 'Chamane'},
+			'class:8' : {'gender:0': 'Mage',                 'gender:1': 'Mage'},
+			'class:9' : {'gender:0': 'Démoniste',            'gender:1': 'Démoniste'},
+			'class:11': {'gender:0': 'Druide',               'gender:1': 'Druidesse'},
+			'race:1'  : {'gender:0': 'Humain',               'gender:1': 'Humaine'},
+			'race:2'  : {'gender:0': 'Orc',                  'gender:1': 'Orque'},
+			'race:3'  : {'gender:0': 'Nain',                 'gender:1': 'Naine'},
+			'race:4'  : {'gender:0': 'Elfe de la nuit',      'gender:1': 'Elfe de la nuit'},
+			'race:5'  : {'gender:0': 'Mort-vivant',          'gender:1': 'Morte-vivante'},
+			'race:6'  : {'gender:0': 'Tauren',               'gender:1': 'Tauren'},
+			'race:7'  : {'gender:0': 'Gnome',                'gender:1': 'Gnome'},
+			'race:8'  : {'gender:0': 'Troll',                'gender:1': 'Trollesse'},
+			'race:9'  : {'gender:0': 'Gobelin',              'gender:1': 'Gobeline'},
+			'race:10' : {'gender:0': 'Elfe de sang',         'gender:1': 'Elfe de sang'},
+			'race:11' : {'gender:0': 'Draeneï',              'gender:1': 'Draeneï'},
+			'race:22' : {'gender:0': 'Worgen',               'gender:1': 'Worgen'},
+		},
+		'ru_RU': {
 			'format:level+class+race': '{class}-{race} {level} yp.',
 			'class:1' : {'gender:0': 'Воин',          'gender:1': 'Воин'},
 			'class:2' : {'gender:0': 'Паладин',       'gender:1': 'Паладин'},
@@ -703,7 +772,32 @@ var WowDataTooltip = {
 			'race:11' : {'gender:0': 'Дреней',        'gender:1': 'Дреней'},
 			'race:22' : {'gender:0': 'Ворген',        'gender:1': 'Ворген'},
 		},
-		'ko': {
+		'de_DE': {
+			'format:level+class+race': '{level}, {race}, {class}',
+			'class:1' : {'gender:0': 'Krieger',      'gender:1': 'Kriegerin'},
+			'class:2' : {'gender:0': 'Paladin',      'gender:1': 'Paladin'},
+			'class:3' : {'gender:0': 'Jäger',        'gender:1': 'Jägerin'},
+			'class:4' : {'gender:0': 'Schurke',      'gender:1': 'Schurkin'},
+			'class:5' : {'gender:0': 'Priester',     'gender:1': 'Priesterin'},
+			'class:6' : {'gender:0': 'Todesritter',  'gender:1': 'Todesritter'},
+			'class:7' : {'gender:0': 'Schamane',     'gender:1': 'Schamanin'},
+			'class:8' : {'gender:0': 'Magier',       'gender:1': 'Magierin'},
+			'class:9' : {'gender:0': 'Hexenmeister', 'gender:1': 'Hexenmeisterin'},
+			'class:11': {'gender:0': 'Druide',       'gender:1': 'Druidin'},
+			'race:1'  : {'gender:0': 'Mensch',       'gender:1': 'Mensch'},
+			'race:2'  : {'gender:0': 'Orc',          'gender:1': 'Orc'},
+			'race:3'  : {'gender:0': 'Zwerg',        'gender:1': 'Zwerg'},
+			'race:4'  : {'gender:0': 'Nachtelf',     'gender:1': 'Nachtelfe'},
+			'race:5'  : {'gender:0': 'Untoter',      'gender:1': 'Untote'},
+			'race:6'  : {'gender:0': 'Tauren',       'gender:1': 'Tauren'},
+			'race:7'  : {'gender:0': 'Gnom',         'gender:1': 'Gnom'},
+			'race:8'  : {'gender:0': 'Troll',        'gender:1': 'Troll'},
+			'race:9'  : {'gender:0': 'Goblin',       'gender:1': 'Goblin'},
+			'race:10' : {'gender:0': 'Blutelf',      'gender:1': 'Blutelfe'},
+			'race:11' : {'gender:0': 'Draenei',      'gender:1': 'Draenei'},
+			'race:22' : {'gender:0': 'Worgen',       'gender:1': 'Worgen'},
+		},
+		'ko_KR': {
 			'format:level+class+race': '{level} {race} {class}',
 			'class:1' : '전사',
 			'class:2' : '성기사',
@@ -728,7 +822,7 @@ var WowDataTooltip = {
 			'race:11' : '드레나이',
 			'race:22' : '늑대인간',
 		},
-		'zh': {
+		'zh_TW': {
 			'format:level+class+race': '{level} {race} {class}',
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
@@ -752,14 +846,80 @@ var WowDataTooltip = {
 			'race:10' : 'Blood Elf',
 			'race:11' : 'Draenei',
 			'race:22' : 'Worgen',
+		},
+		'zh_CN': {
+			'format:level+class+race': '{level} {race} {class}',
+			'class:1' : '战士',
+			'class:2' : '圣骑士',
+			'class:3' : '猎人',
+			'class:4' : '潜行者',
+			'class:5' : '牧师',
+			'class:6' : '死亡骑士',
+			'class:7' : '萨满祭司',
+			'class:8' : '法师',
+			'class:9' : '术士',
+			'class:11': '德鲁伊',
+			'race:1'  : '人类',
+			'race:2'  : '兽人',
+			'race:3'  : '矮人',
+			'race:4'  : '暗夜精灵',
+			'race:5'  : '亡灵',
+			'race:6'  : '牛头人',
+			'race:7'  : '侏儒',
+			'race:8'  : '巨魔',
+			'race:9'  : '地精',
+			'race:10' : '血精灵',
+			'race:11' : '德莱尼',
+			'race:22' : '狼人',
 		}
 	},
 	
 	'patterns': {
 		'character': {
-			'regex' : /http:\/\/(eu|us|kr|tw).battle.net\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
-			'api'   : 'http://$1.battle.net/api/wow/character/$3/$4?fields=guild,talents,items',
-			'avatar': 'http://{region}.battle.net/static-render/{region}/{thumbnail}?alt=/wow/static/images/2d/avatar/{race}-{gender}.jpg'
+			'regex' : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
+			'api'   : 'http://$1/api/wow/character/$3/$4?fields=guild,talents,items,professions&locale={locale}',
+		}
+	},
+	
+	'maps': {
+		'host2region': {
+			'us.battle.net'       : 'us',
+			'eu.battle.net'       : 'eu',
+			'kr.battle.net'       : 'kr',
+			'tw.battle.net'       : 'tw',
+			'www.battlenet.com.cn': 'cn'
+		},
+		'region2mediahost': {
+			'us': 'us.media.blizzard.com',
+			'eu': 'eu.media.blizzard.com',
+			'kr': 'kr.media.blizzard.com',
+			'tw': 'us.media.blizzard.com',
+			'cn': 'content.battlenet.com.cn'
+		},
+		'regionlang2locale': {
+			'us': {
+				'en': 'en_US',
+				'es': 'es_MX'
+			},
+			'eu': {
+				'en': 'en_GB',
+				'es': 'es_ES',
+				'fr': 'fr_FR',
+				'ru': 'ru_RU',
+				'de': 'de_DE'
+			},
+			'kr': {
+				'ko': 'ko_KR',
+				'en': 'en_US'
+			},
+			'tw': {
+				'zh': 'zh_TW',
+				'en': 'en_US'
+			},
+			'cn': {
+				'zh': 'zh_CN',
+				'en': 'en_US'
+			}
 		}
 	},
 	
@@ -787,10 +947,10 @@ yepnope([{
 					
 					// --- Loading complete ------------------------------------
 					
-					jQuery('body').bind('keydown', function(event) {
+					jQuery(document).keydown(function(event) {
 						
-						// Try to make ALT key change the tooltip style
-						if(event.keyCode == 18) {
+						// SHIFT is pressed
+						if(event.keyCode == 16) {
 							// WowDataTooltip.extendedActive = true;
 							jQuery('body').addClass('wdt-show-extended');
 							WowDataTooltip.repositionActiveTooltips();
@@ -798,10 +958,10 @@ yepnope([{
 						
 					});
 					
-					jQuery('body').bind('keyup', function(event) {
+					jQuery(document).keyup(function(event) {
 						
-						// Try to make ALT key change the tooltip style
-						if(event.keyCode == 18) {
+						// SHIFT is released
+						if(event.keyCode == 16) {
 							// WowDataTooltip.extendedActive = false;
 							jQuery('body').removeClass('wdt-show-extended');
 							WowDataTooltip.repositionActiveTooltips();
@@ -827,15 +987,17 @@ yepnope([{
 							if(result) {
 								
 								params = {
-									'region'   : result[1],
+									'host'     : result[1],
 									'lang'     : result[2],
 									'realm'    : result[3],
 									'character': result[4]
 								};
 								
-								apicall = href.replace(WowDataTooltip['patterns']['character']['regex'], WowDataTooltip['patterns']['character']['api']);
+								var locale = WowDataTooltip.getLocaleFromRegionLang(WowDataTooltip.getRegionFromHost(params['host']), params['lang']);
 								
-								content = WowDataTooltip.getFromCache('character', apicall);
+								apicall    = href.replace(WowDataTooltip['patterns']['character']['regex'], WowDataTooltip['patterns']['character']['api']);
+								apicall    = apicall.replace('{locale}', locale);
+								content    = WowDataTooltip.getFromCache('character', apicall);
 								
 								if(content != false) {
 									
@@ -853,8 +1015,8 @@ yepnope([{
 										jsonp: 'jsonp',
 										success: function(data) {
 											
-											var loc     = WowDataTooltip.getLocale(params['lang']);
-											var content = WowDataTooltip.buildCharacterTooltip(params['region'], loc, apicall, data);
+											var loc     = WowDataTooltip.getLocale(locale);
+											var content = WowDataTooltip.buildCharacterTooltip(params['host'], loc, apicall, data);
 											
 											// WowDataTooltip.addTip(this, content);
 											jQuery(this).qtip('api').set('content.text', content);
