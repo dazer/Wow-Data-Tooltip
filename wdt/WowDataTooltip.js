@@ -96,12 +96,13 @@ var WowDataTooltip = {
 			},
 			hide: 'mouseout',
 			style: {
+				width: '300px',
 				classes: 'wdt-tooltip ui-tooltip-wdt-dark'
 			}
 		});
 	},
 	
-	getLocale: function(locale) {
+	getLocaleData: function(locale) {
 		if('object' === typeof(WowDataTooltip['i18n'][locale])) {
 			var loc = WowDataTooltip['i18n'][locale];
 		} else {
@@ -152,34 +153,46 @@ var WowDataTooltip = {
 		return result;
 	},
 	
-	buildCharacterTooltip: function(host, loc, apicall, data) {
+	buildCharacterTooltip: function(host, loc, data) {
 		var content   = '';
 		
 		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
 		var racename  = this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])]);
-		var lrc       = this.localize(loc, 'format:level+class+race', {'level': data['level'], 'race': racename, 'class': classname});
 		var region    = this.getRegionFromHost(host);
 		var mediahost = this.getMediahostFromRegion(region);
 		
-		var tvars = {
-			'path.host':         ('http://' + host),
-			'path.host.media':   ('http://' + mediahost),
-			'region':            region,
-			'thumbnail':         data['thumbnail'],
-			'talents':           data['talents'],
-			'name':              data['name'],
-			'realm':             data['realm'],
-			'guild':             data['guild'],
-			'classid':           data['class'],
-			'raceid':            data['race'],
-			'genderid':          data['gender'],
-			'achievementpoints': data['achievementPoints'],
-			'items':             data['items'],
-			'professions':       data['professions'],
-			'lrc':               lrc
+		var tvars = data;
+		tvars['path.host']       = 'http://' + host;
+		tvars['path.host.media'] = 'http://' + mediahost;
+		tvars['region']          = region;
+		tvars['classname']       = classname;
+		tvars['racename']        = racename;
+		
+		var partials = {
+			levelraceclass: this.localize(loc, ['templates', 'levelraceclass'])
 		};
 		
-		var content = WowDataTooltip.mustache.to_html(WowDataTooltip.getTemplate('default', 'character'), tvars);
+		var content = WowDataTooltip.mustache.to_html(WowDataTooltip.getTemplate('default', 'character'), tvars, partials);
+		
+		return content;
+	},
+	
+	buildGuildTooltip: function(host, loc, data) {
+		var content   = '';
+		
+		var sidename  = this.localize(loc, ('side:'+data['side']));
+		var region    = this.getRegionFromHost(host);
+		var mediahost = this.getMediahostFromRegion(region);
+		
+		var tvars = data;
+		tvars['path.host']       = 'http://' + host;
+		tvars['path.host.media'] = 'http://' + mediahost;
+		tvars['region']          = region;
+		tvars['sidename']        = sidename;
+		
+		var partials = {};
+		
+		var content = WowDataTooltip.mustache.to_html(WowDataTooltip.getTemplate('default', 'guild'), tvars, partials);
 		
 		return content;
 	},
@@ -576,10 +589,11 @@ var WowDataTooltip = {
 		'default': {
 			'character': (
 				'<div class="tooltip-character template-default">' +
-			    	'<img class="thumbnail" src="{{path.host}}/static-render/{{region}}/{{thumbnail}}?alt=/wow/static/images/2d/avatar/{{raceid}}-{{genderid}}.jpg" />' +
-			    	'<div class="data wdt-show-only-simple">' + // START simple mode
-			    		'<div class="name cclass-{{classid}}">{{name}}</div>' +
-			    		'<div class="level class race">{{lrc}}</div>' +
+			    	'<img class="thumbnail" src="{{path.host}}/static-render/{{region}}/{{thumbnail}}?alt=/wow/static/images/2d/avatar/{{race}}-{{gender}}.jpg" />' +
+			    	 /* --- START simple mode -------------------------------- */
+					'<div class="data wdt-show-only-simple">' +
+			    		'<div class="name cclass-{{class}}">{{name}}</div>' +
+			    		'<div class="levelraceclass">{{> levelraceclass}}</div>' +
 						'{{#talents}}' +
 			    			'<div class="talentspec {{#selected}} active{{/selected}}">' +
 								'<img class="icon-talentspec" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}' +
@@ -587,15 +601,17 @@ var WowDataTooltip = {
 						'{{/talents}}' +
 						'{{#guild}}' +
 							'<div class="guild">' +
-								'<div class="guildname">&lt;{{name}}&gt;<span class="guildlevel"> ({{level}})</span></div>' +
+								'<div class="guildname">&lt;{{name}}&gt;{{#level}}<span class="guildlevel"> ({{level}})</span>{{/level}}</div>' +
 							'</div>' +
 						'{{/guild}}' +
 						'<div class="realm">{{realm}}</div>' +
-						'<div class="achievementpoints"><span class="achpoints">{{achievementpoints}}</span></div>' +
-						'<div class="info-meta">Hold down [Shift] to switch modes!</div>' +
-			    	'</div>' + // END simple mode
-			    	'<div class="data wdt-show-only-extended">' + // START extended mode
-			    		'<div class="name cclass-{{classid}}">{{name}}</div>' +
+						'<div class="achievementpoints"><span class="achpoints">{{achievementPoints}}</span></div>' +
+						'<div class="info-meta last">Hold [Shift] to switch modes!</div>' +
+			    	'</div>' +
+					 /* --- END simple mode ---------------------------------- */
+					 /* --- START extended mode ------------------------------ */
+			    	'<div class="data wdt-show-only-extended">' +
+			    		'<div class="name cclass-{{class}}">{{name}}</div>' +
 			    		'<div class="level class race">{{lrc}}</div>' +
 						'{{#items}}' +
 							'<div class="itemlevel">Avg. iLevel: {{averageItemLevelEquipped}} / {{averageItemLevel}}</div>' +
@@ -614,16 +630,28 @@ var WowDataTooltip = {
 								'{{/rank}}{{/secondary}}' +
 							'</div>' +
 						'{{/professions}}' +
-						'<div class="info-meta">Release [Shift] to switch modes!</div>' +
-			    	'</div>' + // END extended mode
+						'<div class="info-meta last">Release [Shift] to switch modes!</div>' +
+			    	'</div>' +
+					 /* --- END extended mode -------------------------------- */
 			    '</div>'
+			),
+			'guild': (
+				'<div class="tooltip-guild template-default">' +
+	    			'<div class="name cside-{{side}}">{{name}}</div>' +
+					'<div class="level">{{level}}</div>' +
+					'<div class="realm">{{realm}}</div>' +
+				'</div>'
 			)
 		}
 	},
 	
 	'i18n': {
 		'en_US': {
-			'format:level+class+race': '{level} {race} {class}',
+			'templates': {
+				'levelraceclass': '{{level}} {{racename}} {{classname}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
 			'class:3' : 'Hunter',
@@ -646,9 +674,15 @@ var WowDataTooltip = {
 			'race:10' : 'Blood Elf',
 			'race:11' : 'Draenei',
 			'race:22' : 'Worgen',
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'es_MX': {
-			'format:level+class+race': '{race} {class} {level}',
+			'templates': {
+				'levelraceclass': '{{racename}} {{classname}} {{level}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
 			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
 			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
@@ -671,9 +705,15 @@ var WowDataTooltip = {
 			'race:10' : {'gender:0': 'Elfo de sangre',         'gender:1': 'Elfa de sangre'},
 			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
 			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'en_GB': {
-			'format:level+class+race': '{level} {race} {class}',
+			'templates': {
+				'levelraceclass': '{{level}} {{racename}} {{classname}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
 			'class:3' : 'Hunter',
@@ -696,9 +736,15 @@ var WowDataTooltip = {
 			'race:10' : 'Blood Elf',
 			'race:11' : 'Draenei',
 			'race:22' : 'Worgen',
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'es_ES': {
-			'format:level+class+race': '{race} {class} {level}',
+			'templates': {
+				'levelraceclass': '{{racename}} {{classname}} {{level}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
 			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
 			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
@@ -721,9 +767,15 @@ var WowDataTooltip = {
 			'race:10' : {'gender:0': 'Elfo de sangre',         'gender:1': 'Elfa de sangre'},
 			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
 			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'fr_FR': {
-			'format:level+class+race': '{class} {race} niv. {level}',
+			'templates': {
+				'levelraceclass': '{{classname}} {{racename}} niv. {{level}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : {'gender:0': 'Guerrier',             'gender:1': 'Guerrière'},
 			'class:2' : {'gender:0': 'Paladin',              'gender:1': 'Paladin'},
 			'class:3' : {'gender:0': 'Chasseur',             'gender:1': 'Chasseresse'},
@@ -746,9 +798,15 @@ var WowDataTooltip = {
 			'race:10' : {'gender:0': 'Elfe de sang',         'gender:1': 'Elfe de sang'},
 			'race:11' : {'gender:0': 'Draeneï',              'gender:1': 'Draeneï'},
 			'race:22' : {'gender:0': 'Worgen',               'gender:1': 'Worgen'},
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'ru_RU': {
-			'format:level+class+race': '{class}-{race} {level} yp.',
+			'templates': {
+				'levelraceclass': '{{classname}}-{{racename}} {{level}} yp.'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : {'gender:0': 'Воин',          'gender:1': 'Воин'},
 			'class:2' : {'gender:0': 'Паладин',       'gender:1': 'Паладин'},
 			'class:3' : {'gender:0': 'Охотник',       'gender:1': 'Охотница'},
@@ -771,9 +829,15 @@ var WowDataTooltip = {
 			'race:10' : {'gender:0': 'Эльф крови',    'gender:1': 'Эльфийка крови'},
 			'race:11' : {'gender:0': 'Дреней',        'gender:1': 'Дреней'},
 			'race:22' : {'gender:0': 'Ворген',        'gender:1': 'Ворген'},
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'de_DE': {
-			'format:level+class+race': '{level}, {race}, {class}',
+			'templates': {
+				'levelraceclass': '{{level}}, {{racename}}, {{classname}}'
+			},
+			'loading-character': 'Lade Charakter...',
+			'loading-guild'    : 'Lade Gilde...',
 			'class:1' : {'gender:0': 'Krieger',      'gender:1': 'Kriegerin'},
 			'class:2' : {'gender:0': 'Paladin',      'gender:1': 'Paladin'},
 			'class:3' : {'gender:0': 'Jäger',        'gender:1': 'Jägerin'},
@@ -796,9 +860,15 @@ var WowDataTooltip = {
 			'race:10' : {'gender:0': 'Blutelf',      'gender:1': 'Blutelfe'},
 			'race:11' : {'gender:0': 'Draenei',      'gender:1': 'Draenei'},
 			'race:22' : {'gender:0': 'Worgen',       'gender:1': 'Worgen'},
+			'side:0'  : 'Allianz',
+			'side:1'  : 'Horde'
 		},
 		'ko_KR': {
-			'format:level+class+race': '{level} {race} {class}',
+			'templates': {
+				'levelraceclass': '{{level}} {{racename}} {{classname}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : '전사',
 			'class:2' : '성기사',
 			'class:3' : '사냥꾼',
@@ -821,9 +891,15 @@ var WowDataTooltip = {
 			'race:10' : '블러드 엘프',
 			'race:11' : '드레나이',
 			'race:22' : '늑대인간',
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'zh_TW': {
-			'format:level+class+race': '{level} {race} {class}',
+			'templates': {
+				'levelraceclass': '{{level}} {{racename}} {{classname}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
 			'class:3' : 'Hunter',
@@ -846,9 +922,15 @@ var WowDataTooltip = {
 			'race:10' : 'Blood Elf',
 			'race:11' : 'Draenei',
 			'race:22' : 'Worgen',
+			'side:0'  : 'Alliance',
+			'side:1'  : 'Horde'
 		},
 		'zh_CN': {
-			'format:level+class+race': '{level} {race} {class}',
+			'templates': {
+				'levelraceclass': '{{level}} {{racename}} {{classname}}'
+			},
+			'loading-character': 'Loading character...',
+			'loading-guild'    : 'Loading guild...',
 			'class:1' : '战士',
 			'class:2' : '圣骑士',
 			'class:3' : '猎人',
@@ -878,6 +960,10 @@ var WowDataTooltip = {
 		'character': {
 			'regex' : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
 			'api'   : 'http://$1/api/wow/character/$3/$4?fields=guild,talents,items,professions&locale={locale}',
+		},
+		'guild': {
+			'regex' : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/]+)\/.*/,
+			'api'   : 'http://$1/api/wow/guild/$3/$4?fields=members&locale={locale}',
 		}
 	},
 	
@@ -924,7 +1010,8 @@ var WowDataTooltip = {
 	},
 	
 	'cache': {
-		'character': {}
+		'character': {},
+		'guild'    : {}
 	},
 	
 	'activeTooltip': []
@@ -983,6 +1070,10 @@ yepnope([{
 							var apicall = null;
 							var params  = null;
 							
+							
+							/* ------------------------------------------------------------
+							 * - Character Tooltip from a[href]
+							 * ------------------------------------------------------------ */
 							var result  = href.match(WowDataTooltip['patterns']['character']['regex']);
 							if(result) {
 								
@@ -1005,7 +1096,7 @@ yepnope([{
 									
 								} else {
 									
-									WowDataTooltip.addTip(this, 'Loading character...');
+									WowDataTooltip.addTip(this, WowDataTooltip.localize(WowDataTooltip.getLocaleData(locale), 'loading-character'));
 									
 									jQuery.ajax({
 										url: apicall,
@@ -1015,10 +1106,9 @@ yepnope([{
 										jsonp: 'jsonp',
 										success: function(data) {
 											
-											var loc     = WowDataTooltip.getLocale(locale);
-											var content = WowDataTooltip.buildCharacterTooltip(params['host'], loc, apicall, data);
+											var loc     = WowDataTooltip.getLocaleData(locale);
+											var content = WowDataTooltip.buildCharacterTooltip(params['host'], loc, data);
 											
-											// WowDataTooltip.addTip(this, content);
 											jQuery(this).qtip('api').set('content.text', content);
 											
 											WowDataTooltip.addToCache('character', apicall, content);
@@ -1030,8 +1120,52 @@ yepnope([{
 								
 							}
 							
-							result = false;
+							/* ------------------------------------------------------------
+							 * - Guild Tooltip from a[href]
+							 * ------------------------------------------------------------ */
+							var result  = href.match(WowDataTooltip['patterns']['guild']['regex']);
 							if(result) {
+								
+								params = {
+									'host' : result[1],
+									'lang' : result[2],
+									'realm': result[3],
+									'guild': result[4]
+								};
+								
+								var locale = WowDataTooltip.getLocaleFromRegionLang(WowDataTooltip.getRegionFromHost(params['host']), params['lang']);
+								
+								apicall    = href.replace(WowDataTooltip['patterns']['guild']['regex'], WowDataTooltip['patterns']['guild']['api']);
+								apicall    = apicall.replace('{locale}', locale);
+								content    = WowDataTooltip.getFromCache('guild', apicall);
+								
+								if(content != false) {
+									
+									WowDataTooltip.addTip(this, content);
+									
+								} else {
+									
+									WowDataTooltip.addTip(this, WowDataTooltip.localize(WowDataTooltip.getLocaleData(locale), 'loading-guild'));
+									
+									jQuery.ajax({
+										url: apicall,
+										crossDomain: true,
+										context: jQuery(this),
+										dataType: 'JSONP',
+										jsonp: 'jsonp',
+										success: function(data) {
+											
+											var loc     = WowDataTooltip.getLocaleData(locale);
+											var content = WowDataTooltip.buildGuildTooltip(params['host'], loc, data);
+											
+											jQuery(this).qtip('api').set('content.text', content);
+											
+											WowDataTooltip.addToCache('guild', apicall, content);
+											
+										}
+									});
+									
+								}
 								
 							}
 							

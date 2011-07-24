@@ -120,7 +120,7 @@
 	</div>
 	
 	<h1>WowDataTooltip - Demo Page</h1>
-	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a> | <a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r25.zip" title="Dateidownload auf googlecode">Download! (alpha-r25)</a></p>	
+	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a> | <a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Download! (alpha-r25)</a></p>	
 	
 	<h2>Marketing Gesabbel a.k.a. "Warum ist dieses Tooltip Addon so toll?!":</h2>
 	<p>
@@ -138,7 +138,7 @@
 	<h2>Wie installiere ich dieses Ding?</h2>
 	<p>
 		<ol id="installation">
-			<li><a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r25.zip" title="Dateidownload auf googlecode">Herunterladen des Dateien</a></li>
+			<li><a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Herunterladen des Dateien</a></li>
 			<li>Entpacken und auf den eigenen Webserver hochladen</li>
 			<li>Anpassen der Pfade:
 				<pre>
@@ -157,7 +157,7 @@
 		</ol>
 	</p>
 	
-	<h2>Erklärung &amp; Beispiele</h2>
+	<h2>Charakter Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span></h2>
 	
 	<h2 class="hint">Probiert es aus: Haltet [Shift] gedrückt während ein Tooltip angezeigt wird! :)</h2>
 	
@@ -189,7 +189,7 @@
 		<ul>
 			<li><a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk (Südkorea): 축복은셀프입니다</a></li>
 			<li><a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/尖石/茫然困惑少年/">Traditionells Chinesisch (Taiwan): 茫然困惑少年</a> (API returns 404, maybe not fully live here)</li>
-			<li><a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Vereinfachtes Chinesisch (China): 楼兰风行</a></li>
+			<li><a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Vereinfachtes Chinesisch (China): 楼兰风行</a> (<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/en/character/熔火之心/楼兰风行/">Englisch: 楼兰风行</a>)</li>
 		</ul>
 	</p>
 	
@@ -203,6 +203,23 @@
 			
 		</ol>
 	</div>
+	
+	<h2>Gilden Tooltips <span class="comment">( In Arbeit ^^ )</span></h2>
+	
+	<h3>Was wird mit einem Tooltip versehen?</h3>
+	<p>Das WowDataTooltip Plugin verpasst jedem Link dessen URL auf ein Battle.net Gildenprofil zeigt einen Tooltip. Zum Beispiel <a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/gilneas/Ascension/">http://eu.battle.net/wow/de/guild/gilneas/Ascension/</a>.</p>
+	<p>Dabei ist es auch nicht wichtig ob der Link über weitere Parameter verfügt:</p>
+	<p>
+		<ul>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/gilneas/Ascension/roster">http://eu.battle.net/wow/de/guild/gilneas/Ascension/roster</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421">http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421</a></li>
+		</ul>
+	</p>
+	<p>
+		<ul>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/blackrock/Dude we should buy a bar/roster">http://eu.battle.net/wow/de/guild/blackrock/Dude we should buy a bar/roster</a></li>
+		</ul>
+	</p>
 	
 	<h2>Item Tooltips <span class="comment">( In Arbeit ^^ )</span></h2>
 	<p>Derzeit sind die API Funktionen für Items nur für authentifizierte Calls einsichtlich.</p>
@@ -218,6 +235,7 @@
 			<li class="fixed">Die Bezeichnung der Skillungen sind noch nicht lokalisiert und werden in der Standardsprache des Browsers geliefert. (theoretisch zumindest...)</li>
 			<li>Die Labels für Itemlevel, Gildeninfo sowie der Hilfe-text für den erweiterten Modus sind noch nicht lokalisiert und werden in Englisch dargestellt.</li>
 			<li class="fixed">Firefox hat scheinbar Probleme mit dem Registrieren der Hotkeys für das Umschalten zwischen einfachem und erweitertem Modus. :-/</li>
+			<li>Da das von mir verwendete Tooltip Addon qTip2 selbst nocht nicht "stable" ist sondern auch noch in Entwicklung ist kann es gelegentlich zu kleinen Fehlern in der Darstellung kommen. Diese sollten sich aber im Laufe der Zeit auswachsen... *g*</li>
 		</ol>
 	</p>
 	
