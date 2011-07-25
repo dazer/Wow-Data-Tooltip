@@ -158,6 +158,7 @@ var WowDataTooltip = {
 		var loc       = this.getLocaleData(locale);
 		
 		var test = this.getRaceData(host, locale);
+		console.log(test);
 		
 		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
 		var racename  = this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])]);
@@ -175,7 +176,7 @@ var WowDataTooltip = {
 			'char-sri': this.localize(loc, ['templates', 'char-sri'])
 		};
 		
-		var content = this.mustache.to_html(this.getTemplate('default', 'character'), tvars, partials);
+		var content = this.mustache.process(this.getTemplate('default', 'character'), tvars, partials);
 		
 		return content;
 	},
@@ -200,7 +201,7 @@ var WowDataTooltip = {
 			'guild-members': this.localize(loc, ['templates', 'guild-members'])
 		};
 		
-		var content = this.mustache.to_html(this.getTemplate('default', 'guild'), tvars, partials);
+		var content = this.mustache.process(this.getTemplate('default', 'guild'), tvars, partials);
 		
 		return content;
 	},
@@ -211,11 +212,29 @@ var WowDataTooltip = {
 			'locale': locale
 		};
 				
-		var apicall = this.mustache.to_html(this['patterns']['data']['races'], tvars);
+		var apicall = this.mustache.process(this['patterns']['data']['races'], tvars);
+		var data    = this.getFromCache('data', 'character-race', apicall);
 		
-		console.log(apicall);
+		console.log('getRaceData - apicall = '+apicall);
 		
-		//var data = this.getFromCache('data', 'character-race', apicall);
+		if(data != false) {
+			return data;
+		} else {
+			// make a synchronous call to get the data
+			jQuery.ajax({
+				url: apicall,
+				crossDomain: true,
+				context: jQuery(this),
+				dataType: 'JSONP',
+				jsonp: 'jsonp',
+				success: function(data) {
+					
+					WowDataTooltip.addToCache('data', 'character-race', apicall, data);
+					return data;
+					
+				}
+			});
+		}
 		
 	},
 	
@@ -597,7 +616,7 @@ var WowDataTooltip = {
 			/*
 				Turns a template and view into HTML
 			*/
-			to_html: function(template, view, partials, send_fun) {
+			process: function(template, view, partials, send_fun) {
 				
 				var renderer = new Renderer();
 				if(send_fun) {
@@ -1009,8 +1028,8 @@ var WowDataTooltip = {
 	
 	'patterns': {
 		'data': {
-			'classes': 'http://{{host}}/api/wow/data/character/classes?local={{locale}}',
-			'races'  : 'http://{{host}}/api/wow/data/character/races?local={{locale}}'
+			'classes': 'http://{{host}}/api/wow/data/character/classes?locale={{locale}}',
+			'races'  : 'http://{{host}}/api/wow/data/character/races?locale={{locale}}'
 		},
 		'character': {
 			'regex' : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
