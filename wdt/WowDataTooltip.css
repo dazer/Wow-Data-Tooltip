@@ -193,7 +193,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 
 .tooltip-character .name,
 .tooltip-character .itemlevel,
-.tooltip-character .levelraceclass,
+.tooltip-character .char-sri,
 .tooltip-character .guild,
 .tooltip-character .realm,
 .tooltip-character .achievementpoints {
@@ -224,7 +224,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 }
 
 .tooltip-character .name {
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: bold;
 	border-bottom: 1px solid #333;
 	margin-bottom: 3px;
@@ -266,19 +266,25 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 	position: relative;
 }
 
-.tooltip-guild .name {
-	font-size: 13px;
-	font-weight: bold;
-	padding-bottom: 6px;
-}
-
-.tooltip-guild .level {
-	color: #FFB100;
-}
-
-.tooltip-guild .level,
-.tooltip-guild .realm {
+.tooltip-guild .name,
+.tooltip-guild .guild-sri,
+.tooltip-guild .guild-members,
+.tooltip-guild .achievementpoints {
 	padding-bottom: 3px;
 }
 
+.tooltip-guild .name {
+	font-size: 14px;
+	font-weight: bold;
+	border-bottom: 1px solid #333;
+	margin-bottom: 5px;
+}
+
+.tooltip-guild .guild-sri {
+	color: #FFB100;
+}
+
+.tooltip-guild .achievementpoints {
+	color: #C09A67;
+}
 

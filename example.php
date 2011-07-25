@@ -177,19 +177,14 @@
 	<p>Der Tooltip wird in derselben Sprache angezeigt wie die verlinkte Battl.net Profilseite:</p>
 	<p>
 		<ul>
-			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">Deutsch: Agonya</a></li>
-			<li><a class="wdt-hover" href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">Englisch: Rancora</a></li>
-			<li><a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">Französisch: Rakel</a></li>
-			<li><a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanisch: Nhyria</a></li>
-			<li><a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russisch: Necry</a></li>
-		</ul>
-	</p>
-	<p>Auch die etwas exotischeren Regionen sind verfügbar:</p>
-	<p>
-		<ul>
-			<li><a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk (Südkorea): 축복은셀프입니다</a></li>
-			<li><a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/尖石/茫然困惑少年/">Traditionells Chinesisch (Taiwan): 茫然困惑少年</a> (API returns 404, maybe not fully live here)</li>
-			<li><a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Vereinfachtes Chinesisch (China): 楼兰风行</a> (<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/en/character/熔火之心/楼兰风行/">Englisch: 楼兰风行</a>)</li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">Deutsch: Agonya @ Gilneas (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">Englisch: Rancora @ Gilneas (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">Französisch: Rakel @ Gilneas (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanisch: Nhyria @ Gilneas (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russisch: Necry @ Gilneas (EU)</a></li>
+			<li><a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk: 축복은셀프입니다 @ 달라란 (KO)</a></li>
+			<li><a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/冬握湖/阿露卡多/">Traditionells Chinesisch: 阿露卡多 @ 冬握湖 (TW)</a> (API returns 404, maybe not fully live here)</li>
+			<li><a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Vereinfachtes Chinesisch: 楼兰风行 @ 熔火之心 (CN)</a></li>
 		</ul>
 	</p>
 	
@@ -204,7 +199,7 @@
 		</ol>
 	</div>
 	
-	<h2>Gilden Tooltips <span class="comment">( In Arbeit ^^ )</span></h2>
+	<h2>Gilden Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span></h2>
 	
 	<h3>Was wird mit einem Tooltip versehen?</h3>
 	<p>Das WowDataTooltip Plugin verpasst jedem Link dessen URL auf ein Battle.net Gildenprofil zeigt einen Tooltip. Zum Beispiel <a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/gilneas/Ascension/">http://eu.battle.net/wow/de/guild/gilneas/Ascension/</a>.</p>
@@ -215,9 +210,17 @@
 			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421">http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421</a></li>
 		</ul>
 	</p>
+	<p>Auch hier sind natürlich wieder diverse Sprachen und Regionen verfügbar:</p>
 	<p>
 		<ul>
-			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/blackrock/Dude we should buy a bar/roster">http://eu.battle.net/wow/de/guild/blackrock/Dude we should buy a bar/roster</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/guldan/IPhönixI/roster">Deutsch: &lt;IPhönixI&gt; @ Guldan (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/en/guild/gilneas/Auge des Sturms/roster">Englisch: &lt;Auge des Sturms&gt; @ Gilneas (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/fr/guild/gilneas/Out of Range/roster">Französisch: &lt;Out of Range&gt; @ Gilneas (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/es/guild/nathrezim/Myst/roster">Spanisch: &lt;Myst&gt; @ Nathrezim (EU)</a></li>
+			<li><a class="wdt-hover" href="http://eu.battle.net/wow/ru/guild/dethecus/deCurseMe/roster">Russisch: &lt;deCurseMe&gt; @ Dethecus (EU)</a></li>
+			<li><a class="wdt-hover" href="http://kr.battle.net/wow/ko/guild/알렉스트라자/나는 쓰랄과 제이나의 불륜현장을 목격했다/">Hanguk: &lt;나는 쓰랄과 제이나의 불륜현장을 목격했다&gt; @ 알렉스트라자 (KR)</a></li>
+			<li><a class="wdt-hover" href="http://tw.battle.net/wow/zh/guild/冬握湖/人在冏途身不由己/">Traditionells Chinesisch: &lt;人在冏途身不由己&gt; @ 冬握湖 (TW)</a> (API returns 404, maybe not fully live here)</li>
+			<li><a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/guild/熔火之心/凌烟阁/">Vereinfachtes Chinesisch: &lt;凌烟阁&gt; @ 熔火之心 (CN)</a></li>
 		</ul>
 	</p>
 	
