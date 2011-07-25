@@ -138,7 +138,6 @@
 	font-family: Arial, Verdana, sans-serif;
 	font-size: 10px;
 	line-height: 14px;
-	overflow: hidden;
 	color: #EFC9A0;
 }
 
@@ -192,6 +191,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 	position: relative;
 }
 
+.tooltip-character .name,
 .tooltip-character .itemlevel,
 .tooltip-character .levelraceclass,
 .tooltip-character .guild,
@@ -226,7 +226,8 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 .tooltip-character .name {
 	font-size: 13px;
 	font-weight: bold;
-	padding-bottom: 6px;
+	border-bottom: 1px solid #333;
+	margin-bottom: 3px;
 }
 
 .tooltip-character .itemlevel {

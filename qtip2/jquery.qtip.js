@@ -9,7 +9,7 @@
 *   http://en.wikipedia.org/wiki/MIT_License
 *   http://en.wikipedia.org/wiki/GNU_General_Public_License
 *
-* Date: Wed Jul 13 19:46:07 2011 +0100
+* Date: Mon Jul 25 01:10:49 2011 +0100
 */
 
 /*jslint browser: true, onevar: true, undef: true, nomen: true, bitwise: true, regexp: true, newcap: true, immed: true, strict: true */
@@ -315,14 +315,14 @@ function QTip(target, options, id, attr)
 
 		// Use function to parse content
 		if($.isFunction(content)) {
-			content = content.call(target, cache.event, self) || '';
+			content = content.call(target, cache.event, self);
+
+			// Remove title if callback returns false
+			if(content === FALSE) { removeTitle(); }
 		}
 
-		// Remove title if content is FALSE
-		if(elem && content === FALSE) { removeTitle(); }
-
 		// Append new content if its a DOM array and show it if hidden
-		else if(content.jquery && content.length > 0) {
+		if(content.jquery && content.length > 0) {
 			elem.empty().append(content.css({ display: 'block' }));
 		}
 
@@ -998,6 +998,11 @@ function QTip(target, options, id, attr)
 						left: '',
 						top: ''
 					});
+
+					// Autofocus elements if enabled
+					if('string' === typeof opts.autofocus) {
+						$(opts.autofocus, tooltip).focus();
+					}
 				}
 				else {
 					// Prevent antialias from disappearing in IE by removing filter
@@ -1227,8 +1232,8 @@ function QTip(target, options, id, attr)
 				// Use cached event if one isn't available for positioning
 				event = event && (event.type === 'resize' || event.type === 'scroll') ? cache.event :
 					event && event.pageX && event.type === 'mousemove' ? event :
-					MOUSE && (adjust.mouse || !event || !event.pageX) ? { pageX: MOUSE.pageX, pageY: MOUSE.pageY } :
-					!adjust.mouse && cache.origin ? cache.origin :
+					MOUSE && MOUSE.pageX && (adjust.mouse || !event || !event.pageX) ? { pageX: MOUSE.pageX, pageY: MOUSE.pageY } :
+					!adjust.mouse && cache.origin && cache.origin.pageX ? cache.origin :
 					event;
 
 				// Use event coordinates for position
@@ -1462,7 +1467,7 @@ function QTip(target, options, id, attr)
 // Initialization method
 function init(id, opts)
 {
-	var obj, posOptions, attr, config,
+	var obj, posOptions, attr, config, title,
 
 	// Setup element references
 	elem = $(this),
@@ -1530,9 +1535,8 @@ function init(id, opts)
 	}
 
 	// Remove title attribute and store it if present
-	if($.attr(this, 'title')) {
-		$.attr(this, oldtitle, $.attr(this, 'title'));
-		this.removeAttribute('title');
+	if(title = $.attr(this, 'title')) {
+		$(this).removeAttr('title').attr(oldtitle, title);
 	}
 
 	// Initialize the tooltip and add API reference
@@ -1857,7 +1861,8 @@ QTIP.defaults = {
 		effect: TRUE,
 		delay: 90,
 		solo: FALSE,
-		ready: FALSE
+		ready: FALSE,
+		autofocus: FALSE
 	},
 	hide: {
 		target: FALSE,
@@ -2819,7 +2824,7 @@ function Modal(api)
 
 			// Adjust modal z-index on tooltip focus
 			.bind('tooltipfocus'+globalNamespace, function(event, api, zIndex) {
-				overlay[0].style.zIndex = zIndex;
+				overlay[0].style.zIndex = zIndex - 1;
 			})
 
 			// Focus any other visible modals when this one blurs
@@ -2973,8 +2978,7 @@ function Modal(api)
 	self.init();
 }
 
-PLUGINS.modal = function(api)
-{
+PLUGINS.modal = function(api) {
 	var self = api.plugins.modal;
 
 	return 'object' === typeof self ? self : (api.plugins.modal = new Modal(api));

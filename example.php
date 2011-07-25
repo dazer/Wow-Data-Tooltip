@@ -92,6 +92,9 @@
 		}
 		
 		#installation pre {
+			padding: 6px 10px;
+			border-radius: 4px;
+			background-color: #036;
 			color: #0bf;
 		}
 		
@@ -120,7 +123,7 @@
 	</div>
 	
 	<h1>WowDataTooltip - Demo Page</h1>
-	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a> | <a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Download! (alpha-r25)</a></p>	
+	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a> | <a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Download! (alpha-r30)</a></p>	
 	
 	<h2>Marketing Gesabbel a.k.a. "Warum ist dieses Tooltip Addon so toll?!":</h2>
 	<p>
@@ -138,11 +141,10 @@
 	<h2>Wie installiere ich dieses Ding?</h2>
 	<p>
 		<ol id="installation">
-			<li><a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Herunterladen des Dateien</a></li>
+			<li><a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Herunterladen der Dateien</a></li>
 			<li>Entpacken und auf den eigenen Webserver hochladen</li>
 			<li>Anpassen der Pfade:
-				<pre>
-'resources': {
+				<pre>'resources': {
 	'jquery'         : 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
 	'qtip2.plugin'   : '{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.js',
 	'qtip2.css'      : '{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.css',
@@ -150,9 +152,7 @@
 },</pre>
 			</li>
 			<li>Einbinden in die entsprechenden Webseiten:
-				<pre>
-&lt;script type="text/javascript" src="{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.js"&gt;&lt;/script&gt;
-				</pre>
+				<pre>&lt;script type="text/javascript" src="{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>
 			</li>
 		</ol>
 	</p>

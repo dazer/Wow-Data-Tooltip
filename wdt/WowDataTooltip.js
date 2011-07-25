@@ -97,7 +97,7 @@ var WowDataTooltip = {
 			hide: 'mouseout',
 			style: {
 				width: '300px',
-				classes: 'wdt-tooltip ui-tooltip-wdt-dark'
+				classes: 'wdt-tooltip ui-tooltip-wdt-dark ui-tooltip-cluetip'
 			}
 		});
 	},
