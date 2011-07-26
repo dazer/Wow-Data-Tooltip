@@ -122,7 +122,7 @@
 		<g:plusone href="http://dev.dsitc.de/demos/wow-data-tooltip/"></g:plusone>
 	</div>
 	
-	<h1>WowDataTooltip - Demo Page</h1>
+	<h1>WowDataTooltip - Demo Seite</h1>
 	<p><a href="http://code.google.com/p/wow-data-tooltip/">Projekt Homepage auf Googlecode</a> | <a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Download! (alpha-r30)</a></p>	
 	
 	<h2>Marketing Gesabbel a.k.a. "Warum ist dieses Tooltip Addon so toll?!":</h2>
@@ -143,7 +143,7 @@
 		<ol id="installation">
 			<li><a href="http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-alpha-r30.zip" title="Dateidownload auf googlecode">Herunterladen der Dateien</a></li>
 			<li>Entpacken und auf den eigenen Webserver hochladen</li>
-			<li>Anpassen der Pfade:
+			<li>Anpassen der Pfade in <code>wdt/WowDataTooltip.js</code>:
 				<pre>'resources': {
 	'jquery'         : 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
 	'qtip2.plugin'   : '{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.js',
@@ -189,7 +189,7 @@
 	</p>
 	
 	<h3>Dynamisch! Sogar sehr...</h3>
-	<p>Ich verwende die delegate() Methode von jQuery um mich auf den &lt;body&gt; zu hängen und alle Hyperlink im Dokument zu überprüfen. Dies hat zu Folge, dass auch dynamisch generierte Inhalte direkt mit Tooltips versehen werden.</p>
+	<p>Ich verwende die <code>delegate()</code> Methode von jQuery um mich auf den &lt;body&gt; zu hängen und alle Hyperlink im Dokument zu überprüfen. Dies hat zu Folge, dass auch dynamisch generierte Inhalte direkt mit Tooltips versehen werden.</p>
 	<p>Probiert es doch einfach selbst aus:</p>
 	<div id="form">
 		<p><label for="wdt-dynamic-character-profile-input" class="comment">Füge hier die URL eines Battle.net Charakterprofils ein und drücke "Generieren!"</label></p>
