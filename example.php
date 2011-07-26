@@ -17,8 +17,11 @@ if(isset($_GET['lang'])) {
 	}
 }
 
-$repository = array(
+$repository_lang = array(
 	'en' => array(
+		'lang label'              => 'English',
+		'lang switch title'       => 'Display this page in english',
+		'lang select title'       => 'Choose a language:',
 		'title'                   => 'WowDataTooltip - Demo Page',
 		'project home'            => 'Project home on Googlecode',
 		'download title'          => 'Download file from googlecode',
@@ -96,6 +99,9 @@ $repository = array(
 		'issues 4'                => 'Because the included jQuery plugin qTip2 itself is quite new and not yet "stable" there may be some smaller issues with it. These should clean up as the project matures... *g*',
 	),
 	'de' => array(
+		'lang label'              => 'Deutsch',
+		'lang switch title'       => 'Diese Seite auf Deutsch anzeigen',
+		'lang select title'       => 'Wählen Sie eine Sprache:',
 		'title'                   => 'WowDataTooltip - Demo Seite',
 		'project home'            => 'Projekt Homepage auf Googlecode',
 		'download title'          => 'Dateidownload auf googlecode',
@@ -175,9 +181,9 @@ $repository = array(
 );
 
 function te($sid) {
-	global $repository, $lang;
-	if(isset($repository[$lang][$sid])) {
-		echo $repository[$lang][$sid];
+	global $repository_lang, $lang;
+	if(isset($repository_lang[$lang][$sid])) {
+		echo $repository_lang[$lang][$sid];
 	} else {
 		echo '##### TRANSLATION MISSING : '.$lang.' &gt; '.$sid.' #####';
 	}
@@ -203,11 +209,27 @@ function te($sid) {
 			font-family: Arial, Verdana, sans-serif;
 			font-size: 14px;
 			line-height: 17px;
-			margin: 1em;
+			margin: 15px;
+			margin-top: 45px;
 		}
 		
 		a {
 			color: #BBBBEE;
+		}
+		
+		#lang-select {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 18px;
+			color: #0d9;
+			background-color: #064;
+			padding: 6px;
+		}
+		
+		#lang-select a {
+			color: #0fb;			
 		}
 		
 		#reasons-pro {
@@ -303,6 +325,17 @@ function te($sid) {
 	</style>
 </head>
 <body>
+	
+	<div id="lang-select">
+		<?php te('lang select title'); ?>
+		<?php
+			$c = array();
+			foreach($repository_lang as $l => $strings) {
+				$c[$l] = '<a href="'.$_SERVER['SCRIPT_NAME'].'?lang='.$l.'" title="'.$strings['lang switch title'].'">'.$strings['lang label'].'</a>';
+			}
+			echo(implode(' | ', $c));
+		?>
+	</div>
 	
 	<div id="gplus1">
 		<g:plusone href="http://dev.dsitc.de/demos/wow-data-tooltip/"></g:plusone>
@@ -438,7 +471,7 @@ function te($sid) {
 	</script>
 	<script type="text/javascript" src="wdt/WowDataTooltip.js"></script>
 	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
-	  {lang: 'de'}
+	  {lang: '<?php echo($lang); ?>'}
 	</script>
 
 </body>
