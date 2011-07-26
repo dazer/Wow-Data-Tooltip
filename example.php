@@ -3,8 +3,8 @@
 $data = array();
 $data['project']['homepage']  = 'http://code.google.com/p/wow-data-tooltip/';
 $data['download']['status']   = 'alpha';
-$data['download']['revision'] = '30';
-$data['download']['link']     = 'http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-'.$data['download']['status'].'-'.$data['download']['revision'].'.zip';
+$data['download']['revision'] = '38';
+$data['download']['link']     = 'http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-'.$data['download']['status'].'-r'.$data['download']['revision'].'.zip';
 
 $lang = 'en';
 
