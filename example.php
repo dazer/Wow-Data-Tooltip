@@ -44,7 +44,14 @@ $repository_lang = array(
 	\'qtip2.css\'      : \'{{Path to the contained /qtip2 directory}}/jquery.qtip.min.css\',
 	\'wdt.css\'        : \'{{Path to the contained /wdt directory}}/WowDataTooltip.css\'
 },</pre>',
-		'installation code 2'     => '<pre>&lt;script type="text/javascript" src="{{Path to the contained /wdt directory}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
+		'installation code 2'     => '<pre>&lt;script type="text/javascript"&gt;
+	window.___wdtcfg = {
+		test: \'blaaaaa\',
+		foo: \'bar\',
+		baz: 123444
+	}	
+&lt;/script&gt;
+&lt;script type="text/javascript" src="{{Path to the contained /wdt directory}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Character tooltips <span class="comment">( Description &amp; examples )</span>',
 		'char tt hint'            => 'Try it! Hold down [Shift] while a tooltip is displayed! :)',
 		'char tt what header'     => 'Which elements will be granted a tooltip?',
@@ -124,7 +131,14 @@ $repository_lang = array(
 	\'qtip2.css\'      : \'{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.css\',
 	\'wdt.css\'        : \'{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.css\'
 },</pre>',
-		'installation code 2'     => '<pre>&lt;script type="text/javascript" src="{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
+		'installation code 2'     => '<pre>&lt;script type="text/javascript"&gt;
+	window.___wdtcfg = {
+		test: \'blaaaaa\',
+		foo: \'bar\',
+		baz: 123444
+	}	
+&lt;/script&gt;
+&lt;script type="text/javascript" src="{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Charakter Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span>',
 		'char tt hint'            => 'Probiert es aus: Haltet [Shift] gedrückt während ein Tooltip angezeigt wird! :)',
 		'char tt what header'     => 'Was wird mit einem Tooltip versehen?',
@@ -258,7 +272,7 @@ function te($sid) {
 			margin-top: 2em;
 			font-size: 130%;
 		}
-		
+				
 		h2.hint {
 			padding: 10px 15px;
 			font-style: italic;
@@ -468,6 +482,15 @@ function te($sid) {
 			
 		});
 		
+	</script>
+	<script type="text/javascript">
+		window.___WowDataTooltip_Config = {
+			paths: {
+				jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+				qtip2 : 'qtip2/',
+				wdt   : 'wdt/'
+			}
+		};
 	</script>
 	<script type="text/javascript" src="wdt/WowDataTooltip.js"></script>
 	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">

@@ -27,7 +27,15 @@ if(!window.yepnope) {
 var WowDataTooltip = {
 	
 	'settings': {
-		'multiMode': true
+		'default': {
+			'paths': {
+				'jquery': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+				'qtip2' : 'qtip2/',
+				'wdt'   : 'wdt/'
+			}
+			'multiMode': true
+		},
+		'user': window.___WowDataTooltip_Config || {}
 	},
 	
 	'resources': {
@@ -35,6 +43,10 @@ var WowDataTooltip = {
 		'qtip2.plugin'   : 'qtip2/jquery.qtip.min.js',
 		'qtip2.css'      : 'qtip2/jquery.qtip.min.css',
 		'wdt.css'        : 'wdt/WowDataTooltip.css'
+	},
+	
+	init: function() {
+		
 	},
 	
 	addToActiveTooltips: function(id) {
@@ -1097,6 +1109,8 @@ var WowDataTooltip = {
 	'activeTooltip': []
 	
 };
+
+WowDataTooltip.init();
 
 yepnope([{
 	test: window.jQuery,
