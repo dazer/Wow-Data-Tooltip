@@ -26,27 +26,26 @@ if(!window.yepnope) {
 
 var WowDataTooltip = {
 	
-	'settings': {
-		'default': {
-			'paths': {
-				'jquery': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-				'qtip2' : 'qtip2/',
-				'wdt'   : 'wdt/'
-			}
-			'multiMode': true
+	settings: {
+		merged: {},
+		default: {
+			files: {
+				js : {
+					'jquery': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+					'qtip2' : 'qtip2/jquery.qtip.min.js'
+				},
+				css: {
+					'qtip2': 'qtip2/jquery.qtip.min.css',
+					'wdt'  : 'wdt/WowDataTooltip.css'
+				}
+			},
+			multiMode: true
 		},
-		'user': window.___WowDataTooltip_Config || {}
+		user: window.___WowDataTooltip_Config || {}
 	},
-	
-	'resources': {
-		'jquery'         : 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-		'qtip2.plugin'   : 'qtip2/jquery.qtip.min.js',
-		'qtip2.css'      : 'qtip2/jquery.qtip.min.css',
-		'wdt.css'        : 'wdt/WowDataTooltip.css'
-	},
-	
-	init: function() {
 		
+	init: function() {
+		this.settings.merged = jQuery.extend(true, {}, this.settings.default, this.settings.user);
 	},
 	
 	addToActiveTooltips: function(id) {
@@ -133,6 +132,31 @@ var WowDataTooltip = {
 		return WowDataTooltip['templates'][template][type];
 	},
 	
+	getSetting: function(route) {
+		var temp   = this.settings.merged;
+		var result = undefined;
+		
+		if('string' === typeof(route)) {
+			route = [route]; 
+		}
+		
+		for (var i = 0; i < route.length; i++) {
+			if('undefined' === typeof(temp[route[i]])) {
+				result = '';
+				break;
+			} else {
+				if('object' === typeof(temp[route[i]])) {
+					temp = temp[route[i]];
+				} else {
+					result = temp[route[i]];
+					break;
+				}
+			}
+		}
+		
+		return result;
+	},
+	
 	localize: function(repository, keys, replacements) {
 		var temp   = repository;
 		var result = '';
@@ -170,7 +194,6 @@ var WowDataTooltip = {
 		var loc       = this.getLocaleData(locale);
 		
 		var test = this.getRaceData(host, locale);
-		console.log(test);
 		
 		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
 		var racename  = this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])]);
@@ -226,8 +249,6 @@ var WowDataTooltip = {
 				
 		var apicall = this.mustache.process(this['patterns']['data']['races'], tvars);
 		var data    = this.getFromCache('data', 'character-race', apicall);
-		
-		console.log('getRaceData - apicall = '+apicall);
 		
 		if(data != false) {
 			return data;
@@ -1112,16 +1133,18 @@ var WowDataTooltip = {
 
 WowDataTooltip.init();
 
+console.log(WowDataTooltip.settings);
+
 yepnope([{
 	test: window.jQuery,
-	nope: WowDataTooltip['resources']['jquery'],
+	nope: WowDataTooltip.getSetting(['files', 'js', 'jquery']),
 	complete: function () {
 		yepnope({
 			test: jQuery.qtip,
 			nope: [
-				WowDataTooltip['resources']['qtip2.plugin'],
-				WowDataTooltip['resources']['qtip2.css'],
-				WowDataTooltip['resources']['wdt.css']
+				WowDataTooltip.getSetting(['files', 'js',  'qtip2']),
+				WowDataTooltip.getSetting(['files', 'css', 'qtip2']),
+				WowDataTooltip.getSetting(['files', 'css', 'wdt'])
 			],	
 			complete: function () {
 				jQuery(function () {

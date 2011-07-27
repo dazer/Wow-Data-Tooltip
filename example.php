@@ -36,20 +36,20 @@ $repository_lang = array(
 		'installation header'     => 'How do I install this thing?',
 		'installation step 1'     => '<a href="'.$data['download']['link'].'" title="Filedownload on Googlecode">Download the files</a>',
 		'installation step 2'     => 'Unzip and upload to your webserver',
-		'installation step 3'     => 'Update the paths inside <code>wdt/WowDataTooltip.js</code>:',
-		'installation step 4'     => 'Include <code>wdt/WowDataTooltip.js</code> on your pages:',
-		'installation code 1'     => '<pre>\'resources\': {
-	\'jquery\'         : \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',
-	\'qtip2.plugin\'   : \'{{Path to the contained /qtip2 directory}}/jquery.qtip.min.js\',
-	\'qtip2.css\'      : \'{{Path to the contained /qtip2 directory}}/jquery.qtip.min.css\',
-	\'wdt.css\'        : \'{{Path to the contained /wdt directory}}/WowDataTooltip.css\'
-},</pre>',
-		'installation code 2'     => '<pre>&lt;script type="text/javascript"&gt;
-	window.___wdtcfg = {
-		test: \'blaaaaa\',
-		foo: \'bar\',
-		baz: 123444
-	}	
+		'installation step 3'     => 'Populate config to match your server\'s path and include <code>wdt/WowDataTooltip.js</code> on your pages:',
+		'installation code 1'     => '<pre>&lt;script type="text/javascript"&gt;
+	window.___WowDataTooltip_Config = {
+		files: {
+			js : {
+				jquery: \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',
+				qtip2 : \'{{Absolute or relative path pointing to the server\'s script directory}}qtip2/jquery.qtip.min.js\'
+			},
+			css: {
+				qtip2: \'{{Absolute or relative path pointing to the server\'s script directory}}qtip2/jquery.qtip.min.css\',
+				wdt  : \'{{Absolute or relative path pointing to the server\'s script directory}}wdt/WowDataTooltip.css\'
+			}
+		}
+	};
 &lt;/script&gt;
 &lt;script type="text/javascript" src="{{Path to the contained /wdt directory}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Character tooltips <span class="comment">( Description &amp; examples )</span>',
@@ -123,20 +123,20 @@ $repository_lang = array(
 		'installation header'     => 'Wie installiere ich dieses Ding?',
 		'installation step 1'     => '<a href="'.$data['download']['link'].'" title="Dateidownload auf googlecode">Herunterladen der Dateien</a>',
 		'installation step 2'     => 'Entpacken und auf den eigenen Webserver hochladen',
-		'installation step 3'     => 'Anpassen der Pfade in <code>wdt/WowDataTooltip.js</code>:',
-		'installation step 4'     => 'Einbinden von <code>wdt/WowDataTooltip.js</code> in die entsprechenden Webseiten:',
-		'installation code 1'     => '<pre>\'resources\': {
-	\'jquery\'         : \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',
-	\'qtip2.plugin\'   : \'{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.js\',
-	\'qtip2.css\'      : \'{{Pfad zum enthaltenen /qtip2 Verzeichnisses des Plugins}}/jquery.qtip.min.css\',
-	\'wdt.css\'        : \'{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.css\'
-},</pre>',
-		'installation code 2'     => '<pre>&lt;script type="text/javascript"&gt;
-	window.___wdtcfg = {
-		test: \'blaaaaa\',
-		foo: \'bar\',
-		baz: 123444
-	}	
+		'installation step 3'     => 'Konfiguration an den eigenen Serverpfad anpassen und <code>wdt/WowDataTooltip.js</code> in die entsprechenden Webseiten einbinden:',
+		'installation code 1'     => '<pre>&lt;script type="text/javascript"&gt;
+	window.___WowDataTooltip_Config = {
+		files: {
+			js : {
+				jquery: \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',
+				qtip2 : \'{{Absoluter oder relativer Pfad zum Script}}qtip2/jquery.qtip.min.js\'
+			},
+			css: {
+				qtip2: \'{{Absoluter oder relativer Pfad zum Script}}qtip2/jquery.qtip.min.css\',
+				wdt  : \'{{Absoluter oder relativer Pfad zum Script}}wdt/WowDataTooltip.css\'
+			}
+		}
+	};
 &lt;/script&gt;
 &lt;script type="text/javascript" src="{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Charakter Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span>',
@@ -377,7 +377,6 @@ function te($sid) {
 			<li><?php te('installation step 1'); ?></li>
 			<li><?php te('installation step 2'); ?></li>
 			<li><?php te('installation step 3'); ?><?php te('installation code 1'); ?></li>
-			<li><?php te('installation step 4'); ?><?php te('installation code 2'); ?></li>
 		</ol>
 	</p>
 	
@@ -485,10 +484,15 @@ function te($sid) {
 	</script>
 	<script type="text/javascript">
 		window.___WowDataTooltip_Config = {
-			paths: {
-				jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-				qtip2 : 'qtip2/',
-				wdt   : 'wdt/'
+			files: {
+				js : {
+					jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+					qtip2 : 'qtip2/jquery.qtip.min.js'
+				},
+				css: {
+					qtip2: 'qtip2/jquery.qtip.min.css',
+					wdt  : 'wdt/WowDataTooltip.css'
+				}
 			}
 		};
 	</script>
