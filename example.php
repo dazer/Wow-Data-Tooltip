@@ -485,14 +485,13 @@ function te($sid) {
 	<script type="text/javascript">
 		window.___WowDataTooltip_Config = {
 			files: {
-				js : {
-					jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-					qtip2 : 'qtip2/jquery.qtip.min.js'
-				},
-				css: {
-					qtip2: 'qtip2/jquery.qtip.min.css',
-					wdt  : 'wdt/WowDataTooltip.css'
-				}
+				'jquery.js': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+				'qtip2.js' : 'qtip2/jquery.qtip.min.js',
+				'qtip2.css': 'qtip2/jquery.qtip.min.css',
+				'wdt.css'  : 'wdt/WowDataTooltip.css'
+			},
+			extendedMode: {
+				'active': true,
 			}
 		};
 	</script>

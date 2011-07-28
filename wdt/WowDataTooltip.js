@@ -26,22 +26,22 @@ if(!window.yepnope) {
 
 var WowDataTooltip = {
 	
-	settings: {
-		merged: {},
-		default: {
-			files: {
-				js : {
-					'jquery': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-					'qtip2' : 'qtip2/jquery.qtip.min.js'
-				},
-				css: {
-					'qtip2': 'qtip2/jquery.qtip.min.css',
-					'wdt'  : 'wdt/WowDataTooltip.css'
-				}
+	'settings': {
+		'merged' : {},
+		'user'   : window.___WowDataTooltip_Config || {},
+		'default': {
+			'files': {
+				'jquery.js': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+				'qtip2.js' : 'qtip2/jquery.qtip.min.js',
+				'qtip2.css': 'qtip2/jquery.qtip.min.css',
+				'wdt.css'  : 'wdt/WowDataTooltip.css'
 			},
-			multiMode: true
-		},
-		user: window.___WowDataTooltip_Config || {}
+			'extendedMode': {
+				'active'       : true,
+				'keyCode'      : 16,
+				'keyCode.label': 'SHIFT'
+			}
+		}
 	},
 		
 	init: function() {
@@ -50,43 +50,43 @@ var WowDataTooltip = {
 	
 	addToActiveTooltips: function(id) {
 		var found = false;
-		for (var i = 0; i < WowDataTooltip.activeTooltip.length; i++) {
-			if(WowDataTooltip.activeTooltip[i] === id) {
+		for (var i = 0; i < WowDataTooltip.activeTooltips.length; i++) {
+			if(WowDataTooltip.activeTooltips[i] === id) {
 				found = true;
 			}
 		}
 		if(found === false) {
-			WowDataTooltip.activeTooltip.push(id);
+			WowDataTooltip.activeTooltips.push(id);
 		}
 	},
 	
 	removeFromActiveTooltips: function(id) {
 		var found = false;
-		for (var i = 0; i < WowDataTooltip.activeTooltip.length; i++) {
-			if(WowDataTooltip.activeTooltip[i] === id) {
+		for (var i = 0; i < WowDataTooltip.activeTooltips.length; i++) {
+			if(WowDataTooltip.activeTooltips[i] === id) {
 				found = i;
 			}
 		}
 		if(found !== false) {
-			WowDataTooltip.activeTooltip.splice(i, 1);
+			WowDataTooltip.activeTooltips.splice(i, 1);
 		}
 	},
 	
 	repositionActiveTooltips: function() {
 		// Find all active wdt tooltips and run .reposition on them
-		for (var i = 0; i < WowDataTooltip.activeTooltip.length; i++) {
-			jQuery('#ui-tooltip-'+WowDataTooltip.activeTooltip[i]).qtip('reposition');
+		for (var i = 0; i < WowDataTooltip.activeTooltips.length; i++) {
+			jQuery('#ui-tooltip-'+WowDataTooltip.activeTooltips[i]).qtip('reposition');
 		}
 	},
 	
 	addTip: function(element, tipcontent) {
 		jQuery(element).qtip({
-			overwrite: false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
-			show: {
-				ready: true // Needed to make it show on first mouseover event
+			'overwrite': false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
+			'show': {
+				'ready': true // Needed to make it show on first mouseover event
 			},
-			events: {
-				render: function(event, api) {
+			'events': {
+				'render': function(event, api) {
 					var tooltip = api.elements.tooltip;
 					tooltip.bind('tooltipshow', function(event, api) {
 						WowDataTooltip.addToActiveTooltips(api.id);
@@ -96,19 +96,19 @@ var WowDataTooltip = {
 					});
 				},
 			},
-			content: {
-				text: tipcontent
+			'content': {
+				'text': tipcontent
 			},
-			position: {
-				my: 'bottom middle',
-				at: 'top middle',
-				viewport: jQuery(window),
-				effect: false
+			'position': {
+				'my': 'bottom middle',
+				'at': 'top middle',
+				'viewport': jQuery(window),
+				'effect': false
 			},
-			hide: 'mouseout',
-			style: {
-				width: '300px',
-				classes: 'wdt-tooltip ui-tooltip-wdt-dark ui-tooltip-cluetip'
+			'hide': 'mouseout',
+			'style': {
+				'width': '300px',
+				'classes': 'wdt-tooltip ui-tooltip-wdt-dark ui-tooltip-cluetip'
 			}
 		});
 	},
@@ -189,6 +189,13 @@ var WowDataTooltip = {
 		return result;
 	},
 	
+	getMetaTVars: function() {
+		return {
+			'extendedActive'      : this.getSetting(['extendedMode', 'active']),
+			'extendedKeyCodeLabel': this.getSetting(['extendedMode', 'keyCode.label'])
+		};
+	},
+	
 	buildCharacterTooltip: function(host, locale, data) {
 		var content   = '';
 		var loc       = this.getLocaleData(locale);
@@ -200,7 +207,8 @@ var WowDataTooltip = {
 		var region    = this.getRegionFromHost(host);
 		var mediahost = this.getMediahostFromRegion(region);
 		
-		var tvars = data;
+		var tvars = jQuery.extend(true, {}, this.getMetaTVars(), data);
+		
 		tvars['path.host']       = 'http://' + host;
 		tvars['path.host.media'] = 'http://' + mediahost;
 		tvars['region']          = region;
@@ -211,9 +219,7 @@ var WowDataTooltip = {
 			'char-sri': this.localize(loc, ['templates', 'char-sri'])
 		};
 		
-		var content = this.mustache.process(this.getTemplate('default', 'character'), tvars, partials);
-		
-		return content;
+		return this.mustache.process(this.getTemplate('default', 'character'), tvars, partials);
 	},
 	
 	buildGuildTooltip: function(host, locale, data) {
@@ -224,7 +230,8 @@ var WowDataTooltip = {
 		var region    = this.getRegionFromHost(host);
 		var mediahost = this.getMediahostFromRegion(region);
 		
-		var tvars = data;
+		var tvars = jQuery.extend(true, {}, this.getMetaTVars(), data);
+		
 		tvars['path.host']       = 'http://' + host;
 		tvars['path.host.media'] = 'http://' + mediahost;
 		tvars['region']          = region;
@@ -236,9 +243,7 @@ var WowDataTooltip = {
 			'guild-members': this.localize(loc, ['templates', 'guild-members'])
 		};
 		
-		var content = this.mustache.process(this.getTemplate('default', 'guild'), tvars, partials);
-		
-		return content;
+		return this.mustache.process(this.getTemplate('default', 'guild'), tvars, partials);
 	},
 	
 	getRaceData: function(host, locale) {
@@ -683,33 +688,37 @@ var WowDataTooltip = {
 							'</div>' +
 						'{{/guild}}' +
 						'<div class="realm">{{realm}}</div>' +
-						'<div class="achievementpoints"><span class="achpoints">{{achievementPoints}}</span></div>' +
-						'<div class="info-meta last">Hold [Shift] to switch modes!</div>' +
+						'<div class="achievementpoints{{^extendedActive}} last{{/extendedActive}}"><span class="achpoints">{{achievementPoints}}</span></div>' +
+				    	'{{#extendedActive}}' +
+							'<div class="info-meta last">Hold [{{extendedKeyCodeLabel}}] to switch modes!</div>' +
+				    	'{{/extendedActive}}' +
 			    	'</div>' +
 					 /* --- END simple mode ---------------------------------- */
 					 /* --- START extended mode ------------------------------ */
-			    	'<div class="data wdt-show-only-extended">' +
-			    		'<div class="name cclass-{{class}}">{{name}}</div>' +
-			    		'<div class="level class race">{{lrc}}</div>' +
-						'{{#items}}' +
-							'<div class="itemlevel">Avg. iLevel: {{averageItemLevelEquipped}} / {{averageItemLevel}}</div>' +
-						'{{/items}}' +
-						'{{#professions}}' +
-							'<div class="professions wdt-show-only-extended">' +
-								'{{#primary}}{{#rank}}' +
-									'<div class="profession-primary">' +
-										'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
-									'</div>' +
-								'{{/rank}}{{/primary}}' +
-								'{{#secondary}}{{#rank}}' +
-									'<div class="profession-secondary">' +
-										'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
-									'</div>' +
-								'{{/rank}}{{/secondary}}' +
-							'</div>' +
-						'{{/professions}}' +
-						'<div class="info-meta last">Release [Shift] to switch modes!</div>' +
-			    	'</div>' +
+			    	'{{#extendedActive}}' +
+						'<div class="data wdt-show-only-extended">' +
+				    		'<div class="name cclass-{{class}}">{{name}}</div>' +
+				    		'<div class="level class race">{{lrc}}</div>' +
+							'{{#items}}' +
+								'<div class="itemlevel">Avg. iLevel: {{averageItemLevelEquipped}} / {{averageItemLevel}}</div>' +
+							'{{/items}}' +
+							'{{#professions}}' +
+								'<div class="professions wdt-show-only-extended">' +
+									'{{#primary}}{{#rank}}' +
+										'<div class="profession-primary">' +
+											'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
+										'</div>' +
+									'{{/rank}}{{/primary}}' +
+									'{{#secondary}}{{#rank}}' +
+										'<div class="profession-secondary">' +
+											'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
+										'</div>' +
+									'{{/rank}}{{/secondary}}' +
+								'</div>' +
+							'{{/professions}}' +
+							'<div class="info-meta last">Release [{{extendedKeyCodeLabel}}] to switch modes!</div>' +
+				    	'</div>' +
+				   	'{{/extendedActive}}' +
 					 /* --- END extended mode -------------------------------- */
 			    '</div>'
 			),
@@ -1127,51 +1136,52 @@ var WowDataTooltip = {
 		}
 	},
 	
-	'activeTooltip': []
+	'activeTooltips': []
 	
 };
 
 WowDataTooltip.init();
 
-console.log(WowDataTooltip.settings);
-
 yepnope([{
 	test: window.jQuery,
-	nope: WowDataTooltip.getSetting(['files', 'js', 'jquery']),
+	nope: WowDataTooltip.getSetting(['files', 'jquery.js']),
 	complete: function () {
 		yepnope({
 			test: jQuery.qtip,
 			nope: [
-				WowDataTooltip.getSetting(['files', 'js',  'qtip2']),
-				WowDataTooltip.getSetting(['files', 'css', 'qtip2']),
-				WowDataTooltip.getSetting(['files', 'css', 'wdt'])
+				WowDataTooltip.getSetting(['files', 'qtip2.js']),
+				WowDataTooltip.getSetting(['files', 'qtip2.css']),
+				WowDataTooltip.getSetting(['files', 'wdt.css'])
 			],	
 			complete: function () {
 				jQuery(function () {
 					
 					// --- Loading complete ------------------------------------
 					
-					jQuery(document).keydown(function(event) {
+					if(WowDataTooltip.getSetting(['extendedMode', 'active'])) {
 						
-						// SHIFT is pressed
-						if(event.keyCode == 16) {
-							// WowDataTooltip.extendedActive = true;
-							jQuery('body').addClass('wdt-show-extended');
-							WowDataTooltip.repositionActiveTooltips();
-						}
+						jQuery(document).keydown(function(event) {
+
+							// ExtendedMode Key is pressed
+							if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
+								jQuery('body').addClass('wdt-show-extended');
+								WowDataTooltip.repositionActiveTooltips();
+							}
+
+						});
+
+						jQuery(document).keyup(function(event) {
+
+							// ExtendedMode Key is released
+							if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
+								jQuery('body').removeClass('wdt-show-extended');
+								WowDataTooltip.repositionActiveTooltips();
+							}
+
+						});
 						
-					});
+					}
 					
-					jQuery(document).keyup(function(event) {
-						
-						// SHIFT is released
-						if(event.keyCode == 16) {
-							// WowDataTooltip.extendedActive = false;
-							jQuery('body').removeClass('wdt-show-extended');
-							WowDataTooltip.repositionActiveTooltips();
-						}
-						
-					});
 					
 					jQuery('body').delegate('a[href]', 'mouseover', function() {
 						
