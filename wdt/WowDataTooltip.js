@@ -26,7 +26,7 @@ if(!window.yepnope) {
 
 var WowDataTooltip = {
 	
-	'settings': {
+	'config': {
 		'merged' : {},
 		'user'   : window.___WowDataTooltip_Config || {},
 		'default': {
@@ -45,7 +45,7 @@ var WowDataTooltip = {
 	},
 		
 	init: function() {
-		this.settings.merged = jQuery.extend(true, {}, this.settings.default, this.settings.user);
+		this.config.merged = jQuery.extend(true, {}, this.config.default, this.config.user);
 	},
 	
 	addToActiveTooltips: function(id) {
@@ -133,7 +133,7 @@ var WowDataTooltip = {
 	},
 	
 	getSetting: function(route) {
-		var temp   = this.settings.merged;
+		var temp   = this.config.merged;
 		var result = undefined;
 		
 		if('string' === typeof(route)) {
