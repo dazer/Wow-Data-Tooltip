@@ -36,6 +36,7 @@ var WowDataTooltip = {
 				'qtip2.css': 'qtip2/jquery.qtip.min.css',
 				'wdt.css'  : 'wdt/WowDataTooltip.css'
 			},
+			'applyToBattleNetLinks': true,
 			'extendedMode': {
 				'active'       : true,
 				'keyCode'      : 16,
@@ -45,38 +46,273 @@ var WowDataTooltip = {
 	},
 		
 	init: function() {
+		// generate merged config
 		this.config.merged = jQuery.extend(true, {}, this.config.default, this.config.user);
+		// attach event handlers
+		this.attachEventHandlers();
+	},
+	
+	attachEventHandlers: function() {
+		yepnope([{
+			test: window.jQuery,
+			nope: WowDataTooltip.getSetting(['files', 'jquery.js']),
+			complete: function () {
+				yepnope({
+					test: jQuery.qtip,
+					nope: [
+						WowDataTooltip.getSetting(['files', 'qtip2.js']),
+						WowDataTooltip.getSetting(['files', 'qtip2.css']),
+						WowDataTooltip.getSetting(['files', 'wdt.css'])
+					],	
+					complete: function () {
+						jQuery(function () {
+							// --- Loading complete ------------------------------------
+							if(WowDataTooltip.getSetting(['extendedMode', 'active'])) {
+								jQuery(document).keydown(function(event) {
+									// ExtendedMode Key is pressed
+									if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
+										jQuery('body').addClass('wdt-show-extended');
+										WowDataTooltip.repositionActiveTooltips();
+									}
+								});
+								jQuery(document).keyup(function(event) {
+									// ExtendedMode Key is released
+									if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
+										jQuery('body').removeClass('wdt-show-extended');
+										WowDataTooltip.repositionActiveTooltips();
+									}
+								});
+							}
+							jQuery('[data-wowdatatooltip]').live('mouseover', function() {
+								WowDataTooltip.handleExplicitHover(this);
+							});
+							if(WowDataTooltip.getSetting(['applyToBattleNetLinks'])) {
+								jQuery('a[href]').live('mouseover', function() {
+									WowDataTooltip.handleHyperlinkHover(this);
+								});
+							}
+							// --- End of completion block -----------------------------
+						});
+					}
+				});
+			}
+		}]);
 	},
 	
 	addToActiveTooltips: function(id) {
 		var found = false;
-		for (var i = 0; i < WowDataTooltip.activeTooltips.length; i++) {
-			if(WowDataTooltip.activeTooltips[i] === id) {
+		for (var i = 0; i < this.activeTooltips.length; i++) {
+			if(this.activeTooltips[i] === id) {
 				found = true;
 			}
 		}
 		if(found === false) {
-			WowDataTooltip.activeTooltips.push(id);
+			this.activeTooltips.push(id);
 		}
 	},
 	
 	removeFromActiveTooltips: function(id) {
 		var found = false;
-		for (var i = 0; i < WowDataTooltip.activeTooltips.length; i++) {
-			if(WowDataTooltip.activeTooltips[i] === id) {
+		for (var i = 0; i < this.activeTooltips.length; i++) {
+			if(this.activeTooltips[i] === id) {
 				found = i;
 			}
 		}
 		if(found !== false) {
-			WowDataTooltip.activeTooltips.splice(i, 1);
+			this.activeTooltips.splice(i, 1);
 		}
 	},
 	
 	repositionActiveTooltips: function() {
 		// Find all active wdt tooltips and run .reposition on them
-		for (var i = 0; i < WowDataTooltip.activeTooltips.length; i++) {
-			jQuery('#ui-tooltip-'+WowDataTooltip.activeTooltips[i]).qtip('reposition');
+		for (var i = 0; i < this.activeTooltips.length; i++) {
+			jQuery('#ui-tooltip-'+this.activeTooltips[i]).qtip('reposition');
 		}
+	},
+	
+	handleExplicitHover: function(element) {
+		if('object' === typeof(jQuery(element).data('qtip'))) {
+			jQuery(element).qtip('show');
+		} else {
+			var content  = '';
+			var wdtroute = new String(jQuery(element).data('wowdatatooltip'));
+			var apicall  = null;
+			var params   = null;
+			/* ------------------------------------------------------------
+			 * - Realm Tooltip from [data-wowdatatooltip]
+			 * ------------------------------------------------------------ */
+			var result  = wdtroute.match(this['patterns']['explicit']['realm']);
+			if(result) {
+				params = {
+					'region'   : result[1],
+					'realm'    : result[2],
+					'lang'     : result[3],
+					'locale'   : this.getLocaleFromRegionLang(result[1], result[3]),
+					'host'     : this.getHostFromRegion(result[1])
+				};
+				apicall = this.mustache.process(this['patterns']['api']['realm'], params);
+				content = this.getFromCache('template', 'realm', apicall);
+				if(content != false) {
+					this.addTip(element, content);
+				} else {
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-realm'));
+					jQuery.ajax({
+						url: apicall,
+						crossDomain: true,
+						dataType: 'JSONP',
+						jsonp: 'jsonp',
+						that: this,
+						success: function(data) {
+							var content = this.that.buildRealmTooltip(params['host'], params.locale, data);
+							jQuery(element).qtip('api').set('content.text', content);
+							this.that.addToCache('template', 'realm', apicall, content);
+						}
+					});
+				}
+			}
+			/* ------------------------------------------------------------
+			 * - Character Tooltip from [data-wowdatatooltip]
+			 * ------------------------------------------------------------ */
+			var result  = wdtroute.match(this['patterns']['explicit']['character']);
+			if(result) {
+				params = {
+					'region'   : result[1],
+					'realm'    : result[2],
+					'character': result[3],
+					'lang'     : result[4],
+					'locale'   : this.getLocaleFromRegionLang(result[1], result[4]),
+					'host'     : this.getHostFromRegion(result[1])
+				};
+				apicall = this.mustache.process(this['patterns']['api']['character'], params);
+				content = this.getFromCache('template', 'character', apicall);
+				if(content != false) {
+					this.addTip(element, content);
+				} else {
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'));
+					jQuery.ajax({
+						url: apicall,
+						crossDomain: true,
+						dataType: 'JSONP',
+						jsonp: 'jsonp',
+						that: this,
+						success: function(data) {
+							var content = this.that.buildCharacterTooltip(params['host'], params.locale, data);
+							jQuery(element).qtip('api').set('content.text', content);
+							this.that.addToCache('template', 'character', apicall, content);
+						}
+					});
+				}
+			}
+			/* ------------------------------------------------------------
+			 * - Character Tooltip from [data-wowdatatooltip]
+			 * ------------------------------------------------------------ */
+			var result  = wdtroute.match(this['patterns']['explicit']['guild']);
+			if(result) {
+				params = {
+					'region': result[1],
+					'realm' : result[2],
+					'guild' : result[3],
+					'lang'  : result[4],
+					'locale': this.getLocaleFromRegionLang(result[1], result[4]),
+					'host'  : this.getHostFromRegion(result[1])
+				};
+				apicall = this.mustache.process(this['patterns']['api']['guild'], params);
+				content = this.getFromCache('template', 'guild', apicall);
+				if(content != false) {
+					this.addTip(element, content);
+				} else {
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'));
+					jQuery.ajax({
+						url: apicall,
+						crossDomain: true,
+						dataType: 'JSONP',
+						jsonp: 'jsonp',
+						that: this,
+						success: function(data) {
+							var content = this.that.buildGuildTooltip(params['host'], params.locale, data);
+							jQuery(element).qtip('api').set('content.text', content);
+							this.that.addToCache('template', 'guild', apicall, content);
+						}
+					});
+				}
+			}
+		}
+	},
+	
+	handleHyperlinkHover: function(element) {
+		// In a tooltip is already attached, don't re-render it, just show it
+		if('object' === typeof(jQuery(element).data('qtip'))) {
+			jQuery(element).qtip('show');
+		} else {
+			var content = '';
+			var href    = new String(jQuery(element).attr('href'));
+			var apicall = null;
+			var params  = null;
+			/* ------------------------------------------------------------
+			 * - Character Tooltip from a[href]
+			 * ------------------------------------------------------------ */
+			var result  = href.match(this['patterns']['battlenet']['character']);
+			if(result) {
+				params = {
+					'host'     : result[1],
+					'lang'     : result[2],
+					'realm'    : result[3],
+					'character': result[4],
+					'locale'   : this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
+				};
+				apicall = this.mustache.process(this['patterns']['api']['character'], params);
+				content = this.getFromCache('template', 'character', apicall);
+				if(content != false) {
+					this.addTip(element, content);
+				} else {
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'));
+					jQuery.ajax({
+						url: apicall,
+						crossDomain: true,
+						dataType: 'JSONP',
+						jsonp: 'jsonp',
+						that: this,
+						success: function(data) {
+							var content = this.that.buildCharacterTooltip(params['host'], params.locale, data);
+							jQuery(element).qtip('api').set('content.text', content);
+							this.that.addToCache('template', 'character', apicall, content);
+						}
+					});
+				}
+			}
+			/* ------------------------------------------------------------
+			 * - Guild Tooltip from a[href]
+			 * ------------------------------------------------------------ */
+			var result  = href.match(this['patterns']['battlenet']['guild']);
+			if(result) {
+				params = {
+					'host'  : result[1],
+					'lang'  : result[2],
+					'realm' : result[3],
+					'guild' : result[4],
+					'locale': this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
+				};
+				apicall = this.mustache.process(this['patterns']['api']['guild'], params);
+				content = this.getFromCache('template', 'guild', apicall);
+				if(content != false) {
+					this.addTip(element, content);
+				} else {
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'));
+					jQuery.ajax({
+						url: apicall,
+						crossDomain: true,
+						dataType: 'JSONP',
+						jsonp: 'jsonp',
+						that: this,
+						success: function(data) {
+							var content = this.that.buildGuildTooltip(params['host'], params.locale, data);
+							jQuery(element).qtip('api').set('content.text', content);
+							this.that.addToCache('template', 'guild', apicall, content);
+						}
+					});
+				}
+			}
+		}		
 	},
 	
 	addTip: function(element, tipcontent) {
@@ -114,22 +350,22 @@ var WowDataTooltip = {
 	},
 	
 	getLocaleData: function(locale) {
-		if('object' === typeof(WowDataTooltip['i18n'][locale])) {
-			var loc = WowDataTooltip['i18n'][locale];
+		if('object' === typeof(this['i18n'][locale])) {
+			var loc = this['i18n'][locale];
 		} else {
-			var loc = WowDataTooltip['i18n']['en_US'];
+			var loc = this['i18n']['en_US'];
 		}
 		return loc;
 	},
 	
 	getTemplate: function(template, type) {
-		if('undefined' == typeof(WowDataTooltip['templates'][template])) {
+		if('undefined' == typeof(this['templates'][template])) {
 			return 'Template "'+template+'" not found!';
 		}
-		if('undefined' == typeof(WowDataTooltip['templates'][template][type])) {
+		if('undefined' == typeof(this['templates'][template][type])) {
 			return 'Type "'+type+'" not found in template "'+template+'"!';
 		}
-		return WowDataTooltip['templates'][template][type];
+		return this['templates'][template][type];
 	},
 	
 	getSetting: function(route) {
@@ -196,11 +432,43 @@ var WowDataTooltip = {
 		};
 	},
 	
+	buildRealmTooltip: function(host, locale, data) {
+		var content   = '';
+		var loc       = this.getLocaleData(locale);
+		var region    = this.getRegionFromHost(host);
+		var mediahost = this.getMediahostFromRegion(region);
+        
+		if(data.realms.length == 1) {
+			var realm = data.realms[0];
+			var tvars = jQuery.extend(true, {}, this.getMetaTVars(), realm);
+			
+			var realmtype       = this.localize(loc, ('realmtype:'+realm.type))
+			var realmqueue      = this.localize(loc, ('realmqueue:'+realm.queue))
+			var realmstatus     = this.localize(loc, ('realmstatus:'+realm.status))
+			var realmpopulation = this.localize(loc, ('realmpopulation:'+realm.population))
+			
+			
+			tvars['path.host']       = 'http://' + host;
+			tvars['path.host.media'] = 'http://' + mediahost;
+			tvars['region']          = region;
+			
+			
+			
+			
+		} else {
+			var tvars = {
+				'notfound': this.localize(loc, 'realm-not-found')
+			};
+		}
+        
+		return this.mustache.process(this.getTemplate('default', 'realm'), tvars);
+	},
+	
 	buildCharacterTooltip: function(host, locale, data) {
 		var content   = '';
 		var loc       = this.getLocaleData(locale);
 		
-		var test = this.getRaceData(host, locale);
+		// var test = this.getRaceData(host, locale);
 		
 		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
 		var racename  = this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])]);
@@ -251,49 +519,50 @@ var WowDataTooltip = {
 			'host'  : host,
 			'locale': locale
 		};
-				
-		var apicall = this.mustache.process(this['patterns']['data']['races'], tvars);
+		var apicall = this.mustache.process(this['patterns']['api']['data.races'], tvars);
 		var data    = this.getFromCache('data', 'character-race', apicall);
-		
 		if(data != false) {
 			return data;
 		} else {
-			// make a synchronous call to get the data
 			jQuery.ajax({
 				url: apicall,
 				crossDomain: true,
-				context: jQuery(this),
 				dataType: 'JSONP',
 				jsonp: 'jsonp',
+				that: this,
 				success: function(data) {
-					
-					WowDataTooltip.addToCache('data', 'character-race', apicall, data);
+					this.that.addToCache('data', 'character-race', apicall, data);
 					return data;
-					
 				}
 			});
 		}
-		
 	},
 	
 	addToCache: function(type, scheme, apicall, content) {
-		WowDataTooltip['cache'][type][scheme][apicall] = content;
+		this['cache'][type][scheme][apicall] = content;
 		return true;
 	},
 	
 	getFromCache: function(type, scheme, apicall) {
-		if('undefined' == typeof(WowDataTooltip['cache'][type])) {
-			WowDataTooltip['cache'][type] = {};
+		if('undefined' == typeof(this['cache'][type])) {
+			this['cache'][type] = {};
 			return false;
 		}
-		if('undefined' == typeof(WowDataTooltip['cache'][type][scheme])) {
-			WowDataTooltip['cache'][type][scheme] = {};
+		if('undefined' == typeof(this['cache'][type][scheme])) {
+			this['cache'][type][scheme] = {};
 			return false;
 		}
-		if('string' == typeof(WowDataTooltip['cache'][type][scheme][apicall])) {
-			return WowDataTooltip['cache'][type][scheme][apicall];
+		if('string' == typeof(this['cache'][type][scheme][apicall])) {
+			return this['cache'][type][scheme][apicall];
 		}
 		return false;
+	},
+	
+	getHostFromRegion: function(region) {
+		if('undefined' !== typeof(this.maps['region2host'][region])) {
+			return(this.maps['region2host'][region]);
+		}
+		return '';
 	},
 	
 	getRegionFromHost: function(host) {
@@ -423,18 +692,14 @@ var WowDataTooltip = {
 				Renders inverted (^) and normal (#) sections
 			*/
 			render_section: function(template, context, partials) {
-				
 				if(!this.includes("#", template) && !this.includes("^", template)) {
 					return template;
 				}
-				
 				var that = this;
 				// CSW - Added "+?" so it finds the tighest bound, not the widest
 				var regex = new RegExp(this.otag + "(\\^|\\#)\\s*(.+)\\s*" + this.ctag + "\n*([\\s\\S]+?)" + this.otag + "\\/\\s*\\2\\s*" + this.ctag + "\\s*", "mg");
-				
 				// for each {{#foo}}{{/foo}} section do...
 				return template.replace(regex, function(match, type, name, content) {
-					
 					var value = that.find(name, context);
 					if(type == "^") { // inverted section
 						if(!value || that.is_array(value) && value.length === 0) {
@@ -468,19 +733,13 @@ var WowDataTooltip = {
 				Replace {{foo}} and friends with values from our view
 			*/
 			render_tags: function(template, context, partials, in_recursion) {
-				
 				// tit for tat
 				var that = this;
-				
 				var new_regex = function() {
-					
 					return new RegExp(that.otag + "(=|!|>|\\{|%)?([^\\/#\\^]+?)\\1?" + that.ctag + "+", "g");
-					
 				};
-				
 				var regex = new_regex();
 				var tag_replace_callback = function(match, operator, name) {
-					
 					switch(operator) {
 						case "!": // ignore comments
 							return "";
@@ -495,7 +754,6 @@ var WowDataTooltip = {
 						default: // escape the value
 							return that.escape(that.find(name, context));
 					}
-					
 	      		};
 	      		var lines = template.split("\n");
 				for(var i = 0; i < lines.length; i++) {
@@ -507,7 +765,6 @@ var WowDataTooltip = {
 				if(in_recursion) {
 					return lines.join("\n");
 				}
-				
 			},
 			
 			set_delimiters: function(delimiters) {
@@ -731,6 +988,16 @@ var WowDataTooltip = {
 					'{{/membercount}}' +
 					'<div class="achievementpoints last"><span class="achpoints">{{achievementPoints}}</span></div>' +
 				'</div>'
+			),
+			'realm': (
+				'<div class="tooltip-realm template-default">' +
+					'{{#notfound}}' +
+	    				'<div class="notfound">{{notfound}}</div>' +
+					'{{/notfound}}' +
+					'{{^notfound}}' +
+    					'<div class="name">{{name}}</div>' +
+					'{{/notfound}}' +
+				'</div>'
 			)
 		}
 	},
@@ -742,8 +1009,10 @@ var WowDataTooltip = {
 				'guild-sri'    : 'Level {{level}} {{sidename}} Guild, {{realm}}',
 				'guild-members': '{{membercount}} members'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
 			'class:3' : 'Hunter',
@@ -767,7 +1036,18 @@ var WowDataTooltip = {
 			'race:11' : 'Draenei',
 			'race:22' : 'Worgen',
 			'side:0'  : 'Alliance',
-			'side:1'  : 'Horde'
+			'side:1'  : 'Horde',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'es_MX': {
 			'templates': {
@@ -775,8 +1055,10 @@ var WowDataTooltip = {
 				'guild-sri'    : 'Hermandad {{sidename}}, nivel {{level}}, {{realm}}',
 				'guild-members': '{{membercount}} miembros'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
 			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
 			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
@@ -800,7 +1082,18 @@ var WowDataTooltip = {
 			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
 			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
 			'side:0'  : 'Alianza',
-			'side:1'  : 'Horda'
+			'side:1'  : 'Horda',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'en_GB': {
 			'templates': {
@@ -808,8 +1101,10 @@ var WowDataTooltip = {
 				'guild-sri'    : 'Level {{level}} {{sidename}} Guild, {{realm}}',
 				'guild-members': '{{membercount}} members'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
 			'class:3' : 'Hunter',
@@ -833,7 +1128,18 @@ var WowDataTooltip = {
 			'race:11' : 'Draenei',
 			'race:22' : 'Worgen',
 			'side:0'  : 'Alliance',
-			'side:1'  : 'Horde'
+			'side:1'  : 'Horde',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'es_ES': {
 			'templates': {
@@ -841,8 +1147,10 @@ var WowDataTooltip = {
 				'guild-sri'    : 'Hermandad ({{sidename}}), nivel {{level}}, {{realm}}',
 				'guild-members': '{{membercount}} miembros'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
 			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
 			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
@@ -866,7 +1174,18 @@ var WowDataTooltip = {
 			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
 			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
 			'side:0'  : 'Alianza',
-			'side:1'  : 'Horda'
+			'side:1'  : 'Horda',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'fr_FR': {
 			'templates': {
@@ -874,8 +1193,10 @@ var WowDataTooltip = {
 				'guild-sri'    : 'Guilde de niveau {{level}}, faction {{sidename}}, {{realm}}',
 				'guild-members': '{{membercount}} membres'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : {'gender:0': 'Guerrier',             'gender:1': 'Guerrière'},
 			'class:2' : {'gender:0': 'Paladin',              'gender:1': 'Paladin'},
 			'class:3' : {'gender:0': 'Chasseur',             'gender:1': 'Chasseresse'},
@@ -899,7 +1220,18 @@ var WowDataTooltip = {
 			'race:11' : {'gender:0': 'Draeneï',              'gender:1': 'Draeneï'},
 			'race:22' : {'gender:0': 'Worgen',               'gender:1': 'Worgen'},
 			'side:0'  : 'Alliance',
-			'side:1'  : 'Horde'
+			'side:1'  : 'Horde',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'ru_RU': {
 			'templates': {
@@ -907,8 +1239,10 @@ var WowDataTooltip = {
 				'guild-sri'    : 'Гильдия {{level}}-го ур. ({{sidename}}), {{realm}}',
 				'guild-members': 'Членов гильдии: {{membercount}}'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : {'gender:0': 'Воин',          'gender:1': 'Воин'},
 			'class:2' : {'gender:0': 'Паладин',       'gender:1': 'Паладин'},
 			'class:3' : {'gender:0': 'Охотник',       'gender:1': 'Охотница'},
@@ -932,7 +1266,18 @@ var WowDataTooltip = {
 			'race:11' : {'gender:0': 'Дреней',        'gender:1': 'Дреней'},
 			'race:22' : {'gender:0': 'Ворген',        'gender:1': 'Ворген'},
 			'side:0'  : 'Альянс',
-			'side:1'  : 'Орда'
+			'side:1'  : 'Орда',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'de_DE': {
 			'templates': {
@@ -940,8 +1285,10 @@ var WowDataTooltip = {
 				'guild-sri'    : 'Stufe {{level}} {{sidename}}-Gilde, {{realm}}',
 				'guild-members': '{{membercount}} Mitglieder'
 			},
+			'loading-realm'    : 'Lade Realm...',
 			'loading-character': 'Lade Charakter...',
 			'loading-guild'    : 'Lade Gilde...',
+			'realm-not-found'  : 'Realm nicht gefunden!',
 			'class:1' : {'gender:0': 'Krieger',      'gender:1': 'Kriegerin'},
 			'class:2' : {'gender:0': 'Paladin',      'gender:1': 'Paladin'},
 			'class:3' : {'gender:0': 'Jäger',        'gender:1': 'Jägerin'},
@@ -965,7 +1312,18 @@ var WowDataTooltip = {
 			'race:11' : {'gender:0': 'Draenei',      'gender:1': 'Draenei'},
 			'race:22' : {'gender:0': 'Worgen',       'gender:1': 'Worgen'},
 			'side:0'  : 'Allianz',
-			'side:1'  : 'Horde'
+			'side:1'  : 'Horde',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'Keine Warteschlange',
+			'realmqueue:true'       : 'Warteschlange',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Niedrige Bevölkerung',
+			'realmpopulation:medium': 'Mittlere Bevölkerung',
+			'realmpopulation:high'  : 'Hohe Bevölkerung'
 		},
 		'ko_KR': {
 			'templates': {
@@ -973,8 +1331,10 @@ var WowDataTooltip = {
 				'guild-sri'    : '{{level}} 레벨 {{sidename}} 길드, {{realm}}',
 				'guild-members': '구성원 {{membercount}}명'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': '문자를로드 중입니다 ...',
 			'loading-guild'    : '로딩 길드 ...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : '전사',
 			'class:2' : '성기사',
 			'class:3' : '사냥꾼',
@@ -998,7 +1358,18 @@ var WowDataTooltip = {
 			'race:11' : '드레나이',
 			'race:22' : '늑대인간',
 			'side:0'  : '얼라이언스',
-			'side:1'  : '호드'
+			'side:1'  : '호드',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'zh_TW': {
 			'templates': {
@@ -1006,8 +1377,10 @@ var WowDataTooltip = {
 				'guild-sri'    : '等級{{level}}{{sidename}}公會, {{realm}}',
 				'guild-members': '共{{membercount}}位成員'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': '載入字符...',
 			'loading-guild'    : '載入公會...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : '戰士',
 			'class:2' : '聖騎士',
 			'class:3' : '獵人',
@@ -1031,7 +1404,18 @@ var WowDataTooltip = {
 			'race:11' : '德萊尼',
 			'race:22' : '狼人',
 			'side:0'  : '的聯盟',
-			'side:1'  : '部落'
+			'side:1'  : '部落',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		},
 		'zh_CN': {
 			'templates': {
@@ -1039,8 +1423,10 @@ var WowDataTooltip = {
 				'guild-sri'    : '{{level}} 级 {{sidename}} 公会, {{realm}}',
 				'guild-members': '{{membercount}} 个成员'
 			},
+			'loading-realm'    : 'Loading realm...',
 			'loading-character': '载入字符...',
 			'loading-guild'    : '正在载入公会...',
+			'realm-not-found'  : 'Realm not found!',
 			'class:1' : '战士',
 			'class:2' : '圣骑士',
 			'class:3' : '猎人',
@@ -1064,22 +1450,37 @@ var WowDataTooltip = {
 			'race:11' : '德莱尼',
 			'race:22' : '狼人',
 			'side:0'  : '联盟',
-			'side:1'  : '部落'
+			'side:1'  : '部落',
+			'realmtype:pve'         : 'PvE',
+			'realmtype:pvp'         : 'PvP',
+			'realmtype:rp'          : 'RP',
+			'realmtype:rppvp'       : 'RPPvP',
+			'realmqueue:false'      : 'No queue',
+			'realmqueue:true'       : 'Queue',
+			'realmstatus:false'     : 'Offline',
+			'realmstatus:true'      : 'Online',
+			'realmpopulation:low'   : 'Low population',
+			'realmpopulation:medium': 'Medium population',
+			'realmpopulation:high'  : 'High population'
 		}
 	},
 	
 	'patterns': {
-		'data': {
-			'classes': 'http://{{host}}/api/wow/data/character/classes?locale={{locale}}',
-			'races'  : 'http://{{host}}/api/wow/data/character/races?locale={{locale}}'
+		'explicit': {
+			'realm'    : /realm:(us|eu|kr|tw|cn)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
+			'character': /character:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
+			'guild'    : /guild:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
 		},
-		'character': {
-			'regex' : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
-			'api'   : 'http://$1/api/wow/character/$3/$4?fields=guild,talents,items,professions&locale={locale}',
+		'battlenet': {
+			'character': /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
+			'guild'    : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/]+)\/.*/
 		},
-		'guild': {
-			'regex' : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/]+)\/.*/,
-			'api'   : 'http://$1/api/wow/guild/$3/$4?fields=members&locale={locale}',
+		'api': {
+			'data.classes': 'http://{{host}}/api/wow/data/character/classes?locale={{locale}}',
+			'data.races'  : 'http://{{host}}/api/wow/data/character/races?locale={{locale}}',
+			'realm'       : 'http://{{host}}/api/wow/realm/status?realm={{realm}}&locale={{locale}}',
+			'character'   : 'http://{{host}}/api/wow/character/{{realm}}/{{character}}?fields=guild,talents,items,professions&locale={{locale}}',
+			'guild'       : 'http://{{host}}/api/wow/guild/{{realm}}/{{guild}}?fields=members&locale={{locale}}',
 		}
 	},
 	
@@ -1090,6 +1491,13 @@ var WowDataTooltip = {
 			'kr.battle.net'       : 'kr',
 			'tw.battle.net'       : 'tw',
 			'www.battlenet.com.cn': 'cn'
+		},
+		'region2host': {
+			'us': 'us.battle.net',
+			'eu': 'eu.battle.net',
+			'kr': 'kr.battle.net',
+			'tw': 'tw.battle.net',
+			'cn': 'www.battlenet.com.cn'
 		},
 		'region2mediahost': {
 			'us': 'us.media.blizzard.com',
@@ -1141,167 +1549,3 @@ var WowDataTooltip = {
 };
 
 WowDataTooltip.init();
-
-yepnope([{
-	test: window.jQuery,
-	nope: WowDataTooltip.getSetting(['files', 'jquery.js']),
-	complete: function () {
-		yepnope({
-			test: jQuery.qtip,
-			nope: [
-				WowDataTooltip.getSetting(['files', 'qtip2.js']),
-				WowDataTooltip.getSetting(['files', 'qtip2.css']),
-				WowDataTooltip.getSetting(['files', 'wdt.css'])
-			],	
-			complete: function () {
-				jQuery(function () {
-					
-					// --- Loading complete ------------------------------------
-					
-					if(WowDataTooltip.getSetting(['extendedMode', 'active'])) {
-						
-						jQuery(document).keydown(function(event) {
-
-							// ExtendedMode Key is pressed
-							if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
-								jQuery('body').addClass('wdt-show-extended');
-								WowDataTooltip.repositionActiveTooltips();
-							}
-
-						});
-
-						jQuery(document).keyup(function(event) {
-
-							// ExtendedMode Key is released
-							if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
-								jQuery('body').removeClass('wdt-show-extended');
-								WowDataTooltip.repositionActiveTooltips();
-							}
-
-						});
-						
-					}
-					
-					
-					jQuery('body').delegate('a[href]', 'mouseover', function() {
-						
-						// In a tooltip is already attached, don't re-render it, just show it
-						if('object' === typeof(jQuery(this).data('qtip'))) {
-							
-							jQuery(this).qtip('show');
-							
-						} else {
-							
-							var content = '';
-							var href    = new String(jQuery(this).attr('href'));
-							var apicall = null;
-							var params  = null;
-							
-							
-							/* ------------------------------------------------------------
-							 * - Character Tooltip from a[href]
-							 * ------------------------------------------------------------ */
-							var result  = href.match(WowDataTooltip['patterns']['character']['regex']);
-							if(result) {
-								
-								params = {
-									'host'     : result[1],
-									'lang'     : result[2],
-									'realm'    : result[3],
-									'character': result[4]
-								};
-								
-								var locale = WowDataTooltip.getLocaleFromRegionLang(WowDataTooltip.getRegionFromHost(params['host']), params['lang']);
-								
-								apicall    = href.replace(WowDataTooltip['patterns']['character']['regex'], WowDataTooltip['patterns']['character']['api']);
-								apicall    = apicall.replace('{locale}', locale);
-								content    = WowDataTooltip.getFromCache('template', 'character', apicall);
-								
-								if(content != false) {
-									
-									WowDataTooltip.addTip(this, content);
-									
-								} else {
-									
-									WowDataTooltip.addTip(this, WowDataTooltip.localize(WowDataTooltip.getLocaleData(locale), 'loading-character'));
-									
-									jQuery.ajax({
-										url: apicall,
-										crossDomain: true,
-										context: jQuery(this),
-										dataType: 'JSONP',
-										jsonp: 'jsonp',
-										success: function(data) {
-											
-											var content = WowDataTooltip.buildCharacterTooltip(params['host'], locale, data);
-											
-											jQuery(this).qtip('api').set('content.text', content);
-											
-											WowDataTooltip.addToCache('template', 'character', apicall, content);
-											
-										}
-									});
-									
-								}
-								
-							}
-							
-							/* ------------------------------------------------------------
-							 * - Guild Tooltip from a[href]
-							 * ------------------------------------------------------------ */
-							var result  = href.match(WowDataTooltip['patterns']['guild']['regex']);
-							if(result) {
-								
-								params = {
-									'host' : result[1],
-									'lang' : result[2],
-									'realm': result[3],
-									'guild': result[4]
-								};
-								
-								var locale = WowDataTooltip.getLocaleFromRegionLang(WowDataTooltip.getRegionFromHost(params['host']), params['lang']);
-								
-								apicall    = href.replace(WowDataTooltip['patterns']['guild']['regex'], WowDataTooltip['patterns']['guild']['api']);
-								apicall    = apicall.replace('{locale}', locale);
-								content    = WowDataTooltip.getFromCache('template', 'guild', apicall);
-								
-								if(content != false) {
-									
-									WowDataTooltip.addTip(this, content);
-									
-								} else {
-									
-									WowDataTooltip.addTip(this, WowDataTooltip.localize(WowDataTooltip.getLocaleData(locale), 'loading-guild'));
-									
-									jQuery.ajax({
-										url: apicall,
-										crossDomain: true,
-										context: jQuery(this),
-										dataType: 'JSONP',
-										jsonp: 'jsonp',
-										success: function(data) {
-											
-											var content = WowDataTooltip.buildGuildTooltip(params['host'], locale, data);
-											
-											jQuery(this).qtip('api').set('content.text', content);
-											
-											WowDataTooltip.addToCache('template', 'guild', apicall, content);
-											
-										}
-									});
-									
-								}
-								
-							}
-							
-						}
-
-					});
-					
-					// --- End of completion block -----------------------------
-					
-				});
-			}
-		});
-	}
-}]);

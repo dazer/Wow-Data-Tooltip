@@ -63,14 +63,14 @@ $repository_lang = array(
 		'char tt what example 4'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883">http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883</a>',
 		'char tt i18n header'     => 'I18N - Because the internet is a big, big place',
 		'char tt i18n text 1'     => 'I\'m aiming at supporting the same range of regions and locales that the official Battle.net site does:',
-		'char tt i18n example 1'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">German: Agonya @ Gilneas (EU)</a></li>',
-		'char tt i18n example 2'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">English: Rancora @ Gilneas (EU)</a></li>',
-		'char tt i18n example 3'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">French: Rakel @ Gilneas (EU)</a></li>',
-		'char tt i18n example 4'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanish: Nhyria @ Gilneas (EU)</a></li>',
-		'char tt i18n example 5'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russian: Necry @ Gilneas (EU)</a></li>',
-		'char tt i18n example 6'  => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk: 축복은셀프입니다 @ 달라란 (KO)</a></li>',
-		'char tt i18n example 7'  => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/冬握湖/阿露卡多/">Traditional chinese: 阿露卡多 @ 冬握湖 (TW)</a> (API returns 404, maybe not fully live here)</li>',
-		'char tt i18n example 8'  => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Simplified chinese: 楼兰风行 @ 熔火之心 (CN)</a></li>',
+		'char tt i18n example 1'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">German: Agonya @ Gilneas (EU)</a>',
+		'char tt i18n example 2'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">English: Rancora @ Gilneas (EU)</a>',
+		'char tt i18n example 3'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">French: Rakel @ Gilneas (EU)</a>',
+		'char tt i18n example 4'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanish: Nhyria @ Gilneas (EU)</a>',
+		'char tt i18n example 5'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russian: Necry @ Gilneas (EU)</a>',
+		'char tt i18n example 6'  => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk: 축복은셀프입니다 @ 달라란 (KO)</a>',
+		'char tt i18n example 7'  => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/冬握湖/阿露卡多/">Traditional chinese: 阿露卡多 @ 冬握湖 (TW)</a>',
+		'char tt i18n example 8'  => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Simplified chinese: 楼兰风行 @ 熔火之心 (CN)</a>',
 		'tt dynamic header'       => 'Dynamic! Quite so...',
 		'tt dynamic text 1'       => 'I\'m using jQuery\'s <code>delegate()</code> method to check each element as it is hovered and not just once on <code>document.ready</code>. This means that any ajax-generated content will be respected by this addon.',
 		'tt dynamic text 2'       => 'Just try it yourself:',
@@ -85,20 +85,22 @@ $repository_lang = array(
 		'guild tt what example 3' => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421">http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421</a>',
 		'guild tt i18n header'    => 'I18N - Because the internet is a big, big place',
 		'guild tt i18n text 1'    => 'Of course I\'m supporting the full range of regions and locale here, too:',
-		'guild tt i18n example 1' => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/guldan/IPhönixI/roster">German: &lt;IPhönixI&gt; @ Guldan (EU)</a></li>',
-		'guild tt i18n example 2' => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/guild/gilneas/Auge des Sturms/roster">English: &lt;Auge des Sturms&gt; @ Gilneas (EU)</a></li>',
-		'guild tt i18n example 3' => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/guild/gilneas/Out of Range/roster">French: &lt;Out of Range&gt; @ Gilneas (EU)</a></li>',
-		'guild tt i18n example 4' => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/guild/nathrezim/Myst/roster">Spanish: &lt;Myst&gt; @ Nathrezim (EU)</a></li>',
-		'guild tt i18n example 5' => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/guild/dethecus/deCurseMe/roster">Russian: &lt;deCurseMe&gt; @ Dethecus (EU)</a></li>',
-		'guild tt i18n example 6' => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/guild/알렉스트라자/나는 쓰랄과 제이나의 불륜현장을 목격했다/">Hanguk: &lt;나는 쓰랄과 제이나의 불륜현장을 목격했다&gt; @ 알렉스트라자 (KR)</a></li>',
-		'guild tt i18n example 7' => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/guild/冬握湖/人在冏途身不由己/">Traditional chinese: &lt;人在冏途身不由己&gt; @ 冬握湖 (TW)</a> (API returns 404, maybe not fully live here)</li>',
-		'guild tt i18n example 8' => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/guild/熔火之心/凌烟阁/">Simplified chinese: &lt;凌烟阁&gt; @ 熔火之心 (CN)</a></li>',
+		'guild tt i18n example 1' => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/guldan/IPhönixI/roster">German: &lt;IPhönixI&gt; @ Guldan (EU)</a>',
+		'guild tt i18n example 2' => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/guild/gilneas/Auge des Sturms/roster">English: &lt;Auge des Sturms&gt; @ Gilneas (EU)</a>',
+		'guild tt i18n example 3' => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/guild/gilneas/Out of Range/roster">French: &lt;Out of Range&gt; @ Gilneas (EU)</a>',
+		'guild tt i18n example 4' => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/guild/nathrezim/Myst/roster">Spanish: &lt;Myst&gt; @ Nathrezim (EU)</a>',
+		'guild tt i18n example 5' => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/guild/dethecus/deCurseMe/roster">Russian: &lt;deCurseMe&gt; @ Dethecus (EU)</a>',
+		'guild tt i18n example 6' => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/guild/알렉스트라자/나는 쓰랄과 제이나의 불륜현장을 목격했다/">Hanguk: &lt;나는 쓰랄과 제이나의 불륜현장을 목격했다&gt; @ 알렉스트라자 (KR)</a>',
+		'guild tt i18n example 7' => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/guild/冬握湖/人在冏途身不由己/">Traditional chinese: &lt;人在冏途身不由己&gt; @ 冬握湖 (TW)</a>',
+		'guild tt i18n example 8' => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/guild/熔火之心/凌烟阁/">Simplified chinese: &lt;凌烟阁&gt; @ 熔火之心 (CN)</a>',
 		'item tt header'          => 'Item tooltips <span class="comment">( Under developement ^^ )</span>',
 		'item tt text 1'          => 'The item data API queries are only available to authenticated users at the moment.',
 		'item tt text 2'          => 'I have been granted access recently and I\'m now able to test this out... :)',
 		'realm tt header'         => 'Realm Tooltips <span class="comment">( Maybe... )</span>',
 		'realm tt text 1'         => 'I\'m yet unsure if I should be including realm tooltips in this addon.',
 		'realm tt text 2'         => 'I suppose it\'s mainly because I don\'t know what Battle.net url these should be linked to. ;-P',
+		'realm tt example 1'      => '<span class="wdt-hover" data-wowdatatooltip="realm:en.amanthul/de">English: Aman\'Thul (EU)</span>',
+		'realm tt example 2'      => '<span class="wdt-hover" data-wowdatatooltip="realm:eu.gilneas/de">German: Gilneas (EU)</span>',
 		'issues header'           => 'Known "features"... erm, Bugs! ^^',
 		'issues 1'                => 'The labels for talent specs are not yet localized and will be handed out in the browsers default language. (that\'s the theory...)',
 		'issues 2'                => 'The labels for item level, guild info and the helper text for the extended mode are not yet localized and presented in english.',
@@ -150,14 +152,14 @@ $repository_lang = array(
 		'char tt what example 4'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883">http://eu.battle.net/wow/de/character/gilneas/Rhil/achievement#81:a883</a>',
 		'char tt i18n header'     => 'I18N - Mehrsprachige Tooltips',
 		'char tt i18n text 1'     => 'Ich versuche die gleichen Regionen und Sprachen zu unterstützen wie die offizielle Battle.net Seite:',
-		'char tt i18n example 1'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">Deutsch: Agonya @ Gilneas (EU)</a></li>',
-		'char tt i18n example 2'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">Englisch: Rancora @ Gilneas (EU)</a></li>',
-		'char tt i18n example 3'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">Französisch: Rakel @ Gilneas (EU)</a></li>',
-		'char tt i18n example 4'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanisch: Nhyria @ Gilneas (EU)</a></li>',
-		'char tt i18n example 5'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russisch: Necry @ Gilneas (EU)</a></li>',
-		'char tt i18n example 6'  => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk: 축복은셀프입니다 @ 달라란 (KO)</a></li>',
-		'char tt i18n example 7'  => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/冬握湖/阿露卡多/">Traditionelles Chinesisch: 阿露卡多 @ 冬握湖 (TW)</a> (API liefert hier immer 404, vermutlich noch nicht vollständig live)</li>',
-		'char tt i18n example 8'  => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Vereinfachtes Chinesisch: 楼兰风行 @ 熔火之心 (CN)</a></li>',
+		'char tt i18n example 1'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/character/gilneas/Agonya/">Deutsch: Agonya @ Gilneas (EU)</a>',
+		'char tt i18n example 2'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/character/gilneas/Rancora/">Englisch: Rancora @ Gilneas (EU)</a>',
+		'char tt i18n example 3'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/character/gilneas/Rakel/">Französisch: Rakel @ Gilneas (EU)</a>',
+		'char tt i18n example 4'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/character/gilneas/Nhyria/">Spanisch: Nhyria @ Gilneas (EU)</a>',
+		'char tt i18n example 5'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/character/gilneas/Necry/">Russisch: Necry @ Gilneas (EU)</a>',
+		'char tt i18n example 6'  => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/character/달라란/축복은셀프입니다/">Hanguk: 축복은셀프입니다 @ 달라란 (KO)</a>',
+		'char tt i18n example 7'  => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/character/冬握湖/阿露卡多/">Traditionelles Chinesisch: 阿露卡多 @ 冬握湖 (TW)</a>',
+		'char tt i18n example 8'  => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/character/熔火之心/楼兰风行/">Vereinfachtes Chinesisch: 楼兰风行 @ 熔火之心 (CN)</a>',
 		'tt dynamic header'       => 'Dynamisch! Sogar sehr...',
 		'tt dynamic text 1'       => 'Ich verwende die <code>delegate()</code> Methode von jQuery um mich auf den &lt;body&gt; zu hängen und alle Hyperlink im Dokument zu überprüfen. Dies hat zu Folge, dass auch dynamisch generierte Inhalte direkt mit Tooltips versehen werden.',
 		'tt dynamic text 2'       => 'Probiert es doch einfach selbst aus:',
@@ -172,20 +174,22 @@ $repository_lang = array(
 		'guild tt what example 3' => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421">http://eu.battle.net/wow/de/guild/gilneas/Ascension/achievement#15077:a5421</a>',
 		'guild tt i18n header'    => 'I18N - Mehrsprachige Tooltips',
 		'guild tt i18n text 1'    => 'Auch hier sind natürlich wieder diverse Sprachen und Regionen verfügbar:',
-		'guild tt i18n example 1' => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/guldan/IPhönixI/roster">Deutsch: &lt;IPhönixI&gt; @ Guldan (EU)</a></li>',
-		'guild tt i18n example 2' => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/guild/gilneas/Auge des Sturms/roster">Englisch: &lt;Auge des Sturms&gt; @ Gilneas (EU)</a></li>',
-		'guild tt i18n example 3' => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/guild/gilneas/Out of Range/roster">Französisch: &lt;Out of Range&gt; @ Gilneas (EU)</a></li>',
-		'guild tt i18n example 4' => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/guild/nathrezim/Myst/roster">Spanisch: &lt;Myst&gt; @ Nathrezim (EU)</a></li>',
-		'guild tt i18n example 5' => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/guild/dethecus/deCurseMe/roster">Russisch: &lt;deCurseMe&gt; @ Dethecus (EU)</a></li>',
-		'guild tt i18n example 6' => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/guild/알렉스트라자/나는 쓰랄과 제이나의 불륜현장을 목격했다/">Hanguk: &lt;나는 쓰랄과 제이나의 불륜현장을 목격했다&gt; @ 알렉스트라자 (KR)</a></li>',
-		'guild tt i18n example 7' => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/guild/冬握湖/人在冏途身不由己/">Traditionelles Chinesisch: &lt;人在冏途身不由己&gt; @ 冬握湖 (TW)</a> (API liefert hier immer 404, vermutlich noch nicht vollständig live)</li>',
-		'guild tt i18n example 8' => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/guild/熔火之心/凌烟阁/">Vereinfachtes Chinesisch: &lt;凌烟阁&gt; @ 熔火之心 (CN)</a></li>',
+		'guild tt i18n example 1' => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/guild/guldan/IPhönixI/roster">Deutsch: &lt;IPhönixI&gt; @ Guldan (EU)</a>',
+		'guild tt i18n example 2' => '<a class="wdt-hover" href="http://eu.battle.net/wow/en/guild/gilneas/Auge des Sturms/roster">Englisch: &lt;Auge des Sturms&gt; @ Gilneas (EU)</a>',
+		'guild tt i18n example 3' => '<a class="wdt-hover" href="http://eu.battle.net/wow/fr/guild/gilneas/Out of Range/roster">Französisch: &lt;Out of Range&gt; @ Gilneas (EU)</a>',
+		'guild tt i18n example 4' => '<a class="wdt-hover" href="http://eu.battle.net/wow/es/guild/nathrezim/Myst/roster">Spanisch: &lt;Myst&gt; @ Nathrezim (EU)</a>',
+		'guild tt i18n example 5' => '<a class="wdt-hover" href="http://eu.battle.net/wow/ru/guild/dethecus/deCurseMe/roster">Russisch: &lt;deCurseMe&gt; @ Dethecus (EU)</a>',
+		'guild tt i18n example 6' => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/guild/알렉스트라자/나는 쓰랄과 제이나의 불륜현장을 목격했다/">Hanguk: &lt;나는 쓰랄과 제이나의 불륜현장을 목격했다&gt; @ 알렉스트라자 (KR)</a>',
+		'guild tt i18n example 7' => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/guild/冬握湖/人在冏途身不由己/">Traditionelles Chinesisch: &lt;人在冏途身不由己&gt; @ 冬握湖 (TW)</a>',
+		'guild tt i18n example 8' => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/guild/熔火之心/凌烟阁/">Vereinfachtes Chinesisch: &lt;凌烟阁&gt; @ 熔火之心 (CN)</a>',
 		'item tt header'          => 'Item Tooltips <span class="comment">( In Arbeit ^^ )</span>',
 		'item tt text 1'          => 'Derzeit sind die API Funktionen für Items nur für authentifizierte Calls einsichtlich.',
 		'item tt text 2'          => 'Ich habe inzwischen Zugangsdaten erhalten und bin am Testen... :)',
 		'realm tt header'         => 'Realm Tooltips <span class="comment">( Evtl..... )</span>',
 		'realm tt text 1'         => 'Der Sinn und Zweck von Realm Tooltips steht bei mir noch nicht auf festen Füßen. Von daher stelle ich dieses Feature hinten an.',
 		'realm tt text 2'         => 'Vor allem da ich nicht wüsste mit welcher Battle.net URL ich diese verknüpfen sollte... :-P',
+		'realm tt example 1'      => '<span class="wdt-hover" data-wowdatatooltip="realm:eu.amanthul/en">Englisch: Aman\'Thul (EU)</span>',
+		'realm tt example 2'      => '<span class="wdt-hover" data-wowdatatooltip="realm:eu.gilneas/de">Deutsch: Gilneas (EU)</span>',
 		'issues header'           => 'Bekannte "Features"... äh, Bugs! ^^',
 		'issues 1'                => 'Die Bezeichnung der Skillungen sind noch nicht lokalisiert und werden in der Standardsprache des Browsers geliefert. (theoretisch zumindest...)',
 		'issues 2'                => 'Die Labels für Itemlevel, Gildeninfo sowie der Hilfe-text für den erweiterten Modus sind noch nicht lokalisiert und werden in Englisch dargestellt.',
@@ -395,6 +399,14 @@ function te($sid) {
 		</ul>
 	</p>
 	
+	<p>
+		<ul>
+			<li><span data-wowdatatooltip="realm:eu.gilneas(de)">Gilneas EU (de)</li>
+			<li><span data-wowdatatooltip="realm:eu.gilnarf(de)">Gilnarf EU (de) *invalid*</li>
+			<li><span data-wowdatatooltip="realm:eu.amanthul(en)">Aman'Thul EU (en)</li>
+		</ul>
+	</p>
+	
 	<h3><?php te('char tt i18n header'); ?></h3>
 	<p><?php te('char tt i18n text 1'); ?></p>
 	<p>
@@ -453,6 +465,13 @@ function te($sid) {
 	<h2><?php te('realm tt header'); ?></h2>
 	<p><?php te('realm tt text 1'); ?></p>
 	<p><?php te('realm tt text 2'); ?></p>
+	
+	<p>
+		<ul>
+			<li><?php te('realm tt example 1'); ?></li>
+			<li><?php te('realm tt example 2'); ?></li>
+		</ul>
+	</p>
 		
 	<h2><?php te('issues header'); ?></h2>
 	<p>
@@ -466,31 +485,25 @@ function te($sid) {
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script type="text/javascript">
-		
 		jQuery(function () {
-			
 			jQuery('#wdt-dynamic-character-profile-button').bind('click', function() {
-				
 				var url = jQuery('#wdt-dynamic-character-profile-input').attr('value');
-				
 				if(url != '') {
 					jQuery('#wdt-dynamic-character-profile-hyperlinks').append('<li><a class="wdt-hover" href="'+url+'">'+url+'</a></li>');
 				}
-				
 			});
-			
 		});
-		
 	</script>
 	<script type="text/javascript">
 		window.___WowDataTooltip_Config = {
-			files: {
+			'files': {
 				'jquery.js': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
 				'qtip2.js' : 'qtip2/jquery.qtip.min.js',
 				'qtip2.css': 'qtip2/jquery.qtip.min.css',
 				'wdt.css'  : 'wdt/WowDataTooltip.css'
 			},
-			extendedMode: {
+			'applyToBattleNetLinks': true,
+			'extendedMode': {
 				'active': true,
 			}
 		};
