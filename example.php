@@ -2,8 +2,8 @@
 
 $data = array();
 $data['project']['homepage']  = 'http://code.google.com/p/wow-data-tooltip/';
-$data['download']['status']   = 'alpha';
-$data['download']['revision'] = '38';
+$data['download']['status']   = 'beta';
+$data['download']['revision'] = '45';
 $data['download']['link']     = 'http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-'.$data['download']['status'].'-r'.$data['download']['revision'].'.zip';
 
 $lang = 'en';
@@ -40,10 +40,10 @@ $repository_lang = array(
 		'installation code 1'     => '<pre class="code">&lt;script type="text/javascript"&gt;
 	window.___WowDataTooltip_Config = {
 		\'files\': {
-			\'jquery.js\': \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\', // The jQuery library
-			\'qtip2.js\' : \'qtip2/jquery.qtip.min.js\',                                         // qTip2 javascript lib
-			\'qtip2.css\': \'qtip2/jquery.qtip.min.css\',                                        // qTip2 css styles
-			\'wdt.css\'  : \'wdt/WowDataTooltip.css\'                                            // WowDataTooltip css styles
+			\'jquery.js\': \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',  // The jQuery library
+			\'qtip2.js\' : \'{Path to the contained /qtip2 directory}qtip2/jquery.qtip.min.js\',  // qTip2 javascript lib
+			\'qtip2.css\': \'{Path to the contained /qtip2 directory}qtip2/jquery.qtip.min.css\', // qTip2 css styles
+			\'wdt.css\'  : \'{Path to the contained /wdt directory}wdt/WowDataTooltip.css\'       // WowDataTooltip css styles
 		},
 		\'applyTo\': {
 			\'explicit\' : true, // Set to true if you want to apply tooltips to explicit flagged elements
@@ -54,7 +54,7 @@ $repository_lang = array(
 		}
 	};
 &lt;/script&gt;
-&lt;script type="text/javascript" src="{{Path to the contained /wdt directory}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
+&lt;script type="text/javascript" src="{Path to the contained /wdt directory}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Character tooltips <span class="comment">( Description &amp; examples )</span>',
 		'char tt hint'            => 'Try it! Hold down [Shift] while a tooltip is displayed! :)',
 		'char tt what header'     => 'Which elements will be granted a tooltip?',
@@ -138,9 +138,9 @@ $repository_lang = array(
 	window.___WowDataTooltip_Config = {
 		\'files\': {
 			\'jquery.js\': \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\', // Die jQuery Bibliothek
-			\'qtip2.js\' : \'qtip2/jquery.qtip.min.js\',                                         // qTip2 Javascript Plugon
-			\'qtip2.css\': \'qtip2/jquery.qtip.min.css\',                                        // qTip2 CSS Regeln
-			\'wdt.css\'  : \'wdt/WowDataTooltip.css\'                                            // WowDataTooltip CSS Regeln
+			\'qtip2.js\' : \'{Pfad zum enthaltenen /wdt Verzeichnis}qtip2/jquery.qtip.min.js\',  // qTip2 Javascript Plugon
+			\'qtip2.css\': \'{Pfad zum enthaltenen /wdt Verzeichnis}qtip2/jquery.qtip.min.css\', // qTip2 CSS Regeln
+			\'wdt.css\'  : \'{Pfad zum enthaltenen /wdt Verzeichnis}wdt/WowDataTooltip.css\'     // WowDataTooltip CSS Regeln
 		},
 		\'applyTo\': {
 			\'explicit\' : true, // Auf true setzen um Tooltips bei allen explizit gekennzeichneten Elementen anzuzeigen
@@ -151,7 +151,7 @@ $repository_lang = array(
 		}
 	};
 &lt;/script&gt;
-&lt;script type="text/javascript" src="{{Pfad zum enthaltenen /wdt Verzeichnisses des Plugins}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
+&lt;script type="text/javascript" src="{Pfad zum enthaltenen /wdt Verzeichnis}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Charakter Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span>',
 		'char tt hint'            => 'Probiert es aus: Haltet [Shift] gedrückt während ein Tooltip angezeigt wird! :)',
 		'char tt what header'     => 'Was wird mit einem Tooltip versehen?',
