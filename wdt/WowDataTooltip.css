@@ -184,6 +184,70 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 }
 
 /* --------------------------------------------------------------------------
+ *  Realm Tooltips
+ * -------------------------------------------------------------------------- */
+
+.tooltip-realm {
+	position: relative;
+}
+
+.tooltip-realm .name,
+.tooltip-realm .status,
+.tooltip-realm .population {
+	padding-bottom: 3px;
+}
+
+.tooltip-realm .notfound {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.tooltip-realm .name {
+	font-size: 14px;
+	font-weight: bold;
+	border-bottom: 1px solid #333;
+	margin-bottom: 5px;
+}
+
+.tooltip-realm .type {
+	float: right;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.tooltip-realm .status {
+	font-size: 12px;
+}
+
+.tooltip-realm .type-pve {
+	color: #44CC33;
+}
+
+.tooltip-realm .type-pvp {
+	color: #FF5533;
+}
+
+.tooltip-realm .type-rp {
+	color: #BBCC33;
+}
+
+.tooltip-realm .type-rppvp {
+	color: #FF9944;
+}
+
+.tooltip-realm .status-true {
+	color: #33FF33;
+}
+
+.tooltip-realm .status-false {
+	color: #FF3333;
+}
+
+.tooltip-realm .queue-true {
+	color: #FFBB33;
+}
+
+/* --------------------------------------------------------------------------
  *  Character Tooltips
  * -------------------------------------------------------------------------- */
 

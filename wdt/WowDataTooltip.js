@@ -36,7 +36,10 @@ var WowDataTooltip = {
 				'qtip2.css': 'qtip2/jquery.qtip.min.css',
 				'wdt.css'  : 'wdt/WowDataTooltip.css'
 			},
-			'applyToBattleNetLinks': true,
+			'applyTo': {
+				'explicit' : true,
+				'battlenet': true
+			},
 			'extendedMode': {
 				'active'       : true,
 				'keyCode'      : 16,
@@ -83,10 +86,12 @@ var WowDataTooltip = {
 									}
 								});
 							}
-							jQuery('[data-wowdatatooltip]').live('mouseover', function() {
-								WowDataTooltip.handleExplicitHover(this);
-							});
-							if(WowDataTooltip.getSetting(['applyToBattleNetLinks'])) {
+							if(WowDataTooltip.getSetting(['applyTo', 'explicit'])) {
+								jQuery('[data-wowdatatooltip]').live('mouseover', function() {
+									WowDataTooltip.handleExplicitHover(this);
+								});
+							}
+							if(WowDataTooltip.getSetting(['applyTo', 'battlenet'])) {
 								jQuery('a[href]').live('mouseover', function() {
 									WowDataTooltip.handleHyperlinkHover(this);
 								});
@@ -439,22 +444,19 @@ var WowDataTooltip = {
 		var mediahost = this.getMediahostFromRegion(region);
         
 		if(data.realms.length == 1) {
-			var realm = data.realms[0];
-			var tvars = jQuery.extend(true, {}, this.getMetaTVars(), realm);
-			
-			var realmtype       = this.localize(loc, ('realmtype:'+realm.type))
-			var realmqueue      = this.localize(loc, ('realmqueue:'+realm.queue))
-			var realmstatus     = this.localize(loc, ('realmstatus:'+realm.status))
-			var realmpopulation = this.localize(loc, ('realmpopulation:'+realm.population))
-			
-			
+			var realm                = data.realms[0];
+			var tvars                = jQuery.extend(true, {}, this.getMetaTVars(), realm);
+			var realmtype            = this.localize(loc, ('realmtype:'+realm.type))
+			var realmqueue           = this.localize(loc, ('realmqueue:'+realm.queue))
+			var realmstatus          = this.localize(loc, ('realmstatus:'+realm.status))
+			var realmpopulation      = this.localize(loc, ('realmpopulation:'+realm.population))
 			tvars['path.host']       = 'http://' + host;
 			tvars['path.host.media'] = 'http://' + mediahost;
 			tvars['region']          = region;
-			
-			
-			
-			
+			tvars['type-text']       = realmtype;
+			tvars['queue-text']      = realmqueue;
+			tvars['status-text']     = realmstatus;
+			tvars['population-text'] = realmpopulation;
 		} else {
 			var tvars = {
 				'notfound': this.localize(loc, 'realm-not-found')
@@ -484,7 +486,8 @@ var WowDataTooltip = {
 		tvars['racename']        = racename;
 		
 		var partials = {
-			'char-sri': this.localize(loc, ['templates', 'char-sri'])
+			'char-sri' : this.localize(loc, ['templates', 'char-sri']),
+			'char-ilvl': this.localize(loc, ['templates', 'char-ilvl'])
 		};
 		
 		return this.mustache.process(this.getTemplate('default', 'character'), tvars, partials);
@@ -957,7 +960,7 @@ var WowDataTooltip = {
 				    		'<div class="name cclass-{{class}}">{{name}}</div>' +
 				    		'<div class="level class race">{{lrc}}</div>' +
 							'{{#items}}' +
-								'<div class="itemlevel">Avg. iLevel: {{averageItemLevelEquipped}} / {{averageItemLevel}}</div>' +
+								'<div class="itemlevel">{{> char-ilvl}}</div>' +
 							'{{/items}}' +
 							'{{#professions}}' +
 								'<div class="professions wdt-show-only-extended">' +
@@ -995,7 +998,20 @@ var WowDataTooltip = {
 	    				'<div class="notfound">{{notfound}}</div>' +
 					'{{/notfound}}' +
 					'{{^notfound}}' +
+    					'<div class="type type-{{type}}">{{type-text}}</div>' +
     					'<div class="name">{{name}}</div>' +
+						'{{#status}}' +
+							'{{#queue}}' +
+    							'<div class="status queue-{{queue}}">{{status-text}} ({{queue-text}})</div>' +
+							'{{/queue}}' +
+							'{{^queue}}' +
+    							'<div class="status status-{{status}}">{{status-text}}</div>' +
+							'{{/queue}}' +
+						'{{/status}}' +
+						'{{^status}}' +
+    						'<div class="status status-{{status}}">{{status-text}}</div>' +
+						'{{/status}}' +
+    					'<div class="population">{{population-text}}</div>' +
 					'{{/notfound}}' +
 				'</div>'
 			)
@@ -1006,6 +1022,7 @@ var WowDataTooltip = {
 		'en_US': {
 			'templates': {
 				'char-sri'     : '{{level}} {{racename}} {{classname}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})',
 				'guild-sri'    : 'Level {{level}} {{sidename}} Guild, {{realm}}',
 				'guild-members': '{{membercount}} members'
 			},
@@ -1052,13 +1069,14 @@ var WowDataTooltip = {
 		'es_MX': {
 			'templates': {
 				'char-sri'     : '{{classname}} de {{racename}}, nivel {{level}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} nvl. de obj. promedio ({{averageItemLevel}})',
 				'guild-sri'    : 'Hermandad {{sidename}}, nivel {{level}}, {{realm}}',
 				'guild-members': '{{membercount}} miembros'
 			},
-			'loading-realm'    : 'Loading realm...',
-			'loading-character': 'Loading character...',
-			'loading-guild'    : 'Loading guild...',
-			'realm-not-found'  : 'Realm not found!',
+			'loading-realm'    : 'Cargando reino ...',
+			'loading-character': 'Cargando carácter ...',
+			'loading-guild'    : 'Carga del gremio ...',
+			'realm-not-found'  : 'Reino que no se encuentra!',
 			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
 			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
 			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
@@ -1087,17 +1105,18 @@ var WowDataTooltip = {
 			'realmtype:pvp'         : 'PvP',
 			'realmtype:rp'          : 'RP',
 			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'realmqueue:false'      : 'no hay cola',
+			'realmqueue:true'       : 'cola',
+			'realmstatus:false'     : 'fuera de línea',
+			'realmstatus:true'      : 'en línea',
+			'realmpopulation:low'   : 'población de bajos',
+			'realmpopulation:medium': 'población media',
+			'realmpopulation:high'  : 'población de alto'
 		},
 		'en_GB': {
 			'templates': {
 				'char-sri'     : '{{level}} {{racename}} {{classname}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})',
 				'guild-sri'    : 'Level {{level}} {{sidename}} Guild, {{realm}}',
 				'guild-members': '{{membercount}} members'
 			},
@@ -1144,13 +1163,14 @@ var WowDataTooltip = {
 		'es_ES': {
 			'templates': {
 				'char-sri'     : '{{racename}} {{classname}} {{level}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} Nivel medio de objeto ({{averageItemLevel}})',
 				'guild-sri'    : 'Hermandad ({{sidename}}), nivel {{level}}, {{realm}}',
 				'guild-members': '{{membercount}} miembros'
 			},
-			'loading-realm'    : 'Loading realm...',
-			'loading-character': 'Loading character...',
-			'loading-guild'    : 'Loading guild...',
-			'realm-not-found'  : 'Realm not found!',
+			'loading-realm'    : 'Cargando reino ...',
+			'loading-character': 'Cargando carácter ...',
+			'loading-guild'    : 'Carga del gremio ...',
+			'realm-not-found'  : 'Reino que no se encuentra!',
 			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
 			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
 			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
@@ -1179,24 +1199,25 @@ var WowDataTooltip = {
 			'realmtype:pvp'         : 'PvP',
 			'realmtype:rp'          : 'RP',
 			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'realmqueue:false'      : 'no hay cola',
+			'realmqueue:true'       : 'cola',
+			'realmstatus:false'     : 'fuera de línea',
+			'realmstatus:true'      : 'en línea',
+			'realmpopulation:low'   : 'población de bajos',
+			'realmpopulation:medium': 'población media',
+			'realmpopulation:high'  : 'población de alto'
 		},
 		'fr_FR': {
 			'templates': {
 				'char-sri' : '{{classname}} {{racename}} niv. {{level}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} Niveau moyen des objets ({{averageItemLevel}})',
 				'guild-sri'    : 'Guilde de niveau {{level}}, faction {{sidename}}, {{realm}}',
 				'guild-members': '{{membercount}} membres'
 			},
-			'loading-realm'    : 'Loading realm...',
-			'loading-character': 'Loading character...',
-			'loading-guild'    : 'Loading guild...',
-			'realm-not-found'  : 'Realm not found!',
+			'loading-realm'    : 'Chargement realm ...',
+			'loading-character': 'Chargement de caractère ...',
+			'loading-guild'    : 'Chargement de guilde ...',
+			'realm-not-found'  : 'Realm pas été trouvé!',
 			'class:1' : {'gender:0': 'Guerrier',             'gender:1': 'Guerrière'},
 			'class:2' : {'gender:0': 'Paladin',              'gender:1': 'Paladin'},
 			'class:3' : {'gender:0': 'Chasseur',             'gender:1': 'Chasseresse'},
@@ -1225,24 +1246,25 @@ var WowDataTooltip = {
 			'realmtype:pvp'         : 'PvP',
 			'realmtype:rp'          : 'RP',
 			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'realmqueue:false'      : 'aucune file d\'attente',
+			'realmqueue:true'       : 'file d\'attente',
+			'realmstatus:false'     : 'Hors',
+			'realmstatus:true'      : 'En ligne',
+			'realmpopulation:low'   : 'la population est faible',
+			'realmpopulation:medium': 'la population moyenne',
+			'realmpopulation:high'  : 'élevée de la population'
 		},
 		'ru_RU': {
 			'templates': {
 				'char-sri'     : '{{classname}}-{{racename}} {{level}} yp.',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} средний ({{averageItemLevel}})',
 				'guild-sri'    : 'Гильдия {{level}}-го ур. ({{sidename}}), {{realm}}',
 				'guild-members': 'Членов гильдии: {{membercount}}'
 			},
-			'loading-realm'    : 'Loading realm...',
-			'loading-character': 'Loading character...',
-			'loading-guild'    : 'Loading guild...',
-			'realm-not-found'  : 'Realm not found!',
+			'loading-realm'    : 'Загрузка области ...',
+			'loading-character': 'Загрузка характер ...',
+			'loading-guild'    : 'Загрузка гильдии ...',
+			'realm-not-found'  : 'Площадь не найден!',
 			'class:1' : {'gender:0': 'Воин',          'gender:1': 'Воин'},
 			'class:2' : {'gender:0': 'Паладин',       'gender:1': 'Паладин'},
 			'class:3' : {'gender:0': 'Охотник',       'gender:1': 'Охотница'},
@@ -1271,17 +1293,18 @@ var WowDataTooltip = {
 			'realmtype:pvp'         : 'PvP',
 			'realmtype:rp'          : 'RP',
 			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'realmqueue:false'      : 'Нет очередей',
+			'realmqueue:true'       : 'очередь',
+			'realmstatus:false'     : 'автономно',
+			'realmstatus:true'      : 'Интернет',
+			'realmpopulation:low'   : 'Низкий населения',
+			'realmpopulation:medium': 'Средний населения',
+			'realmpopulation:high'  : 'Высокая населения'
 		},
 		'de_DE': {
 			'templates': {
 				'char-sri'     : '{{level}}, {{racename}}, {{classname}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} Durchschnittliche Gegenstandsstufe ({{averageItemLevel}})',
 				'guild-sri'    : 'Stufe {{level}} {{sidename}}-Gilde, {{realm}}',
 				'guild-members': '{{membercount}} Mitglieder'
 			},
@@ -1328,13 +1351,14 @@ var WowDataTooltip = {
 		'ko_KR': {
 			'templates': {
 				'char-sri'     : '{{level}} {{racename}} {{classname}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} 평균 아이템 레벨 ({{averageItemLevel}})',
 				'guild-sri'    : '{{level}} 레벨 {{sidename}} 길드, {{realm}}',
 				'guild-members': '구성원 {{membercount}}명'
 			},
-			'loading-realm'    : 'Loading realm...',
+			'loading-realm'    : '영역을로드하는 중 ...',
 			'loading-character': '문자를로드 중입니다 ...',
 			'loading-guild'    : '로딩 길드 ...',
-			'realm-not-found'  : 'Realm not found!',
+			'realm-not-found'  : '영역을 찾을 수 없습니다!',
 			'class:1' : '전사',
 			'class:2' : '성기사',
 			'class:3' : '사냥꾼',
@@ -1363,24 +1387,25 @@ var WowDataTooltip = {
 			'realmtype:pvp'         : 'PvP',
 			'realmtype:rp'          : 'RP',
 			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'realmqueue:false'      : '없음 대기열 없음',
+			'realmqueue:true'       : '대기열',
+			'realmstatus:false'     : '오프라인',
+			'realmstatus:true'      : '온라인으로',
+			'realmpopulation:low'   : '낮은 인구',
+			'realmpopulation:medium': '중간 인구',
+			'realmpopulation:high'  : '높은 인구'
 		},
 		'zh_TW': {
 			'templates': {
 				'char-sri' : '{{level}} {{racename}} {{classname}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} 平均物品等級 ({{averageItemLevel}})',
 				'guild-sri'    : '等級{{level}}{{sidename}}公會, {{realm}}',
 				'guild-members': '共{{membercount}}位成員'
 			},
-			'loading-realm'    : 'Loading realm...',
+			'loading-realm'    : '載入境界...',
 			'loading-character': '載入字符...',
 			'loading-guild'    : '載入公會...',
-			'realm-not-found'  : 'Realm not found!',
+			'realm-not-found'  : '境界不存在！',
 			'class:1' : '戰士',
 			'class:2' : '聖騎士',
 			'class:3' : '獵人',
@@ -1409,24 +1434,25 @@ var WowDataTooltip = {
 			'realmtype:pvp'         : 'PvP',
 			'realmtype:rp'          : 'RP',
 			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'realmqueue:false'      : '沒有隊列',
+			'realmqueue:true'       : '隊列中',
+			'realmstatus:false'     : '離線',
+			'realmstatus:true'      : '在線',
+			'realmpopulation:low'   : '低人口',
+			'realmpopulation:medium': '中等人口',
+			'realmpopulation:high'  : '高人口'
 		},
 		'zh_CN': {
 			'templates': {
 				'char-sri'     : '{{level}} {{racename}} {{classname}}',
+				'char-ilvl'    : '{{averageItemLevelEquipped}} 物品平均等级 ({{averageItemLevel}})',
 				'guild-sri'    : '{{level}} 级 {{sidename}} 公会, {{realm}}',
 				'guild-members': '{{membercount}} 个成员'
 			},
-			'loading-realm'    : 'Loading realm...',
+			'loading-realm'    : '载入境界...',
 			'loading-character': '载入字符...',
 			'loading-guild'    : '正在载入公会...',
-			'realm-not-found'  : 'Realm not found!',
+			'realm-not-found'  : '没有发现的境界！',
 			'class:1' : '战士',
 			'class:2' : '圣骑士',
 			'class:3' : '猎人',
@@ -1455,13 +1481,13 @@ var WowDataTooltip = {
 			'realmtype:pvp'         : 'PvP',
 			'realmtype:rp'          : 'RP',
 			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'realmqueue:false'      : '没有队列',
+			'realmqueue:true'       : '队列中',
+			'realmstatus:false'     : '离线',
+			'realmstatus:true'      : '在线',
+			'realmpopulation:low'   : '低人口',
+			'realmpopulation:medium': '中等人口',
+			'realmpopulation:high'  : '高人口'
 		}
 	},
 	
