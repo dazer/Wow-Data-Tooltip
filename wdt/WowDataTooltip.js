@@ -50,7 +50,7 @@ var WowDataTooltip = {
 		
 	init: function() {
 		// generate merged config
-		this.config.merged = jQuery.extend(true, {}, this.config.default, this.config.user);
+		this.config.merged = jQuery.extend(true, {}, this.config['default'], this.config['user']);
 		// attach event handlers
 		this.attachEventHandlers();
 	},
