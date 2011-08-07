@@ -41,9 +41,9 @@ $repository_lang = array(
 	window.___WowDataTooltip_Config = {
 		\'files\': {
 			\'jquery.js\': \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',  // The jQuery library
-			\'qtip2.js\' : \'{Path to the contained /qtip2 directory}qtip2/jquery.qtip.min.js\',  // qTip2 javascript lib
-			\'qtip2.css\': \'{Path to the contained /qtip2 directory}qtip2/jquery.qtip.min.css\', // qTip2 css styles
-			\'wdt.css\'  : \'{Path to the contained /wdt directory}wdt/WowDataTooltip.css\'       // WowDataTooltip css styles
+			\'qtip2.js\' : \'{Path to the contained /qtip2 directory}/jquery.qtip.min.js\',  // qTip2 javascript lib
+			\'qtip2.css\': \'{Path to the contained /qtip2 directory}/jquery.qtip.min.css\', // qTip2 css styles
+			\'wdt.css\'  : \'{Path to the contained /wdt directory}/WowDataTooltip.css\'       // WowDataTooltip css styles
 		},
 		\'applyTo\': {
 			\'explicit\' : true, // Set to true if you want to apply tooltips to explicit flagged elements
@@ -138,9 +138,9 @@ $repository_lang = array(
 	window.___WowDataTooltip_Config = {
 		\'files\': {
 			\'jquery.js\': \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\', // Die jQuery Bibliothek
-			\'qtip2.js\' : \'{Pfad zum enthaltenen /wdt Verzeichnis}qtip2/jquery.qtip.min.js\',  // qTip2 Javascript Plugon
-			\'qtip2.css\': \'{Pfad zum enthaltenen /wdt Verzeichnis}qtip2/jquery.qtip.min.css\', // qTip2 CSS Regeln
-			\'wdt.css\'  : \'{Pfad zum enthaltenen /wdt Verzeichnis}wdt/WowDataTooltip.css\'     // WowDataTooltip CSS Regeln
+			\'qtip2.js\' : \'{Pfad zum enthaltenen /qtip2 Verzeichnis}/jquery.qtip.min.js\',  // qTip2 Javascript Plugon
+			\'qtip2.css\': \'{Pfad zum enthaltenen /qtip2 Verzeichnis}/jquery.qtip.min.css\', // qTip2 CSS Regeln
+			\'wdt.css\'  : \'{Pfad zum enthaltenen /wdt Verzeichnis}/WowDataTooltip.css\'     // WowDataTooltip CSS Regeln
 		},
 		\'applyTo\': {
 			\'explicit\' : true, // Auf true setzen um Tooltips bei allen explizit gekennzeichneten Elementen anzuzeigen
