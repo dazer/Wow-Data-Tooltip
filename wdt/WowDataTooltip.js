@@ -50,9 +50,31 @@ var WowDataTooltip = {
 		
 	init: function() {
 		// generate merged config
-		this.config.merged = jQuery.extend(true, {}, this.config['default'], this.config['user']);
+		this.mergeConfig();
+		// this.config['merged'] = jQuery.extend(true, {}, this.config['default'], this.config['user']);
 		// attach event handlers
 		this.attachEventHandlers();
+	},
+	
+	mergeConfig: function() {
+		var cfgu = this.config['user'];
+		var cfgm = this.config['default'];
+		if('undefined' !== typeof(cfgu['files'])) {
+			if('undefined' !== typeof(cfgu['files']['jquery.js'])) cfgm['files']['jquery.js'] = cfgu['files']['jquery.js'];
+			if('undefined' !== typeof(cfgu['files']['qtip2.js']))  cfgm['files']['qtip2.js']  = cfgu['files']['qtip2.js'];
+			if('undefined' !== typeof(cfgu['files']['qtip2.css'])) cfgm['files']['qtip2.css'] = cfgu['files']['qtip2.css'];
+			if('undefined' !== typeof(cfgu['files']['wdt.css']))   cfgm['files']['wdt.css']   = cfgu['files']['wdt.css'];			
+		}
+		if('undefined' !== typeof(cfgu['applyTo'])) {
+			if('undefined' !== typeof(cfgu['applyTo']['explicit']))  cfgm['applyTo']['explicit']  = cfgu['applyTo']['explicit'];
+			if('undefined' !== typeof(cfgu['applyTo']['battlenet'])) cfgm['applyTo']['battlenet'] = cfgu['applyTo']['battlenet'];
+		}
+		if('undefined' !== typeof(cfgu['extendedMode'])) {
+			if('undefined' !== typeof(cfgu['extendedMode']['active']))        cfgm['extendedMode']['active']        = cfgu['extendedMode']['active'];
+			if('undefined' !== typeof(cfgu['extendedMode']['keyCode']))       cfgm['extendedMode']['keyCode']       = cfgu['extendedMode']['keyCode'];
+			if('undefined' !== typeof(cfgu['extendedMode']['keyCode.label'])) cfgm['extendedMode']['keyCode.label'] = cfgu['extendedMode']['keyCode.label'];
+		}
+		this.config['merged'] = cfgm;
 	},
 	
 	attachEventHandlers: function() {
