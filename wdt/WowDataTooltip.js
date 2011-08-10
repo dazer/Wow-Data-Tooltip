@@ -59,6 +59,10 @@ var WowDataTooltip = {
 	mergeConfig: function() {
 		var cfgu = this.config['user'];
 		var cfgm = this.config['default'];
+		if('undefined' !== typeof(cfgu['auth'])) {
+			if('undefined' !== typeof(cfgu['auth']['key']))    cfgm['auth']['key']    = cfgu['auth']['key'];
+			if('undefined' !== typeof(cfgu['auth']['secret'])) cfgm['auth']['secret'] = cfgu['auth']['secret'];
+		}
 		if('undefined' !== typeof(cfgu['files'])) {
 			if('undefined' !== typeof(cfgu['files']['jquery.js'])) cfgm['files']['jquery.js'] = cfgu['files']['jquery.js'];
 			if('undefined' !== typeof(cfgu['files']['qtip2.js']))  cfgm['files']['qtip2.js']  = cfgu['files']['qtip2.js'];
