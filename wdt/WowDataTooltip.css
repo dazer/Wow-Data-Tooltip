@@ -115,19 +115,19 @@
  *  Colors
  * -------------------------------------------------------------------------- */
 
-.cclass-1  { /* Warrior      */ color: #C79C6E; }
-.cclass-2  { /* Paladin      */ color: #F58CBA; }
-.cclass-3  { /* Hunter       */ color: #ABD473; }
-.cclass-4  { /* Rogue        */ color: #FFF569; }
-.cclass-5  { /* Priest       */ color: #FFFFFF; }
-.cclass-6  { /* Death Knight */ color: #C41F3B; }
-.cclass-7  { /* Shaman       */ color: #0070DE; }
-.cclass-8  { /* Mage         */ color: #69CCF0; }
-.cclass-9  { /* Warlock      */ color: #9482C9; }
-.cclass-11 { /* Druid        */ color: #FF7D0A; }
+.cclass-1  { /* Warrior      */ color: #C79C6E !important; }
+.cclass-2  { /* Paladin      */ color: #F58CBA !important; }
+.cclass-3  { /* Hunter       */ color: #ABD473 !important; }
+.cclass-4  { /* Rogue        */ color: #FFF569 !important; }
+.cclass-5  { /* Priest       */ color: #FFFFFF !important; }
+.cclass-6  { /* Death Knight */ color: #C41F3B !important; }
+.cclass-7  { /* Shaman       */ color: #0070DE !important; }
+.cclass-8  { /* Mage         */ color: #69CCF0 !important; }
+.cclass-9  { /* Warlock      */ color: #9482C9 !important; }
+.cclass-11 { /* Druid        */ color: #FF7D0A !important; }
 
-.cside-0   { /* Alliance     */ color: #80BBFF; }
-.cside-1   { /* Horde        */ color: #FF8080; }
+.cside-0   { /* Alliance     */ color: #80BBFF !important; }
+.cside-1   { /* Horde        */ color: #FF8080 !important; }
 
 /* --------------------------------------------------------------------------
  *  Generic Tooltips

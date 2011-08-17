@@ -44,6 +44,9 @@ var WowDataTooltip = {
 				'active'       : true,
 				'keyCode'      : 16,
 				'keyCode.label': 'SHIFT'
+			},
+			'extras': {
+				'applyCssColorToCaller': false
 			}
 		}
 	},
@@ -77,6 +80,9 @@ var WowDataTooltip = {
 			if('undefined' !== typeof(cfgu['extendedMode']['active']))        cfgm['extendedMode']['active']        = cfgu['extendedMode']['active'];
 			if('undefined' !== typeof(cfgu['extendedMode']['keyCode']))       cfgm['extendedMode']['keyCode']       = cfgu['extendedMode']['keyCode'];
 			if('undefined' !== typeof(cfgu['extendedMode']['keyCode.label'])) cfgm['extendedMode']['keyCode.label'] = cfgu['extendedMode']['keyCode.label'];
+		}
+		if('undefined' !== typeof(cfgu['extras'])) {
+			if('undefined' !== typeof(cfgu['extras']['applyCssColorToCaller'])) cfgm['extras']['applyCssColorToCaller'] = cfgu['extras']['applyCssColorToCaller'];
 		}
 		this.config['merged'] = cfgm;
 	},
@@ -168,6 +174,7 @@ var WowDataTooltip = {
 			var content  = '';
 			var wdtroute = new String(jQuery(element).data('wowdatatooltip'));
 			var apicall  = null;
+			var hash     = null;
 			var params   = null;
 			/* ------------------------------------------------------------
 			 * - Realm Tooltip from [data-wowdatatooltip]
@@ -182,7 +189,8 @@ var WowDataTooltip = {
 					'host'     : this.getHostFromRegion(result[1])
 				};
 				apicall = this.mustache.process(this['patterns']['api']['realm'], params);
-				content = this.getFromCache('template', 'realm', apicall);
+				hash    = this.mustache.process(this['patterns']['hash']['realm'], params);
+				content = this.getFromCache('template', 'realm', hash);
 				if(content != false) {
 					this.addTip(element, content);
 				} else {
@@ -192,11 +200,10 @@ var WowDataTooltip = {
 						crossDomain: true,
 						dataType: 'JSONP',
 						jsonp: 'jsonp',
-						that: this,
 						success: function(data) {
-							var content = this.that.buildRealmTooltip(params['host'], params.locale, data);
+							var content = WowDataTooltip.buildRealmTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							this.that.addToCache('template', 'realm', apicall, content);
+							WowDataTooltip.addToCache('template', 'realm', hash, content);
 						}
 					});
 				}
@@ -215,7 +222,8 @@ var WowDataTooltip = {
 					'host'     : this.getHostFromRegion(result[1])
 				};
 				apicall = this.mustache.process(this['patterns']['api']['character'], params);
-				content = this.getFromCache('template', 'character', apicall);
+				hash    = this.mustache.process(this['patterns']['hash']['character'], params);
+				content = this.getFromCache('template', 'character', hash);
 				if(content != false) {
 					this.addTip(element, content);
 				} else {
@@ -225,17 +233,17 @@ var WowDataTooltip = {
 						crossDomain: true,
 						dataType: 'JSONP',
 						jsonp: 'jsonp',
-						that: this,
 						success: function(data) {
-							var content = this.that.buildCharacterTooltip(params['host'], params.locale, data);
+							var content = WowDataTooltip.buildCharacterTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							this.that.addToCache('template', 'character', apicall, content);
+							jQuery(element).addClass('cclass-'+data['class']);
+							WowDataTooltip.addToCache('template', 'character', hash, content);
 						}
 					});
 				}
 			}
 			/* ------------------------------------------------------------
-			 * - Character Tooltip from [data-wowdatatooltip]
+			 * - Guild Tooltip from [data-wowdatatooltip]
 			 * ------------------------------------------------------------ */
 			var result  = wdtroute.match(this['patterns']['explicit']['guild']);
 			if(result) {
@@ -248,7 +256,8 @@ var WowDataTooltip = {
 					'host'  : this.getHostFromRegion(result[1])
 				};
 				apicall = this.mustache.process(this['patterns']['api']['guild'], params);
-				content = this.getFromCache('template', 'guild', apicall);
+				hash    = this.mustache.process(this['patterns']['hash']['guild'], params);
+				content = this.getFromCache('template', 'guild', hash);
 				if(content != false) {
 					this.addTip(element, content);
 				} else {
@@ -258,11 +267,11 @@ var WowDataTooltip = {
 						crossDomain: true,
 						dataType: 'JSONP',
 						jsonp: 'jsonp',
-						that: this,
 						success: function(data) {
-							var content = this.that.buildGuildTooltip(params['host'], params.locale, data);
+							var content = WowDataTooltip.buildGuildTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							this.that.addToCache('template', 'guild', apicall, content);
+							jQuery(element).addClass('cside-'+data['side']);
+							WowDataTooltip.addToCache('template', 'guild', hash, content);
 						}
 					});
 				}
@@ -292,7 +301,8 @@ var WowDataTooltip = {
 					'locale'   : this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
 				};
 				apicall = this.mustache.process(this['patterns']['api']['character'], params);
-				content = this.getFromCache('template', 'character', apicall);
+				hash    = this.mustache.process(this['patterns']['hash']['character'], params);
+				content = this.getFromCache('template', 'character', hash);
 				if(content != false) {
 					this.addTip(element, content);
 				} else {
@@ -302,11 +312,12 @@ var WowDataTooltip = {
 						crossDomain: true,
 						dataType: 'JSONP',
 						jsonp: 'jsonp',
-						that: this,
 						success: function(data) {
-							var content = this.that.buildCharacterTooltip(params['host'], params.locale, data);
+							var content = WowDataTooltip.buildCharacterTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							this.that.addToCache('template', 'character', apicall, content);
+							jQuery(element).addClass('cclass-'+data['class']);
+							WowDataTooltip.addToCache('template', 'character', hash, content);
+							console.log(WowDataTooltip['cache']);
 						}
 					});
 				}
@@ -324,7 +335,8 @@ var WowDataTooltip = {
 					'locale': this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
 				};
 				apicall = this.mustache.process(this['patterns']['api']['guild'], params);
-				content = this.getFromCache('template', 'guild', apicall);
+				hash    = this.mustache.process(this['patterns']['hash']['guild'], params);
+				content = this.getFromCache('template', 'guild', hash);
 				if(content != false) {
 					this.addTip(element, content);
 				} else {
@@ -334,11 +346,11 @@ var WowDataTooltip = {
 						crossDomain: true,
 						dataType: 'JSONP',
 						jsonp: 'jsonp',
-						that: this,
 						success: function(data) {
-							var content = this.that.buildGuildTooltip(params['host'], params.locale, data);
+							var content = WowDataTooltip.buildGuildTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							this.that.addToCache('template', 'guild', apicall, content);
+							jQuery(element).addClass('cside-'+data['side']);
+							WowDataTooltip.addToCache('template', 'guild', hash, content);
 						}
 					});
 				}
@@ -549,7 +561,8 @@ var WowDataTooltip = {
 			'locale': locale
 		};
 		var apicall = this.mustache.process(this['patterns']['api']['data.races'], tvars);
-		var data    = this.getFromCache('data', 'character-race', apicall);
+		var hash    = this.mustache.process(this['patterns']['hash']['data.races'], tvars);
+		var data    = this.getFromCache('data', 'character-race', hash);
 		if(data != false) {
 			return data;
 		} else {
@@ -558,21 +571,20 @@ var WowDataTooltip = {
 				crossDomain: true,
 				dataType: 'JSONP',
 				jsonp: 'jsonp',
-				that: this,
 				success: function(data) {
-					this.that.addToCache('data', 'character-race', apicall, data);
+					WowDataTooltip.addToCache('data', 'character-race', hash, data);
 					return data;
 				}
 			});
 		}
 	},
 	
-	addToCache: function(type, scheme, apicall, content) {
-		this['cache'][type][scheme][apicall] = content;
+	addToCache: function(type, scheme, hash, content) {
+		this['cache'][type][scheme][hash] = content;
 		return true;
 	},
 	
-	getFromCache: function(type, scheme, apicall) {
+	getFromCache: function(type, scheme, hash) {
 		if('undefined' == typeof(this['cache'][type])) {
 			this['cache'][type] = {};
 			return false;
@@ -581,8 +593,8 @@ var WowDataTooltip = {
 			this['cache'][type][scheme] = {};
 			return false;
 		}
-		if('string' == typeof(this['cache'][type][scheme][apicall])) {
-			return this['cache'][type][scheme][apicall];
+		if('string' == typeof(this['cache'][type][scheme][hash])) {
+			return this['cache'][type][scheme][hash];
 		}
 		return false;
 	},
@@ -1533,6 +1545,13 @@ var WowDataTooltip = {
 			'realm'       : 'http://{{host}}/api/wow/realm/status?realm={{realm}}&locale={{locale}}',
 			'character'   : 'http://{{host}}/api/wow/character/{{realm}}/{{character}}?fields=guild,talents,items,professions&locale={{locale}}',
 			'guild'       : 'http://{{host}}/api/wow/guild/{{realm}}/{{guild}}?fields=members&locale={{locale}}',
+		},
+		'hash': {
+			'data.classes': '{{host}}#{{locale}}',
+			'data.races'  : '{{host}}#{{locale}}',
+			'realm'       : '{{host}}#{{realm}}#{{locale}}',
+			'character'   : '{{host}}#{{realm}}#{{character}}#{{locale}}',
+			'guild'       : '{{host}}#{{realm}}#{{guild}}#{{locale}}',			
 		}
 	},
 	

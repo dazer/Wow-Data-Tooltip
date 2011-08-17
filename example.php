@@ -515,12 +515,8 @@ function te($sid) {
 				'qtip2.css': 'qtip2/jquery.qtip.min.css',
 				'wdt.css'  : 'wdt/WowDataTooltip.css'
 			},
-			'applyTo': {
-				'explicit' : true,
-				'battlenet': true
-			},
-			'extendedMode': {
-				'active': true,
+			'extras': {
+				'applyCssColorToCaller': true
 			}
 		};
 	</script>
