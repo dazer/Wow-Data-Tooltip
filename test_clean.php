@@ -6,9 +6,13 @@
 </head>
 <body>
 	<h3>Battle.net Links</h3>
+	<p>Item: <a href="http://us.battle.net/wow/en/item/69558">http://eu.battle.net/wow/en/item/69558</a></p>
+	<p>Item: <a href="http://us.battle.net/wow/en/item/71424">http://eu.battle.net/wow/en/item/71424</a></p>
 	<p>Charakter: <a href="http://eu.battle.net/wow/de/character/gilneas/Rhil/">http://eu.battle.net/wow/de/character/gilneas/Rhil/</a></p>
 	<p>Guild: <a href="http://eu.battle.net/wow/en/guild/gilneas/Ascension/">http://eu.battle.net/wow/en/guild/gilneas/Ascension/</a></p>
 	<h3>Explicit Tooltips</h3>
+	<p>Item: <span data-wowdatatooltip="item:us.49623(en)">Schattengram</span></p>
+	<p>Item: <span data-wowdatatooltip="item:us.65499(en)">Conjured Mana Cake</span></p>
 	<p>Character: <span data-wowdatatooltip="character:eu.gilneas.agonya(de)">Agonya</span></p>
 	<p>Guild: <span data-wowdatatooltip="guild:eu.gilneas.Out of Range(en)">Out of Range</span></p>
 	<p>Realm: <span data-wowdatatooltip="realm:eu.gilneas(de)">Gilneas</span></p>
@@ -22,6 +26,14 @@
 			'applyTo': {
 				'battlenet': true,
 				'explicit': true,
+			},
+			'layout': {
+				'width': {
+					'realm'    : 200,
+					'item'     : 300,
+					'character': 300,
+					'guild'    : 200
+				}
 			}
 		};
 	</script>

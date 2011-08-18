@@ -19,6 +19,12 @@
  * along with this program. If not, see http://www.gnu.org/licenses/gpl.html.
  * ************************************************************************** */
 
+/* --- Override of 280 max-width -------------------------------------------- */
+
+.wdt-tooltip {
+	max-width: 1000px;
+}
+
 /* --- Tooltip Design WDT - dark -------------------------------------------- */
 
 .ui-tooltip-wdt-dark .ui-tooltip-titlebar,
@@ -115,6 +121,15 @@
  *  Colors
  * -------------------------------------------------------------------------- */
 
+.cquality-0 { /* Poor        */ color: #9D9D9D !important; }
+.cquality-1 { /* Common      */ color: #FFFFFF !important; }
+.cquality-2 { /* Uncommon    */ color: #1EFF00 !important; }
+.cquality-3 { /* Rare        */ color: #0070FF !important; }
+.cquality-4 { /* Epic        */ color: #A335EE !important; }
+.cquality-5 { /* Legendary   */ color: #FF8000 !important; }
+.cquality-6 { /* Artifact    */ color: #E6CC80 !important; }
+.cquality-7 { /* Heirloom    */ color: #E6CC80 !important; }
+
 .cclass-1  { /* Warrior      */ color: #C79C6E !important; }
 .cclass-2  { /* Paladin      */ color: #F58CBA !important; }
 .cclass-3  { /* Hunter       */ color: #ABD473 !important; }
@@ -205,7 +220,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 .tooltip-realm .name {
 	font-size: 14px;
 	font-weight: bold;
-	border-bottom: 1px solid #333;
+	border-bottom: 1px solid #444;
 	margin-bottom: 5px;
 }
 
@@ -245,6 +260,62 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 
 .tooltip-realm .queue-true {
 	color: #FFBB33;
+}
+
+/* --------------------------------------------------------------------------
+ *  Item Tooltips
+ * -------------------------------------------------------------------------- */
+
+.tooltip-item {
+	position: relative;
+}
+
+.tooltip-item .name {
+	padding-bottom: 3px;	
+}
+
+.tooltip-item .heroic,
+.tooltip-item .itemBind,
+.tooltip-item .maxCount,
+.tooltip-item .classification,
+.tooltip-item .damage,
+.tooltip-item .dps,
+.tooltip-item .socket,
+.tooltip-item .maxDurability {
+	padding-bottom: 1px;
+}
+
+.tooltip-item .data {
+	padding: 4px 4px 4px 70px;
+}
+
+.tooltip-item .icon {
+	float: left;
+	border: 4px solid rgba(0, 0, 0, 0.33);
+}
+
+.tooltip-item .name {
+	font-size: 14px;
+	font-weight: bold;
+	border-bottom: 1px solid #444;
+	margin-bottom: 3px;
+}
+
+.tooltip-item .classification,
+.tooltip-item .weaponInfo {
+	position: relative;
+}
+
+.tooltip-item .classification .inventoryType + .itemClass {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.tooltip-item .weaponInfo .damage + .weaponSpeed {
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -290,7 +361,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 .tooltip-character .name {
 	font-size: 14px;
 	font-weight: bold;
-	border-bottom: 1px solid #333;
+	border-bottom: 1px solid #444;
 	margin-bottom: 3px;
 }
 
@@ -340,7 +411,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 .tooltip-guild .name {
 	font-size: 14px;
 	font-weight: bold;
-	border-bottom: 1px solid #333;
+	border-bottom: 1px solid #444;
 	margin-bottom: 5px;
 }
 

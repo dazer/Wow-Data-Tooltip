@@ -45,6 +45,14 @@ var WowDataTooltip = {
 				'keyCode'      : 16,
 				'keyCode.label': 'SHIFT'
 			},
+			'layout': {
+				'width': {
+					'realm'    : 200,
+					'item'     : 300,
+					'character': 300,
+					'guild'    : 200
+				}
+			},
 			'extras': {
 				'applyCssColorToCaller': false
 			}
@@ -80,6 +88,14 @@ var WowDataTooltip = {
 			if('undefined' !== typeof(cfgu['extendedMode']['active']))        cfgm['extendedMode']['active']        = cfgu['extendedMode']['active'];
 			if('undefined' !== typeof(cfgu['extendedMode']['keyCode']))       cfgm['extendedMode']['keyCode']       = cfgu['extendedMode']['keyCode'];
 			if('undefined' !== typeof(cfgu['extendedMode']['keyCode.label'])) cfgm['extendedMode']['keyCode.label'] = cfgu['extendedMode']['keyCode.label'];
+		}
+		if('undefined' !== typeof(cfgu['layout'])) {
+			if('undefined' !== typeof(cfgu['layout']['width'])) {
+				if('undefined' !== typeof(cfgu['layout']['width']['realm']))     cfgm['layout']['width']['realm']     = cfgu['layout']['width']['realm'];
+				if('undefined' !== typeof(cfgu['layout']['width']['item']))      cfgm['layout']['width']['item']      = cfgu['layout']['width']['item'];
+				if('undefined' !== typeof(cfgu['layout']['width']['character'])) cfgm['layout']['width']['character'] = cfgu['layout']['width']['character'];
+				if('undefined' !== typeof(cfgu['layout']['width']['guild']))     cfgm['layout']['width']['guild']     = cfgu['layout']['width']['guild'];
+			}
 		}
 		if('undefined' !== typeof(cfgu['extras'])) {
 			if('undefined' !== typeof(cfgu['extras']['applyCssColorToCaller'])) cfgm['extras']['applyCssColorToCaller'] = cfgu['extras']['applyCssColorToCaller'];
@@ -192,9 +208,9 @@ var WowDataTooltip = {
 				hash    = this.mustache.process(this['patterns']['hash']['realm'], params);
 				content = this.getFromCache('template', 'realm', hash);
 				if(content != false) {
-					this.addTip(element, content);
+					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'realm']));
 				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-realm'));
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-realm'), WowDataTooltip.getSetting(['layout', 'width', 'realm']));
 					jQuery.ajax({
 						url: apicall,
 						crossDomain: true,
@@ -204,6 +220,41 @@ var WowDataTooltip = {
 							var content = WowDataTooltip.buildRealmTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
 							WowDataTooltip.addToCache('template', 'realm', hash, content);
+						}
+					});
+				}
+			}
+			/* ------------------------------------------------------------
+			 * - Item Tooltip from [data-wowdatatooltip]
+			 * ------------------------------------------------------------ */
+			var result  = wdtroute.match(this['patterns']['explicit']['item']);
+			if(result) {
+				params = {
+					'region': result[1],
+					'itemid': result[2],
+					'lang'  : result[3],
+					'locale': this.getLocaleFromRegionLang(result[1], result[3]),
+					'host'  : this.getHostFromRegion(result[1])
+				};
+				apicall = this.mustache.process(this['patterns']['api']['item'], params);
+				hash    = this.mustache.process(this['patterns']['hash']['item'], params);
+				content = this.getFromCache('template', 'item', hash);
+				if(content != false) {
+					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'item']));
+				} else {
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-item'), WowDataTooltip.getSetting(['layout', 'width', 'item']));
+					jQuery.ajax({
+						url: apicall,
+						crossDomain: true,
+						dataType: 'JSONP',
+						jsonp: 'jsonp',
+						success: function(data) {
+							var content = WowDataTooltip.buildItemTooltip(params['host'], params.locale, data);
+							jQuery(element).qtip('api').set('content.text', content);
+							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+								jQuery(element).addClass('cquality-'+data['quality']);
+							}
+							WowDataTooltip.addToCache('template', 'item', hash, content);
 						}
 					});
 				}
@@ -225,9 +276,9 @@ var WowDataTooltip = {
 				hash    = this.mustache.process(this['patterns']['hash']['character'], params);
 				content = this.getFromCache('template', 'character', hash);
 				if(content != false) {
-					this.addTip(element, content);
+					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'character']));
 				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'));
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'), WowDataTooltip.getSetting(['layout', 'width', 'character']));
 					jQuery.ajax({
 						url: apicall,
 						crossDomain: true,
@@ -236,7 +287,9 @@ var WowDataTooltip = {
 						success: function(data) {
 							var content = WowDataTooltip.buildCharacterTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							jQuery(element).addClass('cclass-'+data['class']);
+							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+								jQuery(element).addClass('cclass-'+data['class']);
+							}
 							WowDataTooltip.addToCache('template', 'character', hash, content);
 						}
 					});
@@ -259,9 +312,9 @@ var WowDataTooltip = {
 				hash    = this.mustache.process(this['patterns']['hash']['guild'], params);
 				content = this.getFromCache('template', 'guild', hash);
 				if(content != false) {
-					this.addTip(element, content);
+					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'guild']));
 				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'));
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'), WowDataTooltip.getSetting(['layout', 'width', 'guild']));
 					jQuery.ajax({
 						url: apicall,
 						crossDomain: true,
@@ -270,7 +323,9 @@ var WowDataTooltip = {
 						success: function(data) {
 							var content = WowDataTooltip.buildGuildTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							jQuery(element).addClass('cside-'+data['side']);
+							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+								jQuery(element).addClass('cside-'+data['side']);
+							}
 							WowDataTooltip.addToCache('template', 'guild', hash, content);
 						}
 					});
@@ -289,6 +344,40 @@ var WowDataTooltip = {
 			var apicall = null;
 			var params  = null;
 			/* ------------------------------------------------------------
+			 * - Item Tooltip from a[href]
+			 * ------------------------------------------------------------ */
+			var result  = href.match(this['patterns']['battlenet']['item']);
+			if(result) {
+				params = {
+					'host'  : result[1],
+					'lang'  : result[2],
+					'itemid': result[3],
+					'locale': this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
+				};
+				apicall = this.mustache.process(this['patterns']['api']['item'], params);
+				hash    = this.mustache.process(this['patterns']['hash']['item'], params);
+				content = this.getFromCache('template', 'item', hash);
+				if(content != false) {
+					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'item']));
+				} else {
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-item'), WowDataTooltip.getSetting(['layout', 'width', 'item']));
+					jQuery.ajax({
+						url: apicall,
+						crossDomain: true,
+						dataType: 'JSONP',
+						jsonp: 'jsonp',
+						success: function(data) {
+							var content = WowDataTooltip.buildItemTooltip(params['host'], params.locale, data);
+							jQuery(element).qtip('api').set('content.text', content);
+							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+								jQuery(element).addClass('cquality-'+data['quality']);
+							}
+							WowDataTooltip.addToCache('template', 'item', hash, content);
+						}
+					});
+				}
+			}
+			/* ------------------------------------------------------------
 			 * - Character Tooltip from a[href]
 			 * ------------------------------------------------------------ */
 			var result  = href.match(this['patterns']['battlenet']['character']);
@@ -304,9 +393,9 @@ var WowDataTooltip = {
 				hash    = this.mustache.process(this['patterns']['hash']['character'], params);
 				content = this.getFromCache('template', 'character', hash);
 				if(content != false) {
-					this.addTip(element, content);
+					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'character']));
 				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'));
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'), WowDataTooltip.getSetting(['layout', 'width', 'character']));
 					jQuery.ajax({
 						url: apicall,
 						crossDomain: true,
@@ -315,9 +404,10 @@ var WowDataTooltip = {
 						success: function(data) {
 							var content = WowDataTooltip.buildCharacterTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							jQuery(element).addClass('cclass-'+data['class']);
+							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+								jQuery(element).addClass('cclass-'+data['class']);
+							}
 							WowDataTooltip.addToCache('template', 'character', hash, content);
-							console.log(WowDataTooltip['cache']);
 						}
 					});
 				}
@@ -338,9 +428,9 @@ var WowDataTooltip = {
 				hash    = this.mustache.process(this['patterns']['hash']['guild'], params);
 				content = this.getFromCache('template', 'guild', hash);
 				if(content != false) {
-					this.addTip(element, content);
+					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'guild']));
 				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'));
+					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'), WowDataTooltip.getSetting(['layout', 'width', 'guild']));
 					jQuery.ajax({
 						url: apicall,
 						crossDomain: true,
@@ -349,7 +439,9 @@ var WowDataTooltip = {
 						success: function(data) {
 							var content = WowDataTooltip.buildGuildTooltip(params['host'], params.locale, data);
 							jQuery(element).qtip('api').set('content.text', content);
-							jQuery(element).addClass('cside-'+data['side']);
+							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+								jQuery(element).addClass('cside-'+data['side']);
+							}
 							WowDataTooltip.addToCache('template', 'guild', hash, content);
 						}
 					});
@@ -358,7 +450,11 @@ var WowDataTooltip = {
 		}		
 	},
 	
-	addTip: function(element, tipcontent) {
+	addTip: function(element, tipcontent, width) {
+		if('undefined' === typeof(width)) {
+			width = 300;
+		}
+		
 		jQuery(element).qtip({
 			'overwrite': false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
 			'show': {
@@ -386,7 +482,7 @@ var WowDataTooltip = {
 			},
 			'hide': 'mouseout',
 			'style': {
-				'width': '300px',
+				'width': width+'px',
 				'classes': 'wdt-tooltip ui-tooltip-wdt-dark ui-tooltip-cluetip'
 			}
 		});
@@ -436,7 +532,7 @@ var WowDataTooltip = {
 		return result;
 	},
 	
-	localize: function(repository, keys, replacements) {
+	localize: function(repository, keys) {
 		var temp   = repository;
 		var result = '';
 		
@@ -449,19 +545,13 @@ var WowDataTooltip = {
 				result = '';
 				break;
 			} else {
-				if('object' === typeof(temp[keys[i]])) {
+				if('undefined' !== typeof(temp[keys[i]])) {
 					temp = temp[keys[i]];
-				} else {
-					result = temp[keys[i]];
-					break;
+					if(i == (keys.length - 1)) {
+						result = temp;
+						break;
+					}
 				}
-			}
-		}
-		
-		if(('' !== result) && ('object' === typeof(replacements))) {
-			for (i in replacements) {
-				var regexp = new RegExp('\{'+i+'\}', 'gi');
-				result = result.replace(regexp, replacements[i]);
 			}
 		}
 		
@@ -504,55 +594,65 @@ var WowDataTooltip = {
 		return this.mustache.process(this.getTemplate('default', 'realm'), tvars);
 	},
 	
-	buildCharacterTooltip: function(host, locale, data) {
-		var content   = '';
+	buildItemTooltip: function(host, locale, data) {
 		var loc       = this.getLocaleData(locale);
-		
-		// var test = this.getRaceData(host, locale);
-		
-		var classname = this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]);
-		var racename  = this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])]);
 		var region    = this.getRegionFromHost(host);
 		var mediahost = this.getMediahostFromRegion(region);
 		
-		var tvars = jQuery.extend(true, {}, this.getMetaTVars(), data);
-		
-		tvars['path.host']       = 'http://' + host;
-		tvars['path.host.media'] = 'http://' + mediahost;
-		tvars['region']          = region;
-		tvars['classname']       = classname;
-		tvars['racename']        = racename;
-		
-		var partials = {
-			'char-sri' : this.localize(loc, ['templates', 'char-sri']),
-			'char-ilvl': this.localize(loc, ['templates', 'char-ilvl'])
+		var add = {
+			'path.host'        : 'http://' + host,
+			'path.host.media'  : 'http://' + mediahost,
+			'region'           : region,
+			'itemBind_loc'     : this.localize(loc, ('itemBind:'+data['itemBind'])),
+			'itemClass_loc'    : this.localize(loc, ('itemClass:'+data['itemClass']+'.'+data['itemSubClass'])),
+			'inventoryType_loc': this.localize(loc, ('inventoryType:'+data['inventoryType'])),
 		};
 		
-		return this.mustache.process(this.getTemplate('default', 'character'), tvars, partials);
+		return this.mustache.process(
+			this.getTemplate('default', 'item'),
+			jQuery.extend(true, {}, this.getMetaTVars(), data, add),
+			this.localize(loc, ['templates', 'item'])
+		);
+	},
+	
+	buildCharacterTooltip: function(host, locale, data) {
+		var loc       = this.getLocaleData(locale);
+		var region    = this.getRegionFromHost(host);
+		var mediahost = this.getMediahostFromRegion(region);
+		
+		var add = {
+			'path.host'      : 'http://' + host,
+			'path.host.media': 'http://' + mediahost,
+			'region'         : region,
+			'class_loc'      : this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]),
+			'race_loc'       : this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])])
+		};
+		
+		return this.mustache.process(
+			this.getTemplate('default', 'character'),
+			jQuery.extend(true, {}, this.getMetaTVars(), data, add),
+			this.localize(loc, ['templates', 'character'])
+		);
 	},
 	
 	buildGuildTooltip: function(host, locale, data) {
-		var content   = '';
 		var loc       = this.getLocaleData(locale);
-		
-		var sidename  = this.localize(loc, ('side:'+data['side']));
 		var region    = this.getRegionFromHost(host);
 		var mediahost = this.getMediahostFromRegion(region);
 		
-		var tvars = jQuery.extend(true, {}, this.getMetaTVars(), data);
-		
-		tvars['path.host']       = 'http://' + host;
-		tvars['path.host.media'] = 'http://' + mediahost;
-		tvars['region']          = region;
-		tvars['sidename']        = sidename;
-		tvars['membercount']     = data['members'].length || 0;
-		
-		var partials = {
-			'guild-sri'    : this.localize(loc, ['templates', 'guild-sri']),
-			'guild-members': this.localize(loc, ['templates', 'guild-members'])
+		var add = {
+			'path.host'      : 'http://' + host,
+			'path.host.media': 'http://' + mediahost,
+			'region'         : region,
+			'side_loc'       : this.localize(loc, ('side:'+data['side'])),
+			'membercount'    : data['members'].length || 0
 		};
 		
-		return this.mustache.process(this.getTemplate('default', 'guild'), tvars, partials);
+		return this.mustache.process(
+			this.getTemplate('default', 'guild'),
+			jQuery.extend(true, {}, this.getMetaTVars(), data, add),
+			this.localize(loc, ['templates', 'guild'])
+		);
 	},
 	
 	getRaceData: function(host, locale) {
@@ -968,13 +1068,60 @@ var WowDataTooltip = {
 	
 	'templates': {
 		'default': {
+			'item': (
+				'<div class="tooltip-item template-default">' +
+		    		'<img class="icon" src="{{path.host.media}}/wow/icons/56/{{icon}}.jpg" />' +
+					'<div class="data">' +
+						'<div class="name cquality-{{quality}}">{{name}}</div>' +
+						'{{#heroic}}' +
+							'<div class="heroic">{{> heroic}}</div>' +
+						'{{/heroic}}' +
+						'{{#itemBind}}' +
+							'<div class="itemBind">{{itemBind_loc}}</div>' +
+						'{{/itemBind}}' +
+						'{{#maxCount}}' +
+							'<div class="maxCount">{{> maxCount}}</div>' +
+						'{{/maxCount}}' +
+						'<div class="classification">' +
+							'{{#equippable}}' +
+								'<div class="inventoryType">{{inventoryType_loc}}</div>' +
+							'{{/equippable}}' +
+							'<div class="itemClass">{{itemClass_loc}}</div>' +
+						'</div>' +
+						'{{#weaponInfo}}' +
+							'<div class="weaponInfo">' +
+								'{{#damage}}' +
+									'<div class="damage">{{> damage}}</div>' +
+								'{{/damage}}' +
+								'<div class="weaponSpeed">{{> weaponSpeed}}</div>' +
+								'<div class="dps">{{> dps}}</div>' +
+							'</div>' +
+						'{{/weaponInfo}}' +
+						'{{#socketInfo}}' +
+							'<div class="socketInfo">' +
+								'{{#sockets}}' +
+									'<div class="socket">{{type}}</div>' +
+								'{{/sockets}}' +
+							'</div>' +
+						'{{/socketInfo}}' +
+						
+						
+						'{{#maxDurability}}' +
+							'<div class="maxDurability">{{> maxDurability}}</div>' +
+						'{{/maxDurability}}' +
+						
+						
+						
+					'</div>' +
+				'</div>'
+			),
 			'character': (
 				'<div class="tooltip-character template-default">' +
 			    	'<img class="thumbnail" src="{{path.host}}/static-render/{{region}}/{{thumbnail}}?alt=/wow/static/images/2d/avatar/{{race}}-{{gender}}.jpg" />' +
 			    	 /* --- START simple mode -------------------------------- */
 					'<div class="data wdt-show-only-simple">' +
 			    		'<div class="name cclass-{{class}}">{{name}}</div>' +
-			    		'<div class="char-sri">{{> char-sri}}</div>' +
+			    		'<div class="char-sri">{{> sri}}</div>' +
 						'{{#talents}}' +
 			    			'<div class="talentspec {{#selected}} active{{/selected}}">' +
 								'<img class="icon-talentspec" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}' +
@@ -998,7 +1145,7 @@ var WowDataTooltip = {
 				    		'<div class="name cclass-{{class}}">{{name}}</div>' +
 				    		'<div class="level class race">{{lrc}}</div>' +
 							'{{#items}}' +
-								'<div class="itemlevel">{{> char-ilvl}}</div>' +
+								'<div class="itemlevel">{{> ilvl}}</div>' +
 							'{{/items}}' +
 							'{{#professions}}' +
 								'<div class="professions wdt-show-only-extended">' +
@@ -1023,9 +1170,9 @@ var WowDataTooltip = {
 			'guild': (
 				'<div class="tooltip-guild template-default">' +
 	    			'<div class="name cside-{{side}}">{{name}}</div>' +
-		    		'<div class="guild-sri">{{> guild-sri}}</div>' +
+		    		'<div class="guild-sri">{{> sri}}</div>' +
 					'{{#membercount}}' +
-		    			'<div class="guild-members">{{> guild-members}}</div>' +
+		    			'<div class="guild-members">{{> members}}</div>' +
 					'{{/membercount}}' +
 					'<div class="achievementpoints last"><span class="achpoints">{{achievementPoints}}</span></div>' +
 				'</div>'
@@ -1059,15 +1206,182 @@ var WowDataTooltip = {
 	'i18n': {
 		'en_US': {
 			'templates': {
-				'char-sri'     : '{{level}} {{racename}} {{classname}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})',
-				'guild-sri'    : 'Level {{level}} {{sidename}} Guild, {{realm}}',
-				'guild-members': '{{membercount}} members'
+				'item': {
+					'heroic'       : 'Heroic',
+					'maxCount'     : 'Unique ({{maxCount}})',
+					'damage'       : '{{minDamage}} - {{maxDamage}} Damage',
+					'weaponSpeed'  : 'Speed {{weaponSpeed}}',
+					'dps'          : '({{dps}} damage per second)',
+					'maxDurability': 'Durability {{maxDurability}} / {{maxDurability}}',
+					
+					'stat-7'     : '<span class="base">{{#amount?}}+{{/amount?}}{{amount}} Stamina</span>'
+				},
+				'character': {
+					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
+					'ilvl': '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : 'Level {{level}} {{side_loc}} Guild, {{realm}}',
+					'members': '{{membercount}} members'
+				}
 			},
 			'loading-realm'    : 'Loading realm...',
+			'loading-item'     : 'Loading item...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
 			'realm-not-found'  : 'Realm not found!',
+			'itemBind:1'  : 'Binds when picked up',
+			'itemBind:2'  : 'Binds when equipped',
+			'itemBind:3'  : 'Binds when used',
+			
+			
+			
+			
+			'itemClass:0'   : 'Consumeable',
+			'itemClass:0.0' : 'Consumeable',
+			'itemClass:0.1' : 'Potion',
+			'itemClass:0.2' : 'Elixir',
+			'itemClass:0.3' : 'Flask',
+			'itemClass:0.4' : 'Scroll',
+			'itemClass:0.5' : 'Food & Drink',
+			'itemClass:0.6' : 'Item Enhancement',
+			'itemClass:0.7' : 'Bandage',
+			'itemClass:0.8' : 'Other',
+			
+			'itemClass:1'   : 'Container',
+			'itemClass:1.0' : 'Bag',
+			'itemClass:1.1' : 'Soul Bag',
+			'itemClass:1.2' : 'Herb Bag',
+			'itemClass:1.3' : 'Enchanting Bag',
+			'itemClass:1.4' : 'Engineering Bag',
+			'itemClass:1.5' : 'Gem Bag',
+			'itemClass:1.6' : 'Mining Bag',
+			'itemClass:1.7' : 'Leatherworking Bag',
+			'itemClass:1.8' : 'Inscription Bag',
+			'itemClass:1.9' : 'Tackle Box',
+			
+			'itemClass:2'   : 'Weapon',
+			'itemClass:2.0' : 'Axe', // One-Handed
+			'itemClass:2.1' : 'Axe', // Two-Handed
+			'itemClass:2.2' : 'Bow',
+			'itemClass:2.3' : 'Gun',
+			'itemClass:2.4' : 'Mace', // One-Handed
+			'itemClass:2.5' : 'Mace', // Two-Handed
+			'itemClass:2.6' : 'Polearm',
+			'itemClass:2.7' : 'Sword', // One-Handed
+			'itemClass:2.8' : 'Sword', // Two-Handed
+			'itemClass:2.10': 'Staff',
+			'itemClass:2.13': 'Fist Weapon',
+			'itemClass:2.14': 'Miscellaneous',
+			'itemClass:2.15': 'Dagger',
+			'itemClass:2.16': 'Thrown',
+			'itemClass:2.18': 'Crossbow',
+			'itemClass:2.19': 'Wand',
+			'itemClass:2.20': 'Fishing Pole',
+			
+			'itemClass:3'   : 'Gem',
+			'itemClass:3.0' : 'Red',
+			'itemClass:3.1' : 'Blue',
+			'itemClass:3.2' : 'Yellow',
+			'itemClass:3.3' : 'Purple',
+			'itemClass:3.4' : 'Green',
+			'itemClass:3.5' : 'Orange',
+			'itemClass:3.6' : 'Meta',
+			'itemClass:3.7' : 'Simple',
+			'itemClass:3.8' : 'Prismatic',
+			'itemClass:3.9' : 'Hydraulic',
+			'itemClass:3.10': 'Cogwheel',
+			
+			'itemClass:4' : 'Armour',
+			'itemClass:4.0' : 'Miscellaneous',
+			'itemClass:4.1' : 'Cloth',
+			'itemClass:4.2' : 'Leather',
+			'itemClass:4.3' : 'Mail',
+			'itemClass:4.4' : 'Plate',
+			'itemClass:4.6' : 'Shield',
+			'itemClass:4.7' : 'Libram',
+			'itemClass:4.8' : 'Idol',
+			'itemClass:4.9' : 'Totem',
+			'itemClass:4.10': 'Sigil',
+			'itemClass:4.11': 'Relic',
+			
+			'itemClass:7'   : 'Trade Goods',
+			'itemClass:7.0' : 'Trade Goods',
+			'itemClass:7.1' : 'Parts',
+			'itemClass:7.2' : 'Explosives',
+			'itemClass:7.3' : 'Devices',
+			'itemClass:7.4' : 'Jewelcrafting',
+			'itemClass:7.5' : 'Cloth',
+			'itemClass:7.6' : 'Leather',
+			'itemClass:7.7' : 'Metal & Stone',
+			'itemClass:7.8' : 'Meat',
+			'itemClass:7.9' : 'Herb',
+			'itemClass:7.10': 'Elemental',
+			'itemClass:7.11': 'Other',
+			'itemClass:7.12': 'Enchanting',
+			'itemClass:7.13': 'Materials',
+			'itemClass:7.14': 'Item Enchantment',
+			
+			'itemClass:9'   : 'Recipe',
+			'itemClass:9.0' : 'Book',
+			'itemClass:9.1' : 'Leatherworking',
+			'itemClass:9.2' : 'Tailoring',
+			'itemClass:9.3' : 'Engineering',
+			'itemClass:9.4' : 'Blacksmithing',
+			'itemClass:9.5' : 'Cooking',
+			'itemClass:9.6' : 'Alchemy',
+			'itemClass:9.7' : 'First Aid',
+			'itemClass:9.8' : 'Enchanting',
+			'itemClass:9.9' : 'Fishing',
+			'itemClass:9.10': 'Jewelcrafting',
+			'itemClass:9.11': 'Inscription',
+			
+			'itemClass:12'  : 'Quest',
+			'itemClass:12.0': 'Quest',
+			
+			'itemClass:15'  : 'Miscellaneous',
+			'itemClass:15.0': 'Junk',
+			'itemClass:15.1': 'Reagent',
+			'itemClass:15.2': 'Pet',
+			'itemClass:15.3': 'Holiday',
+			'itemClass:15.4': 'Other',
+			'itemClass:15.5': 'Mount',
+			
+			'itemClass:16'   : 'Glyph',
+			'itemClass:16.0' : 'Glyph',
+			'itemClass:16.1' : 'Warrior',
+			'itemClass:16.2' : 'Paladin',
+			'itemClass:16.3' : 'Hunter',
+			'itemClass:16.4' : 'Rogue',
+			'itemClass:16.5' : 'Priest',
+			'itemClass:16.6' : 'Death Knight',
+			'itemClass:16.7' : 'Shaman',
+			'itemClass:16.8' : 'Mage',
+			'itemClass:16.9' : 'Warlock',
+			'itemClass:16.11': 'Druid',
+			
+			'inventoryType:1' : 'Head',
+			'inventoryType:2' : 'Neck',
+			'inventoryType:3' : 'Shoulder',
+			'inventoryType:4' : 'Shirt',
+			'inventoryType:5' : 'Chest',
+			'inventoryType:6' : 'Waist',
+			'inventoryType:7' : 'Legs',
+			'inventoryType:8' : 'Feet',
+			'inventoryType:9' : 'Wrist',
+			'inventoryType:10': 'Hands',
+			'inventoryType:11': 'Finger',
+			'inventoryType:12': 'Trinket',
+			'inventoryType:13': 'One-Hand',
+			'inventoryType:15': 'Ranged', // Bow
+			'inventoryType:16': 'Back',
+			'inventoryType:17': 'Two-Hand',
+			'inventoryType:21': 'Main-hand',
+			'inventoryType:22': 'Off-hand',
+			'inventoryType:23': 'Held in off-hand',
+			'inventoryType:25': 'Ranged', // Thrown
+			'inventoryType:26': 'Ranged', // Gun, Crossbow, Wand
+			
 			'class:1' : 'Warrior',
 			'class:2' : 'Paladin',
 			'class:3' : 'Hunter',
@@ -1106,12 +1420,17 @@ var WowDataTooltip = {
 		},
 		'es_MX': {
 			'templates': {
-				'char-sri'     : '{{classname}} de {{racename}}, nivel {{level}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} nvl. de obj. promedio ({{averageItemLevel}})',
-				'guild-sri'    : 'Hermandad {{sidename}}, nivel {{level}}, {{realm}}',
-				'guild-members': '{{membercount}} miembros'
+				'character': {
+					'sri' : '{{class_loc}} de {{race_loc}}, nivel {{level}}',
+					'ilvl': '{{averageItemLevelEquipped}} nvl. de obj. promedio ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : 'Hermandad {{side_loc}}, nivel {{level}}, {{realm}}',
+					'members': '{{membercount}} miembros'
+				}
 			},
 			'loading-realm'    : 'Cargando reino ...',
+			'loading-item'     : 'Cargando Objeto...',
 			'loading-character': 'Cargando carácter ...',
 			'loading-guild'    : 'Carga del gremio ...',
 			'realm-not-found'  : 'Reino que no se encuentra!',
@@ -1153,12 +1472,17 @@ var WowDataTooltip = {
 		},
 		'en_GB': {
 			'templates': {
-				'char-sri'     : '{{level}} {{racename}} {{classname}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})',
-				'guild-sri'    : 'Level {{level}} {{sidename}} Guild, {{realm}}',
-				'guild-members': '{{membercount}} members'
+				'character': {
+					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
+					'ilvl': '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : 'Level {{level}} {{side_loc}} Guild, {{realm}}',
+					'members': '{{membercount}} members'
+				}
 			},
 			'loading-realm'    : 'Loading realm...',
+			'loading-item'     : 'Loading item...',
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
 			'realm-not-found'  : 'Realm not found!',
@@ -1200,12 +1524,17 @@ var WowDataTooltip = {
 		},
 		'es_ES': {
 			'templates': {
-				'char-sri'     : '{{racename}} {{classname}} {{level}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} Nivel medio de objeto ({{averageItemLevel}})',
-				'guild-sri'    : 'Hermandad ({{sidename}}), nivel {{level}}, {{realm}}',
-				'guild-members': '{{membercount}} miembros'
+				'character': {
+					'sri' : '{{race_loc}} {{class_loc}} {{level}}',
+					'ilvl': '{{averageItemLevelEquipped}} Nivel medio de objeto ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : 'Hermandad ({{side_loc}}), nivel {{level}}, {{realm}}',
+					'members': '{{membercount}} miembros'
+				}
 			},
 			'loading-realm'    : 'Cargando reino ...',
+			'loading-item'     : 'Cargando Objeto...',
 			'loading-character': 'Cargando carácter ...',
 			'loading-guild'    : 'Carga del gremio ...',
 			'realm-not-found'  : 'Reino que no se encuentra!',
@@ -1247,12 +1576,17 @@ var WowDataTooltip = {
 		},
 		'fr_FR': {
 			'templates': {
-				'char-sri' : '{{classname}} {{racename}} niv. {{level}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} Niveau moyen des objets ({{averageItemLevel}})',
-				'guild-sri'    : 'Guilde de niveau {{level}}, faction {{sidename}}, {{realm}}',
-				'guild-members': '{{membercount}} membres'
+				'character': {
+					'sri' : '{{class_loc}} {{race_loc}} niv. {{level}}',
+					'ilvl': '{{averageItemLevelEquipped}} Niveau moyen des objets ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : 'Guilde de niveau {{level}}, faction {{side_loc}}, {{realm}}',
+					'members': '{{membercount}} membres'
+				}
 			},
 			'loading-realm'    : 'Chargement realm ...',
+			'loading-item'     : 'Chargement article ...',
 			'loading-character': 'Chargement de caractère ...',
 			'loading-guild'    : 'Chargement de guilde ...',
 			'realm-not-found'  : 'Realm pas été trouvé!',
@@ -1294,12 +1628,17 @@ var WowDataTooltip = {
 		},
 		'ru_RU': {
 			'templates': {
-				'char-sri'     : '{{classname}}-{{racename}} {{level}} yp.',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} средний ({{averageItemLevel}})',
-				'guild-sri'    : 'Гильдия {{level}}-го ур. ({{sidename}}), {{realm}}',
-				'guild-members': 'Членов гильдии: {{membercount}}'
+				'character': {
+					'sri' : '{{class_loc}}-{{race_loc}} {{level}} yp.',
+					'ilvl': '{{averageItemLevelEquipped}} средний ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : 'Гильдия {{level}}-го ур. ({{side_loc}}), {{realm}}',
+					'members': 'Членов гильдии: {{membercount}}'
+				}
 			},
 			'loading-realm'    : 'Загрузка области ...',
+			'loading-item'     : 'Загрузка пункт ...',
 			'loading-character': 'Загрузка характер ...',
 			'loading-guild'    : 'Загрузка гильдии ...',
 			'realm-not-found'  : 'Площадь не найден!',
@@ -1341,14 +1680,19 @@ var WowDataTooltip = {
 		},
 		'de_DE': {
 			'templates': {
-				'char-sri'     : '{{level}}, {{racename}}, {{classname}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} Durchschnittliche Gegenstandsstufe ({{averageItemLevel}})',
-				'guild-sri'    : 'Stufe {{level}} {{sidename}}-Gilde, {{realm}}',
-				'guild-members': '{{membercount}} Mitglieder'
+				'character': {
+					'sri' : '{{level}}, {{race_loc}}, {{class_loc}}',
+					'ilvl': '{{averageItemLevelEquipped}} Durchschnittliche Gegenstandsstufe ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : 'Stufe {{level}} {{side_loc}}-Gilde, {{realm}}',
+					'members': '{{membercount}} Mitglieder'
+				}
 			},
-			'loading-realm'    : 'Lade Realm...',
-			'loading-character': 'Lade Charakter...',
-			'loading-guild'    : 'Lade Gilde...',
+			'loading-realm'    : 'Lade Realm ...',
+			'loading-item'     : 'Lade Gegenstand ...',
+			'loading-character': 'Lade Charakter ...',
+			'loading-guild'    : 'Lade Gilde ...',
 			'realm-not-found'  : 'Realm nicht gefunden!',
 			'class:1' : {'gender:0': 'Krieger',      'gender:1': 'Kriegerin'},
 			'class:2' : {'gender:0': 'Paladin',      'gender:1': 'Paladin'},
@@ -1388,12 +1732,17 @@ var WowDataTooltip = {
 		},
 		'ko_KR': {
 			'templates': {
-				'char-sri'     : '{{level}} {{racename}} {{classname}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} 평균 아이템 레벨 ({{averageItemLevel}})',
-				'guild-sri'    : '{{level}} 레벨 {{sidename}} 길드, {{realm}}',
-				'guild-members': '구성원 {{membercount}}명'
+				'character': {
+					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
+					'ilvl': '{{averageItemLevelEquipped}} 평균 아이템 레벨 ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : '{{level}} 레벨 {{side_loc}} 길드, {{realm}}',
+					'members': '구성원 {{membercount}}명'
+				}
 			},
 			'loading-realm'    : '영역을로드하는 중 ...',
+			'loading-item'     : '항목을로드 중 ...',
 			'loading-character': '문자를로드 중입니다 ...',
 			'loading-guild'    : '로딩 길드 ...',
 			'realm-not-found'  : '영역을 찾을 수 없습니다!',
@@ -1435,12 +1784,17 @@ var WowDataTooltip = {
 		},
 		'zh_TW': {
 			'templates': {
-				'char-sri' : '{{level}} {{racename}} {{classname}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} 平均物品等級 ({{averageItemLevel}})',
-				'guild-sri'    : '等級{{level}}{{sidename}}公會, {{realm}}',
-				'guild-members': '共{{membercount}}位成員'
+				'character': {
+					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
+					'ilvl': '{{averageItemLevelEquipped}} 平均物品等級 ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : '等級{{level}}{{side_loc}}公會, {{realm}}',
+					'members': '共{{membercount}}位成員'
+				}
 			},
 			'loading-realm'    : '載入境界...',
+			'loading-item'     : '加載項...',
 			'loading-character': '載入字符...',
 			'loading-guild'    : '載入公會...',
 			'realm-not-found'  : '境界不存在！',
@@ -1482,12 +1836,17 @@ var WowDataTooltip = {
 		},
 		'zh_CN': {
 			'templates': {
-				'char-sri'     : '{{level}} {{racename}} {{classname}}',
-				'char-ilvl'    : '{{averageItemLevelEquipped}} 物品平均等级 ({{averageItemLevel}})',
-				'guild-sri'    : '{{level}} 级 {{sidename}} 公会, {{realm}}',
-				'guild-members': '{{membercount}} 个成员'
+				'character': {
+					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
+					'ilvl': '{{averageItemLevelEquipped}} 物品平均等级 ({{averageItemLevel}})'
+				},
+				'guild': {
+					'sri'    : '{{level}} 级 {{side_loc}} 公会, {{realm}}',
+					'members': '{{membercount}} 个成员'
+				}
 			},
 			'loading-realm'    : '载入境界...',
+			'loading-item'     : '载入项目...',
 			'loading-character': '载入字符...',
 			'loading-guild'    : '正在载入公会...',
 			'realm-not-found'  : '没有发现的境界！',
@@ -1532,17 +1891,20 @@ var WowDataTooltip = {
 	'patterns': {
 		'explicit': {
 			'realm'    : /realm:(us|eu|kr|tw|cn)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
+			'item'     : /item:(us|eu|kr|tw|cn)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
 			'character': /character:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
 			'guild'    : /guild:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
 		},
 		'battlenet': {
-			'character': /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/]+)\/.*/,
-			'guild'    : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/]+)\/.*/
+			'item'     : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/item\/([^\/#]+).*/,
+			'character': /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/#]+).*/,
+			'guild'    : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/#]+).*/
 		},
 		'api': {
 			'data.classes': 'http://{{host}}/api/wow/data/character/classes?locale={{locale}}',
 			'data.races'  : 'http://{{host}}/api/wow/data/character/races?locale={{locale}}',
 			'realm'       : 'http://{{host}}/api/wow/realm/status?realm={{realm}}&locale={{locale}}',
+			'item'        : 'http://{{host}}/api/wow/item/{{itemid}}?locale={{locale}}',
 			'character'   : 'http://{{host}}/api/wow/character/{{realm}}/{{character}}?fields=guild,talents,items,professions&locale={{locale}}',
 			'guild'       : 'http://{{host}}/api/wow/guild/{{realm}}/{{guild}}?fields=members&locale={{locale}}',
 		},
@@ -1550,6 +1912,7 @@ var WowDataTooltip = {
 			'data.classes': '{{host}}#{{locale}}',
 			'data.races'  : '{{host}}#{{locale}}',
 			'realm'       : '{{host}}#{{realm}}#{{locale}}',
+			'item'        : '{{host}}#{{itemid}}#{{locale}}',
 			'character'   : '{{host}}#{{realm}}#{{character}}#{{locale}}',
 			'guild'       : '{{host}}#{{realm}}#{{guild}}#{{locale}}',			
 		}
@@ -1610,6 +1973,7 @@ var WowDataTooltip = {
 			'character-race': {}
 		},
 		'template': {
+			'item'     : {},
 			'character': {},
 			'guild'    : {}			
 		}
