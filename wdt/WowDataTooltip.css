@@ -311,9 +311,13 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 .tooltip-item .classification,
 .tooltip-item .damage,
 .tooltip-item .dps,
-.tooltip-item .socket,
+.tooltip-item .socketInfo,
 .tooltip-item .maxDurability {
 	padding-bottom: 1px;
+}
+
+.tooltip-item .socketInfo {
+	padding-left: 5px;
 }
 
 .tooltip-item .data {
