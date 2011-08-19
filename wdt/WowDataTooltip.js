@@ -558,10 +558,16 @@ var WowDataTooltip = {
 		return result;
 	},
 	
-	getMetaTVars: function() {
+	getMetaTVars: function(loc) {
 		return {
 			'extendedActive'      : this.getSetting(['extendedMode', 'active']),
-			'extendedKeyCodeLabel': this.getSetting(['extendedMode', 'keyCode.label'])
+			'extendedKeyCodeLabel': this.getSetting(['extendedMode', 'keyCode.label']),
+			'renderEmptySocket'   : function() {
+				return function(text, render) {
+					socketid = render(text);
+					return '<span class="icon-socket socket-'+socketid+'"><span class="empty"></span><span class="frame"></span></span> ' + WowDataTooltip.localize(loc, ('socket:'+socketid));
+				}
+			}
 		};
 	},
 	
@@ -573,7 +579,7 @@ var WowDataTooltip = {
         
 		if(data.realms.length == 1) {
 			var realm                = data.realms[0];
-			var tvars                = jQuery.extend(true, {}, this.getMetaTVars(), realm);
+			var tvars                = jQuery.extend(true, {}, this.getMetaTVars(loc), realm);
 			var realmtype            = this.localize(loc, ('realmtype:'+realm.type))
 			var realmqueue           = this.localize(loc, ('realmqueue:'+realm.queue))
 			var realmstatus          = this.localize(loc, ('realmstatus:'+realm.status))
@@ -610,7 +616,7 @@ var WowDataTooltip = {
 		
 		return this.mustache.process(
 			this.getTemplate('default', 'item'),
-			jQuery.extend(true, {}, this.getMetaTVars(), data, add),
+			jQuery.extend(true, {}, this.getMetaTVars(loc), data, add),
 			this.localize(loc, ['templates', 'item'])
 		);
 	},
@@ -630,7 +636,7 @@ var WowDataTooltip = {
 		
 		return this.mustache.process(
 			this.getTemplate('default', 'character'),
-			jQuery.extend(true, {}, this.getMetaTVars(), data, add),
+			jQuery.extend(true, {}, this.getMetaTVars(loc), data, add),
 			this.localize(loc, ['templates', 'character'])
 		);
 	},
@@ -650,7 +656,7 @@ var WowDataTooltip = {
 		
 		return this.mustache.process(
 			this.getTemplate('default', 'guild'),
-			jQuery.extend(true, {}, this.getMetaTVars(), data, add),
+			jQuery.extend(true, {}, this.getMetaTVars(loc), data, add),
 			this.localize(loc, ['templates', 'guild'])
 		);
 	},
@@ -1100,7 +1106,7 @@ var WowDataTooltip = {
 						'{{#socketInfo}}' +
 							'<div class="socketInfo">' +
 								'{{#sockets}}' +
-									'<div class="socket">{{type}}</div>' +
+									'<div class="socket">{{#renderEmptySocket}}{{type}}{{/renderEmptySocket}}</div>' +
 								'{{/sockets}}' +
 							'</div>' +
 						'{{/socketInfo}}' +
@@ -1234,6 +1240,10 @@ var WowDataTooltip = {
 			'itemBind:2'  : 'Binds when equipped',
 			'itemBind:3'  : 'Binds when used',
 			
+			'socket:BLUE'  : 'Blue Socket',
+			'socket:RED'   : 'Red Socket',
+			'socket:YELLOW': 'Yellow Socket',
+			'socket:META'  : 'Meta Socket',
 			
 			
 			
