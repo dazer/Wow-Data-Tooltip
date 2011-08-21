@@ -125,7 +125,7 @@
 .cquality-1 { /* Common      */ color: #FFFFFF !important; }
 .cquality-2 { /* Uncommon    */ color: #1EFF00 !important; }
 .cquality-3 { /* Rare        */ color: #0070FF !important; }
-.cquality-4 { /* Epic        */ color: #A335EE !important; }
+.cquality-4 { /* Epic        */ color: #C600FF !important; }
 .cquality-5 { /* Legendary   */ color: #FF8000 !important; }
 .cquality-6 { /* Artifact    */ color: #E6CC80 !important; }
 .cquality-7 { /* Heirloom    */ color: #E6CC80 !important; }
@@ -143,6 +143,14 @@
 
 .cside-0   { /* Alliance     */ color: #80BBFF !important; }
 .cside-1   { /* Horde        */ color: #FF8080 !important; }
+
+/* --------------------------------------------------------------------------
+ *  Money Icons
+ * -------------------------------------------------------------------------- */
+
+.wdt-tooltip .icon-gold      { padding-right: 15px; background: url(data:image/gif;base64,R0lGODlhDAALAOYAAAAAAP///ygODyERFCQeIh8THScTLCAVJsG9HJSNI+XbRmFYDdzMQbmjADAqAL2lB05FBLejHMOuH+TPKMu4Nb2uO8W0Qt/NUc28StnJT//0p1FGAMuvDayXJMGqKtG6NrmlNOfQRN/JQtzFQcOvPtG9ROLOUdbCTykmExkVANe0ErufF9KzG8qtIxgVBuPMWvPedT0xABANAM+rDJN7GciqLr+iLcuxQLuUADouAMifEdqvFRsWA9SuKYRtHbSZMNq6QeLGZUs5ALyUEcGaIdevKa+NIeG2LMOhM1lJGN7AYO/ZjkAvAdGeEcWbI7uZN7qgVsCMAr6NFOq5OMqUFraJIrCFJlZDGKOCOzYkAL6GF4FiIc6cO8iaQuq9Yk44EfXWn1Q6FS4aAFRAJR4RASUZC1E+LRsLACsnJiMPDv///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAGoALAAAAAAMAAsAAAd2gGqCamViOQ6DgwNfPlZERlhhgzxJNCtDOEdONkJqBUw/RVFVUlpUKh1kaFtTTTotSCxcOw8GLiA9XU8SNzVeMw1pKAgTShYnFyNAHBFnBAkmGktgLyIeJFkHajEVFDBBIR8YCzKDGwoZDCVQVymJgmYQYwKJgQA7) right center no-repeat; }
+.wdt-tooltip .icon-silver    { padding-right: 15px; background: url(data:image/gif;base64,R0lGODlhDAALAOYAAAAAAP///xUTFG5sbZSSk4SCgwsGCh4UHGpgaG1ja3Rqcnlvd3ZsdIF3f3x3e3ZxdYWAhIF8gKumqqCbnwsGDBsWHCAbIVVQVmNeZJSPlaijqaahp7CrsaumrBwUH3FpdHdvenhwe4J6hX93gn11gJCIkwoICx8dIBMSGElITpCPlZuaoMTDydjX3UJCRExMTlxcXnJydGlpa4ODhRwdITk6PpWWmt/g5BESFBcYGmNkZnZ3eYqLja6vsausrgsNDDEzMpKUk36Af8vNzMjKya+xsAcQCyIrJkxVUEJIRGdtaWRqZmFnY250cHJ4dIKIhBQVEFhZVIeIg5malZeYk7CxrKWmoba3sgUFAxYWFB8fHSgoJiYlI3h3dSEaFD02MEI7NUdAOhkVFDUxMIiEg5qWlf///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAGYALAAAAAAMAAsAAAdxgGaCgllaW4OIJy8wMTMyLohHSExKTU9OS0mCFhgZCQwICggNCwdiY2VkHyEgIiUkIx4CAwQFDxEOExIQDwY4Oz49VFZXVVNSUVA0NTY3Q0NERUFCQII5OjwsLSsrKikog1xdHBsaHRcViIJfYWBeiIEAOw==) right center no-repeat; }
+.wdt-tooltip .icon-copper    { padding-right: 15px; background: url(data:image/gif;base64,R0lGODlhDAALAOYAAAAAAP///xYGB1hERRgAAxEFCREGDgYABQADBAEMCAACAQgIBgoIAAcGBL2SaLSNZjEcCRsNAmdCJbN6T5BiQDsgDUAlEs2ce9OlhA0FAJVDEY9FGKhXIpVSKLBkMyETCpxnR6t1U9alhY4/FDAWB3Y2E55NIKBSJJ5TKYpKJk0qFpZSLZNUMbNoPo5TMZlaN6drR8J+WZ9xVwYCAC4UB5xFGolBG4A8GZJHH5xULqtwUmJBML+GafS7nikNAHArCnMxEYI9HJJGJIpEIplQLZdOLlo2Js2QdOKliSgNAmsrD4w5F45HK8FuTGk+LcaDaBIFAH44HqJPL6ZZO6hbPbuCbqBMMJ9OM3pALI9SPcl5YKZpVMKBa6BrWSEHAB8HAGsyIa5xXywJAE0lHSITEHVNRbV8cRcDAEIdFw4AAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAGoALAAAAAAMAAsAAAdxgGqCglBfSYOIBGhgUUxYY4gzSjcbGhwnNkCCaQNURUElKUNCUl5qPjgeI0tWV1NEHR9qKk05KywuMDEoJmRqRlpPOhQPDhMtNQVqNFlHPSIYFyEvP4IZOyA8SFxbXU5igxESMlVhZmVniIIQFhUkiIEAOw==) right center no-repeat; }
 
 /* --------------------------------------------------------------------------
  *  Socket Icons
@@ -305,14 +313,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 	padding-bottom: 3px;	
 }
 
-.tooltip-item .heroic,
-.tooltip-item .itemBind,
-.tooltip-item .maxCount,
-.tooltip-item .classification,
-.tooltip-item .damage,
-.tooltip-item .dps,
-.tooltip-item .socketInfo,
-.tooltip-item .maxDurability {
+.tooltip-item .row {
 	padding-bottom: 1px;
 }
 
@@ -356,12 +357,21 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 .tooltip-item .socketInfo .socket {
 	line-height: 18px;
 	overflow: hidden;
+	color: #808080;
 }
 
 .tooltip-item .socketInfo .icon-socket {
 	float: left;
 	margin-right: 4px;
 	margin-top: 1px;
+}
+
+.tooltip-item .secondaryStat {
+	color: #0F0;
+}
+
+.tooltip-item .description {
+	color: #FFD100;
 }
 
 /* --------------------------------------------------------------------------

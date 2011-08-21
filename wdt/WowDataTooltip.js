@@ -108,6 +108,12 @@ var WowDataTooltip = {
 			test: window.jQuery,
 			nope: WowDataTooltip.getSetting(['files', 'jquery.js']),
 			complete: function () {
+				if(!window.jQuery.jqote) {
+					/* jQote2 - client-side Javascript templating engine | Copyright (C) 2010, aefxx | http://aefxx.com/ | Dual licensed under the WTFPL v2 or MIT (X11) licenses | WTFPL v2 Copyright (C) 2004, Sam Hocevar | Date: Thu, Oct 21st, 2010 | Version: 0.9.7 */
+					(function($){var _=false,E1="UndefinedTemplateError",E2="TemplateCompilationError",E3="TemplateExecutionError",A="[object Array]",S="[object String]",F="[object Function]",n=1,c="%",q=/^[^<]*(<[\w\W]+>)[^>]*$/,ts=Object.prototype.toString;function r(e,x){throw ($.extend(e,x),e)}function dns(f) {var a=[];if(ts.call(f)!==A)return _;for(var i=0,l=f.length;i<l;i++)a[i]=f[i].jqote_id;return a.length?a.sort().join('.').replace(/(\b\d+\b)\.(?:\1(\.|$))+/g,"$1$2"):_}function l(s,t){var f,g=[],t=t||c,x=ts.call(s);if(x===F)return s.jqote_id?[s]:_;if(x!==A)return[$.jqotec(s,t)];if(x===A)for(var i=0,l=s.length;i<l;i++)return g.length?g:_}$.fn.extend({jqote:function(x,y){var x=ts.call(x)===A?x:[x],d="";this.each(function(i){var f=$.jqotec(this,y);for(var j=0;j<x.length;j++)d+=f.call(x[j],i,j,x,f)});return d}});$.each({app:"append",pre:"prepend",sub:"html"},function(x,y){$.fn["jqote"+x]=function(e,d,t){var p,r,s=$.jqote(e,d,t),$$=!q.test(s)?function(s){return $(document.createTextNode(s))}:$;if(!!(p=dns(l(e))))r=new RegExp("(^|\\.)"+p.split(".").join("\\.(.*)?")+"(\\.|$)");return this.each(function(){var z=$$(s);$(this)[y](z);(z[0].nodeType===3?$(this):z).trigger("jqote."+x,[z,r])})}});
+					$.extend({jqote:function(e,d,t){var s="",t=t||c,f=l(e);if(f===_)r(new Error("Empty or undefined template passed to $.jqote"),{type:E1});d=ts.call(d)!==A?[d]:d;for(var i=0,m=f.length;i<m;i++)for(var j=0;j<d.length;j++)s+=f[i].call(d[j],i,j,d,f[i]);return s},jqotec:function(x,t){var h,e,y,t=t||c,z=ts.call(x);if(z===S&&q.test(x)){e=y=x;if(h=$.jqotecache[x])return h}else{e=z===S||x.nodeType?$(x):x instanceof jQuery?x:null;if(!e[0]||!(y=e[0].innerHTML)&&!(y=e.text()))r(new Error("Empty or undefined template passed to $.jqotec"),{type:E1});if(h=$.jqotecache[$.data(e[0],"jqote_id")])return h}var s="",i,a=y.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]/g,"").split("<"+t).join(t+">\x1b").split(t+">");for(var m=0,k=a.length;m<k;m++)s+=a[m].charAt(0)!=="\x1b"?"out+='"+a[m].replace(/(\\|["'])/g,"\\$1")+"'":(a[m].charAt(1)==="="?";out+=("+a[m].substr(2)+");":(a[m].charAt(1)==="!"?";out+=$.jqotenc(("+a[m].substr(2)+"));":";"+a[m].substr(1)));s="try{"+('var out="";'+s+";return out;").split("out+='';").join("").split('var out="";out+=').join("var out=")+'}catch(e){e.type="'+E3+'";e.args=arguments;e.template=arguments.callee.toString();throw e;}';try{var f=new Function("i, j, data, fn",s)}catch(e){r(e,{type:E2})}i=e instanceof jQuery?$.data(e[0],"jqote_id",n):e;return $.jqotecache[i]=(f.jqote_id=n++,f)},
+					jqotefn:function(e){var t=ts.call(e),i=t===S&&q.test(e)?e:$.data($(e)[0],"jqote_id");return $.jqotecache[i]||_},jqotetag:function(s){if(ts.call(s)===S)c=s},jqotenc:function(s){return s.toString().replace(/&(?!\w+;)/g,'&#38;').split('<').join('&#60;').split('>').join('&#62;').split('"').join('&#34;').split("'").join('&#39;')},jqotecache:{}});$.event.special.jqote={add:function(o){var n,h=o.handler,d=!o.data?[]:ts.call(o.data)!==A?[o.data]:o.data;if(!o.namespace)o.namespace="app.pre.sub";if(!d.length||!(n=dns(l(d))))return;o.handler=function(e,m,r){return !r||r.test(n)?h.apply(this,[e,m]):null}}}})(jQuery);
+				}
 				yepnope({
 					test: jQuery.qtip,
 					nope: [
@@ -204,8 +210,8 @@ var WowDataTooltip = {
 					'locale'   : this.getLocaleFromRegionLang(result[1], result[3]),
 					'host'     : this.getHostFromRegion(result[1])
 				};
-				apicall = this.mustache.process(this['patterns']['api']['realm'], params);
-				hash    = this.mustache.process(this['patterns']['hash']['realm'], params);
+				apicall = jQuery.jqote(this['patterns']['api']['realm'], params);
+				hash    = jQuery.jqote(this['patterns']['hash']['realm'], params);
 				content = this.getFromCache('template', 'realm', hash);
 				if(content != false) {
 					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'realm']));
@@ -236,8 +242,8 @@ var WowDataTooltip = {
 					'locale': this.getLocaleFromRegionLang(result[1], result[3]),
 					'host'  : this.getHostFromRegion(result[1])
 				};
-				apicall = this.mustache.process(this['patterns']['api']['item'], params);
-				hash    = this.mustache.process(this['patterns']['hash']['item'], params);
+				apicall = jQuery.jqote(this['patterns']['api']['item'], params);
+				hash    = jQuery.jqote(this['patterns']['hash']['item'], params);
 				content = this.getFromCache('template', 'item', hash);
 				if(content != false) {
 					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'item']));
@@ -272,8 +278,8 @@ var WowDataTooltip = {
 					'locale'   : this.getLocaleFromRegionLang(result[1], result[4]),
 					'host'     : this.getHostFromRegion(result[1])
 				};
-				apicall = this.mustache.process(this['patterns']['api']['character'], params);
-				hash    = this.mustache.process(this['patterns']['hash']['character'], params);
+				apicall = jQuery.jqote(this['patterns']['api']['character'], params);
+				hash    = jQuery.jqote(this['patterns']['hash']['character'], params);
 				content = this.getFromCache('template', 'character', hash);
 				if(content != false) {
 					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'character']));
@@ -308,8 +314,8 @@ var WowDataTooltip = {
 					'locale': this.getLocaleFromRegionLang(result[1], result[4]),
 					'host'  : this.getHostFromRegion(result[1])
 				};
-				apicall = this.mustache.process(this['patterns']['api']['guild'], params);
-				hash    = this.mustache.process(this['patterns']['hash']['guild'], params);
+				apicall = jQuery.jqote(this['patterns']['api']['guild'], params);
+				hash    = jQuery.jqote(this['patterns']['hash']['guild'], params);
 				content = this.getFromCache('template', 'guild', hash);
 				if(content != false) {
 					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'guild']));
@@ -354,8 +360,8 @@ var WowDataTooltip = {
 					'itemid': result[3],
 					'locale': this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
 				};
-				apicall = this.mustache.process(this['patterns']['api']['item'], params);
-				hash    = this.mustache.process(this['patterns']['hash']['item'], params);
+				apicall = jQuery.jqote(this['patterns']['api']['item'], params);
+				hash    = jQuery.jqote(this['patterns']['hash']['item'], params);
 				content = this.getFromCache('template', 'item', hash);
 				if(content != false) {
 					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'item']));
@@ -389,8 +395,8 @@ var WowDataTooltip = {
 					'character': result[4],
 					'locale'   : this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
 				};
-				apicall = this.mustache.process(this['patterns']['api']['character'], params);
-				hash    = this.mustache.process(this['patterns']['hash']['character'], params);
+				apicall = jQuery.jqote(this['patterns']['api']['character'], params);
+				hash    = jQuery.jqote(this['patterns']['hash']['character'], params);
 				content = this.getFromCache('template', 'character', hash);
 				if(content != false) {
 					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'character']));
@@ -424,8 +430,8 @@ var WowDataTooltip = {
 					'guild' : result[4],
 					'locale': this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
 				};
-				apicall = this.mustache.process(this['patterns']['api']['guild'], params);
-				hash    = this.mustache.process(this['patterns']['hash']['guild'], params);
+				apicall = jQuery.jqote(this['patterns']['api']['guild'], params);
+				hash    = jQuery.jqote(this['patterns']['hash']['guild'], params);
 				content = this.getFromCache('template', 'guild', hash);
 				if(content != false) {
 					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'guild']));
@@ -534,7 +540,7 @@ var WowDataTooltip = {
 	
 	localize: function(repository, keys) {
 		var temp   = repository;
-		var result = '';
+		var result = undefined;
 		
 		if('string' === typeof(keys)) {
 			keys = [keys]; 
@@ -542,31 +548,39 @@ var WowDataTooltip = {
 		
 		for (var i = 0; i < keys.length; i++) {
 			if('undefined' === typeof(temp[keys[i]])) {
-				result = '';
+				if('undefined' === typeof(result)) {
+					result = '';
+				}
 				break;
 			} else {
-				if('undefined' !== typeof(temp[keys[i]])) {
-					temp = temp[keys[i]];
-					if(i == (keys.length - 1)) {
-						result = temp;
-						break;
-					}
-				}
+				temp   = temp[keys[i]];
+				result = temp;
 			}
 		}
 		
 		return result;
 	},
 	
-	getMetaTVars: function(loc) {
+	getMetaTVars: function(loc, scheme) {
+		var templates = WowDataTooltip.localize(loc, ['templates', scheme]);
 		return {
 			'extendedActive'      : this.getSetting(['extendedMode', 'active']),
 			'extendedKeyCodeLabel': this.getSetting(['extendedMode', 'keyCode.label']),
-			'renderEmptySocket'   : function() {
-				return function(text, render) {
-					socketid = render(text);
-					return '<span class="icon-socket socket-'+socketid+'"><span class="empty"></span><span class="frame"></span></span> ' + WowDataTooltip.localize(loc, ('socket:'+socketid));
-				}
+			'localize'            : function(route) {
+				return WowDataTooltip.localize(loc, route);
+			},
+			'subrender'           : function(template, data) {
+				return jQuery.jqote(templates[template], data);
+			},
+			'moneySplitter'       : function(total) {
+				var gold   = (total / 10000).toFixed(0);
+				var silver = (total / 100).toFixed(0) - (gold * 100);
+				var copper = total - ((gold * 10000) + (silver * 100));
+				return({
+					'gold'  : gold,
+					'silver': silver,
+					'copper': copper
+				});
 			}
 		};
 	},
@@ -576,28 +590,26 @@ var WowDataTooltip = {
 		var loc       = this.getLocaleData(locale);
 		var region    = this.getRegionFromHost(host);
 		var mediahost = this.getMediahostFromRegion(region);
-        
+        var realm     = {};
+
 		if(data.realms.length == 1) {
-			var realm                = data.realms[0];
-			var tvars                = jQuery.extend(true, {}, this.getMetaTVars(loc), realm);
-			var realmtype            = this.localize(loc, ('realmtype:'+realm.type))
-			var realmqueue           = this.localize(loc, ('realmqueue:'+realm.queue))
-			var realmstatus          = this.localize(loc, ('realmstatus:'+realm.status))
-			var realmpopulation      = this.localize(loc, ('realmpopulation:'+realm.population))
-			tvars['path.host']       = 'http://' + host;
-			tvars['path.host.media'] = 'http://' + mediahost;
-			tvars['region']          = region;
-			tvars['type-text']       = realmtype;
-			tvars['queue-text']      = realmqueue;
-			tvars['status-text']     = realmstatus;
-			tvars['population-text'] = realmpopulation;
+			realm   = data.realms[0];
+			var add = {
+				'path_host'      : 'http://' + host,
+				'path_host_media': 'http://' + mediahost,
+				'region'         : region
+			};
 		} else {
-			var tvars = {
+			var add = {
 				'notfound': this.localize(loc, 'realm-not-found')
 			};
 		}
-        
-		return this.mustache.process(this.getTemplate('default', 'realm'), tvars);
+		
+		return window.jQuery.jqote(
+			this.getTemplate('default', 'realm'),
+			jQuery.extend(true, {}, this.getMetaTVars(loc, 'realm'), realm, add)
+		);
+		
 	},
 	
 	buildItemTooltip: function(host, locale, data) {
@@ -606,18 +618,14 @@ var WowDataTooltip = {
 		var mediahost = this.getMediahostFromRegion(region);
 		
 		var add = {
-			'path.host'        : 'http://' + host,
-			'path.host.media'  : 'http://' + mediahost,
-			'region'           : region,
-			'itemBind_loc'     : this.localize(loc, ('itemBind:'+data['itemBind'])),
-			'itemClass_loc'    : this.localize(loc, ('itemClass:'+data['itemClass']+'.'+data['itemSubClass'])),
-			'inventoryType_loc': this.localize(loc, ('inventoryType:'+data['inventoryType'])),
+			'path_host'        : 'http://' + host,
+			'path_host_media'  : 'http://' + mediahost,
+			'region'           : region
 		};
 		
-		return this.mustache.process(
+		return window.jQuery.jqote(
 			this.getTemplate('default', 'item'),
-			jQuery.extend(true, {}, this.getMetaTVars(loc), data, add),
-			this.localize(loc, ['templates', 'item'])
+			jQuery.extend(true, {}, this.getMetaTVars(loc, 'item'), data, add)
 		);
 	},
 	
@@ -627,17 +635,14 @@ var WowDataTooltip = {
 		var mediahost = this.getMediahostFromRegion(region);
 		
 		var add = {
-			'path.host'      : 'http://' + host,
-			'path.host.media': 'http://' + mediahost,
-			'region'         : region,
-			'class_loc'      : this.localize(loc, [('class:'+data['class']), ('gender:'+data['gender'])]),
-			'race_loc'       : this.localize(loc, [('race:'+data['race']),  ('gender:'+data['gender'])])
+			'path_host'      : 'http://' + host,
+			'path_host_media': 'http://' + mediahost,
+			'region'         : region
 		};
 		
-		return this.mustache.process(
+		return jQuery.jqote(
 			this.getTemplate('default', 'character'),
-			jQuery.extend(true, {}, this.getMetaTVars(loc), data, add),
-			this.localize(loc, ['templates', 'character'])
+			jQuery.extend(true, {}, this.getMetaTVars(loc, 'character'), data, add)
 		);
 	},
 	
@@ -647,27 +652,26 @@ var WowDataTooltip = {
 		var mediahost = this.getMediahostFromRegion(region);
 		
 		var add = {
-			'path.host'      : 'http://' + host,
-			'path.host.media': 'http://' + mediahost,
+			'path_host'      : 'http://' + host,
+			'path_host_media': 'http://' + mediahost,
 			'region'         : region,
-			'side_loc'       : this.localize(loc, ('side:'+data['side'])),
 			'membercount'    : data['members'].length || 0
 		};
 		
-		return this.mustache.process(
+		return jQuery.jqote(
 			this.getTemplate('default', 'guild'),
-			jQuery.extend(true, {}, this.getMetaTVars(loc), data, add),
-			this.localize(loc, ['templates', 'guild'])
+			jQuery.extend(true, {}, this.getMetaTVars(loc, 'guild'), data, add)
 		);
 	},
 	
+	/*
 	getRaceData: function(host, locale) {
 		var tvars = {
 			'host'  : host,
 			'locale': locale
 		};
-		var apicall = this.mustache.process(this['patterns']['api']['data.races'], tvars);
-		var hash    = this.mustache.process(this['patterns']['hash']['data.races'], tvars);
+		var apicall = jQuery.jqote(this['patterns']['api']['data.races'], tvars);
+		var hash    = jQuery.jqote(this['patterns']['hash']['data.races'], tvars);
 		var data    = this.getFromCache('data', 'character-race', hash);
 		if(data != false) {
 			return data;
@@ -684,6 +688,7 @@ var WowDataTooltip = {
 			});
 		}
 	},
+	*/
 	
 	addToCache: function(type, scheme, hash, content) {
 		this['cache'][type][scheme][hash] = content;
@@ -739,156 +744,143 @@ var WowDataTooltip = {
 		}
 	},
 	
-	mustache: function() {
-		var Renderer = function() {};
-		Renderer.prototype = {
-			otag: "{{", ctag: "}}", pragmas: {}, buffer: [], pragmas_implemented: { "IMPLICIT-ITERATOR": true }, context: {},
-			render: function(template, context, partials, in_recursion) { if(!in_recursion) { this.context = context; this.buffer = []; } if(!this.includes("", template)) { if(in_recursion) { return template; } else { this.send(template); return; } } template = this.render_pragmas(template); var html = this.render_section(template, context, partials); if(in_recursion) { return this.render_tags(html, context, partials, in_recursion); } this.render_tags(html, context, partials, in_recursion); },
-			send: function(line) { if(line != "") { this.buffer.push(line); } },
-			render_pragmas: function(template) { if(!this.includes("%", template)) { return template; } var that = this; var regex = new RegExp(this.otag + "%([\\w-]+) ?([\\w]+=[\\w]+)?" + this.ctag, "g"); return template.replace(regex, function(match, pragma, options) { if(!that.pragmas_implemented[pragma]) { throw({message: "This implementation of mustache doesn't understand the '" + pragma + "' pragma"}); } that.pragmas[pragma] = {}; if(options) { var opts = options.split("="); that.pragmas[pragma][opts[0]] = opts[1]; } return ""; }); },
-			render_partial: function(name, context, partials) { name = this.trim(name); if(!partials || partials[name] === undefined) { throw({message: "unknown_partial '" + name + "'"}); } if(typeof(context[name]) != "object") { return this.render(partials[name], context, partials, true); } return this.render(partials[name], context[name], partials, true); },
-			render_section: function(template, context, partials) { if(!this.includes("#", template) && !this.includes("^", template)) { return template; } var that = this; var regex = new RegExp(this.otag + "(\\^|\\#)\\s*(.+)\\s*" + this.ctag + "\n*([\\s\\S]+?)" + this.otag + "\\/\\s*\\2\\s*" + this.ctag + "\\s*", "mg"); return template.replace(regex, function(match, type, name, content) { var value = that.find(name, context); if(type == "^") { if(!value || that.is_array(value) && value.length === 0) { return that.render(content, context, partials, true); } else { return ""; } } else if(type == "#") { if(that.is_array(value)) { return that.map(value, function(row) { return that.render(content, that.create_context(row), partials, true); }).join(""); } else if(that.is_object(value)) { return that.render(content, that.create_context(value), partials, true); } else if(typeof value === "function") { return value.call(context, content, function(text) { return that.render(text, context, partials, true); }); } else if(value) { return that.render(content, context, partials, true); } else { return ""; } } }); },
-			render_tags: function(template, context, partials, in_recursion) { var that = this; var new_regex = function() { return new RegExp(that.otag + "(=|!|>|\\{|%)?([^\\/#\\^]+?)\\1?" + that.ctag + "+", "g"); }; var regex = new_regex(); var tag_replace_callback = function(match, operator, name) { switch(operator) { case "!": return ""; case "=": that.set_delimiters(name); regex = new_regex(); return ""; case ">": return that.render_partial(name, context, partials); case "{": return that.find(name, context); default: return that.escape(that.find(name, context)); } }; var lines = template.split("\n"); for(var i = 0; i < lines.length; i++) { lines[i] = lines[i].replace(regex, tag_replace_callback, this); if(!in_recursion) { this.send(lines[i]); } } if(in_recursion) { return lines.join("\n"); } }, set_delimiters: function(delimiters) { var dels = delimiters.split(" "); this.otag = this.escape_regex(dels[0]); this.ctag = this.escape_regex(dels[1]); }, escape_regex: function(text) { if(!arguments.callee.sRE) { var specials = ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\']; arguments.callee.sRE = new RegExp('(\\' + specials.join('|\\') + ')', 'g'); } return text.replace(arguments.callee.sRE, '\\$1'); }, find: function(name, context) { name = this.trim(name); function is_kinda_truthy(bool) { return bool === false || bool === 0 || bool; } var value; if(is_kinda_truthy(context[name])) { value = context[name]; } else if(is_kinda_truthy(this.context[name])) { value = this.context[name]; } if(typeof value === "function") { return value.apply(context); } if(value !== undefined) { return value; } return ""; }, includes: function(needle, haystack) { return haystack.indexOf(this.otag + needle) != -1; }, escape: function(s) { s = String(s === null ? "" : s); return s.replace(/&(?!\w+;)|["'<>\\]/g, function(s) { switch(s) { case "&": return "&amp;"; case "\\": return "\\\\"; case '"': return '&quot;'; case "'": return '&#39;'; case "<": return "&lt;"; case ">": return "&gt;"; default: return s; } }); }, create_context: function(_context) { if(this.is_object(_context)) { return _context; } else { var iterator = "."; if(this.pragmas["IMPLICIT-ITERATOR"]) { iterator = this.pragmas["IMPLICIT-ITERATOR"].iterator; } var ctx = {}; ctx[iterator] = _context; return ctx; } }, is_object: function(a) { return a && typeof a == "object"; }, is_array: function(a) { return Object.prototype.toString.call(a) === '[object Array]'; }, trim: function(s) { return s.replace(/^\s*|\s*$/g, ""); }, map: function(array, fn) { if (typeof array.map == "function") { return array.map(fn); } else { var r = []; var l = array.length; for(var i = 0; i < l; i++) { r.push(fn(array[i])); } return r; } }
-		};
-		return({
-			name: "mustache.js", version: "0.3.1-dev",
-			process: function(template, view, partials, send_fun) { var renderer = new Renderer(); if(send_fun) { renderer.send = send_fun; } renderer.render(template, view, partials); if(!send_fun) { return renderer.buffer.join("\n"); } }
-		});
-	}(),
-	
 	'templates': {
 		'default': {
 			'item': (
 				'<div class="tooltip-item template-default">' +
-		    		'<img class="icon" src="{{path.host.media}}/wow/icons/56/{{icon}}.jpg" />' +
-					'<div class="data">' +
-						'<div class="name cquality-{{quality}}">{{name}}</div>' +
-						'{{#heroic}}' +
-							'<div class="heroic">{{> heroic}}</div>' +
-						'{{/heroic}}' +
-						'{{#itemBind}}' +
-							'<div class="itemBind">{{itemBind_loc}}</div>' +
-						'{{/itemBind}}' +
-						'{{#maxCount}}' +
-							'<div class="maxCount">{{> maxCount}}</div>' +
-						'{{/maxCount}}' +
-						'<div class="classification">' +
-							'{{#equippable}}' +
-								'<div class="inventoryType">{{inventoryType_loc}}</div>' +
-							'{{/equippable}}' +
-							'<div class="itemClass">{{itemClass_loc}}</div>' +
+		    		'<img class="icon" src="<%= this.path_host_media %>/wow/icons/56/<% if(this.icon) { %><%= this.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg" />' +
+			    	 /* --- START simple mode -------------------------------- */
+					'<div class="data wdt-show-only-simple">' +
+						'<div class="row name cquality-<%= this.quality %>"><%= this.name %></div>' +
+						'<% if(this.heroic) { %><div class="row heroic"><%= this.subrender("heroic", this) %></div><% } %>' +
+						'<% if(this.boundZone) { %><div class="row boundZone"><%= this.boundZone.name %></div><% } %>' +
+						'<% if(this.itemBind) { %><div class="row itemBind"><%= this.localize("itemBind:"+this.itemBind) %></div><% } %>' +
+						'<% if(this.maxCount) { %><div class="row maxCount"><%= this.subrender("maxCount", this) %></div><% } %>' +
+						'<div class="row classification">' +
+							'<% if(this.containerSlots) { %>' +
+								'<div class="itemClass"><%= this.subrender("containerSlots", this) %></div>' +
+							'<% } else { %>' +
+								'<% if(this.equippable) { %><div class="inventoryType"><%= this.localize("inventoryType:"+this.inventoryType) %></div><% } %>' +
+								'<div class="itemClass"><%= this.localize("itemClass:"+this.itemClass+"."+this.itemSubClass) %></div>' +
+							'<% } %>' +
 						'</div>' +
-						'{{#weaponInfo}}' +
+						'<% if(this.baseArmor) { %><div class="row baseArmor"><%= this.subrender("baseArmor", this) %></div><% } %>' +
+						'<% if(this.weaponInfo) { %>' +
 							'<div class="weaponInfo">' +
-								'{{#damage}}' +
-									'<div class="damage">{{> damage}}</div>' +
-								'{{/damage}}' +
-								'<div class="weaponSpeed">{{> weaponSpeed}}</div>' +
-								'<div class="dps">{{> dps}}</div>' +
+								'<% if(this.weaponInfo.damage) { for(var i=0; i<this.weaponInfo.damage.length; i++) { var current = this.weaponInfo.damage[i]; %><div class="row damage"><%= this.subrender("damage", current) %></div><% } } %>' +
+								'<div class="weaponSpeed"><%= this.subrender("weaponSpeed", this.weaponInfo) %></div>' +
+								'<div class="row dps"><%= this.subrender("dps", this.weaponInfo) %></div>' +
 							'</div>' +
-						'{{/weaponInfo}}' +
-						'{{#socketInfo}}' +
-							'<div class="socketInfo">' +
-								'{{#sockets}}' +
-									'<div class="socket">{{#renderEmptySocket}}{{type}}{{/renderEmptySocket}}</div>' +
-								'{{/sockets}}' +
-							'</div>' +
-						'{{/socketInfo}}' +
-						
-						
-						'{{#maxDurability}}' +
-							'<div class="maxDurability">{{> maxDurability}}</div>' +
-						'{{/maxDurability}}' +
-						
-						
-						
+						'<% } %>' +
+						'<% if(this.bonusStats) { for(var i=0; i<this.bonusStats.length; i++) { var current = this.bonusStats[i]; if(current.stat in WowDataTooltip.maps.item.primaryStats) { %><div class="row primaryStat"><% if(current.amount >= 0) { %>+<% } %><%= current.amount %> <%= this.localize("itemStat:"+current.stat) %></div><% } } } %>' +
+						'<% if(this.gemInfo) { %><div class="row gemInfo"><%= this.gemInfo.bonus.name %></div><% } %>' +
+						'<% if(this.socketInfo) { %><div class="socketInfo"><% if(this.socketInfo.sockets) { for(var i=0; i<this.socketInfo.sockets.length; i++) { var current = this.socketInfo.sockets[i]; %><div class="row socket"><span class="icon-socket socket-<%= current.type %>"><span class="empty"></span><span class="frame"></span></span> <%= this.localize("itemSocket:"+current.type) %></div><% } } %></div><% } %>' +
+						'<% if(this.maxDurability) { %><div class="row maxDurability"><%= this.subrender("maxDurability", this) %></div><% } %>' +
+						'<% if(this.allowableClasses) { %><div class="row allowableClasses"><%= this.subrender("allowableClasses", this) %></div><% } %>' +
+						'<% if(this.allowableRaces) { %><div class="row allowableRaces"><%= this.subrender("allowableRaces", this) %></div><% } %>' +
+						'<% if(this.requiredLevel) { %><div class="row requiredLevel"><%= this.subrender("requiredLevel", this) %></div><% } %>' +
+						'<% if(this.requiredSkill) { %><div class="row requiredSkill"><%= this.subrender("requiredSkill", this) %></div><% } %>' +
+						'<% if(this.itemLevel) { %><div class="row itemLevel"><%= this.subrender("itemLevel", this) %></div><% } %>' +
+						'<% if(this.bonusStats) { for(var i=0; i<this.bonusStats.length; i++) { var current = this.bonusStats[i]; if(current.stat in WowDataTooltip.maps.item.secondaryStats) { %><div class="row secondaryStat"><%= this.subrender("itemStat:"+current.stat, current) %></div><% } } } %>' +
+						'<% if(this.itemSpells) { for(var i=0; i<this.itemSpells.length; i++) { var current = this.itemSpells[i]; if(current.spell.description) { %><div class="row secondaryStat"><%= this.subrender("itemSpell", current) %></div><% } } } %>' +
+						'<% if(this.description) { %><div class="row description">&quot;<%= this.description %>&quot;</div><% } %>' +
+				    	'<% if(this.extendedActive) { %><div class="info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div><% } %>' +
 					'</div>' +
+					 /* --- END simple mode ---------------------------------- */
+					 /* --- START extended mode ------------------------------ */
+				    '<% if(this.extendedActive) { %>' +
+						'<div class="data wdt-show-only-extended">' +
+							'<div class="row name cquality-<%= this.quality %>"><%= this.name %></div>' +
+							'<div class="row id"><%= this.subrender("itemId", this) %></div>' +
+							'<div class="row sellPrice"><%= this.subrender("sellPrice", this) %></div>' +
+							
+							// buyPrice / sellPrice
+							// stackable
+							// itemSource
+							// isAuctionable
+							
+							'<div class="info-meta">Release [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
+				    	'</div>' +
+			    	'<% } %>' +
+					 /* --- END extended mode -------------------------------- */
 				'</div>'
 			),
 			'character': (
 				'<div class="tooltip-character template-default">' +
-			    	'<img class="thumbnail" src="{{path.host}}/static-render/{{region}}/{{thumbnail}}?alt=/wow/static/images/2d/avatar/{{race}}-{{gender}}.jpg" />' +
+			    	'<img class="thumbnail" src="<%= this.path_host %>/static-render/<%= this.region %>/<%= this.thumbnail %>?alt=/wow/static/images/2d/avatar/<%= this.race %>-<%= this.gender %>.jpg" />' +
 			    	 /* --- START simple mode -------------------------------- */
 					'<div class="data wdt-show-only-simple">' +
-			    		'<div class="name cclass-{{class}}">{{name}}</div>' +
-			    		'<div class="char-sri">{{> sri}}</div>' +
-						'{{#talents}}' +
-			    			'<div class="talentspec {{#selected}} active{{/selected}}">' +
-								'<img class="icon-talentspec" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}' +
+			    		'<div class="name cclass-<%= this.class %>"><%= this.name %></div>' +
+			    		'<div class="char-sri"><%= this.subrender("sri", this) %></div>' +
+						'<% if(this.talents) { for(var i=0; i<this.talents.length; i++) { var current = this.talents[i]; %>' +
+			    			'<div class="talentspec <% if(current.selected) { %> active<% } %>">' +
+								'<img class="icon-talentspec" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>' +
 							'</div>' +
-						'{{/talents}}' +
-						'{{#guild}}' +
+						'<% } } %>' +
+						'<% if(this.guild) { %>' +
 							'<div class="guild">' +
-								'<div class="guildname">&lt;{{name}}&gt;{{#level}}<span class="guildlevel"> ({{level}})</span>{{/level}}</div>' +
+								'<div class="guildname">&lt;<%= this.guild.name %>&gt;<% if(this.guild.level) { %><span class="guildlevel"> (<%= this.guild.level %>)</span><% } %></div>' +
 							'</div>' +
-						'{{/guild}}' +
-						'<div class="realm">{{realm}}</div>' +
-						'<div class="achievementpoints{{^extendedActive}} last{{/extendedActive}}"><span class="achpoints">{{achievementPoints}}</span></div>' +
-				    	'{{#extendedActive}}' +
-							'<div class="info-meta last">Hold [{{extendedKeyCodeLabel}}] to switch modes!</div>' +
-				    	'{{/extendedActive}}' +
+						'<% } %>' +
+						'<div class="realm"><%= this.realm %></div>' +
+						'<div class="achievementpoints"><span class="achpoints"><%= this.achievementPoints %></span></div>' +
+				    	'<% if(this.extendedActive) { %>' +
+							'<div class="info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
+				    	'<% } %>' +
 			    	'</div>' +
 					 /* --- END simple mode ---------------------------------- */
 					 /* --- START extended mode ------------------------------ */
-			    	'{{#extendedActive}}' +
+				    '<% if(this.extendedActive) { %>' +
 						'<div class="data wdt-show-only-extended">' +
-				    		'<div class="name cclass-{{class}}">{{name}}</div>' +
-				    		'<div class="level class race">{{lrc}}</div>' +
-							'{{#items}}' +
-								'<div class="itemlevel">{{> ilvl}}</div>' +
-							'{{/items}}' +
-							'{{#professions}}' +
-								'<div class="professions wdt-show-only-extended">' +
-									'{{#primary}}{{#rank}}' +
+				    		'<div class="name cclass-<%= this.class %>"><%= this.name %></div>' +
+							'<% if(this.items) { %>' +
+								'<div class="itemlevel"><%= this.subrender("ilvl", this.items) %></div>' +
+							'<% } %>' +
+							'<% if(this.professions) { %>' +
+								'<div class="professions">' +
+									'<% if(this.professions.primary) { for(var i=0; i<this.professions.primary.length; i++) { var current = this.professions.primary[i]; if(current.rank > 0) { %>' +
 										'<div class="profession-primary">' +
-											'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
+											'<img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %>' +
 										'</div>' +
-									'{{/rank}}{{/primary}}' +
-									'{{#secondary}}{{#rank}}' +
+									'<% } } } %>' +
+									'<% if(this.professions.secondary) { for(var i=0; i<this.professions.secondary.length; i++) { var current = this.professions.secondary[i]; if(current.rank > 0) { %>' +
 										'<div class="profession-secondary">' +
-											'<img class="icon-profession" src="{{path.host.media}}/wow/icons/18/{{#icon}}{{icon}}{{/icon}}{{^icon}}inv_misc_questionmark{{/icon}}.jpg"/> {{name}}: {{rank}}' +
+											'<img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %>' +
 										'</div>' +
-									'{{/rank}}{{/secondary}}' +
+									'<% } } } %>' +
 								'</div>' +
-							'{{/professions}}' +
-							'<div class="info-meta last">Release [{{extendedKeyCodeLabel}}] to switch modes!</div>' +
+							'<% } %>' +
+							'<div class="info-meta">Release [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
 				    	'</div>' +
-				   	'{{/extendedActive}}' +
+			    	'<% } %>' +
 					 /* --- END extended mode -------------------------------- */
 			    '</div>'
 			),
 			'guild': (
 				'<div class="tooltip-guild template-default">' +
-	    			'<div class="name cside-{{side}}">{{name}}</div>' +
-		    		'<div class="guild-sri">{{> sri}}</div>' +
-					'{{#membercount}}' +
-		    			'<div class="guild-members">{{> members}}</div>' +
-					'{{/membercount}}' +
-					'<div class="achievementpoints last"><span class="achpoints">{{achievementPoints}}</span></div>' +
+	    			'<div class="name cside-<%= this.side %>"><%= this.name %></div>' +
+		    		'<div class="guild-sri"><%= this.subrender("sri", this) %></div>' +
+					'<% if(this.membercount) { %>' +
+		    			'<div class="guild-members"><%= this.subrender("members", this) %></div>' +
+					'<% } %>' +
+					'<div class="achievementpoints last"><span class="achpoints"><%= this.achievementPoints %></span></div>' +
 				'</div>'
 			),
 			'realm': (
 				'<div class="tooltip-realm template-default">' +
-					'{{#notfound}}' +
-	    				'<div class="notfound">{{notfound}}</div>' +
-					'{{/notfound}}' +
-					'{{^notfound}}' +
-    					'<div class="type type-{{type}}">{{type-text}}</div>' +
-    					'<div class="name">{{name}}</div>' +
-						'{{#status}}' +
-							'{{#queue}}' +
-    							'<div class="status queue-{{queue}}">{{status-text}} ({{queue-text}})</div>' +
-							'{{/queue}}' +
-							'{{^queue}}' +
-    							'<div class="status status-{{status}}">{{status-text}}</div>' +
-							'{{/queue}}' +
-						'{{/status}}' +
-						'{{^status}}' +
-    						'<div class="status status-{{status}}">{{status-text}}</div>' +
-						'{{/status}}' +
-    					'<div class="population">{{population-text}}</div>' +
-					'{{/notfound}}' +
-				'</div>'
+					'<% if(this.notfound) { %>' +
+	    				'<div class="notfound"><%= this.notfound %></div>' +
+					'<% } else { %>' +
+    					'<div class="type type-<%= this.type %>"><%= this.localize("realmType:"+this.type) %></div>' +
+    					'<div class="name"><%= this.name %></div>' +
+						'<% if(this.queue) { %>' +
+   							'<div class="status queue-<%= this.queue %>"><%= this.localize("realmStatus:"+this.status) %> (<%= this.localize("realmQueue:"+this.queue) %>)</div>' +
+						'<% } else { %>' +
+    						'<div class="status status-<%= this.status %>"><%= this.localize("realmStatus:"+this.status) %></div>' +
+						'<% } %>' +
+    					'<div class="population"><%= this.localize("realmPopulation:"+this.population) %></div>' +
+					'<% } %>' +
+				'</div>'				
 			)
 		}
 	},
@@ -897,282 +889,324 @@ var WowDataTooltip = {
 		'en_US': {
 			'templates': {
 				'item': {
-					'heroic'       : 'Heroic',
-					'maxCount'     : 'Unique ({{maxCount}})',
-					'damage'       : '{{minDamage}} - {{maxDamage}} Damage',
-					'weaponSpeed'  : 'Speed {{weaponSpeed}}',
-					'dps'          : '({{dps}} damage per second)',
-					'maxDurability': 'Durability {{maxDurability}} / {{maxDurability}}',
-					
-					'stat-7'     : '<span class="base">{{#amount?}}+{{/amount?}}{{amount}} Stamina</span>'
+					'itemId'          : 'Item ID: <%= this.id %>',
+					'heroic'          : 'Heroic',
+					'maxCount'        : 'Unique<% if(this.maxCount > 1) { %> (<%= this.maxCount %>)<% } %>',
+					'containerSlots'  : '<%= this.containerSlots %> Slot <%= this.localize("itemClass:"+this.itemClass+"."+this.itemSubClass) %>',
+					'damage'          : '<%= this.minDamage %> - <%= this.maxDamage %> Damage',
+					'weaponSpeed'     : 'Speed <%= this.weaponSpeed %>',
+					'dps'             : '(<%= this.dps.toFixed(2) %> damage per second)',
+					'baseArmor'       : '<%= this.baseArmor %> Armor',
+					'maxDurability'   : 'Durability <%= this.maxDurability %> / <%= this.maxDurability %>',
+					'requiredLevel'   : 'Requires Level <%= this.requiredLevel %>',
+					'requiredSkill'   : 'Requires <%= this.localize("characterSkill:"+this.requiredSkill) %> (<%= this.requiredSkillRank %>)',
+					'itemLevel'       : 'Item Level <%= this.itemLevel %>',
+					'allowableClasses': 'Classes: <% for(var i=0; i<this.allowableClasses.length; i++) { var current = this.allowableClasses[i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this.localize(["characterClass:"+current, "gender:0"])%></span><% } %>',
+					'allowableRaces'  : 'Races: <% for(var i=0; i<this.allowableRaces.length; i++) { var current = this.allowableRaces[i]; %><% if(i > 0) { %>, <% } %><span><%= this.localize(["characterRace:"+current, "gender:0"])%></span><% } %>',
+					'itemStat:13'     : 'Equip: Increases your dodge rating by <%= this.amount %>.',
+					'itemStat:14'     : 'Equip: Increases your parry rating by <%= this.amount %>.',
+					'itemStat:31'     : 'Equip: Increases your hit rating by <%= this.amount %>.',
+					'itemStat:32'     : 'Equip: Increases your critical strike rating by <%= this.amount %>.',
+					'itemStat:35'     : 'Equip: Increases your resilience rating by <%= this.amount %>.',
+					'itemStat:36'     : 'Equip: Increases your haste rating by <%= this.amount %>.',
+					'itemStat:37'     : 'Equip: Increases your expertise rating by <%= this.amount %>.',
+					'itemStat:38'     : 'Equip: Increases your attack power by <%= this.amount %>.',
+					'itemStat:46'     : 'Equip: Increases your health regeneration by <%= this.amount %>.',
+					'itemStat:45'     : 'Equip: Increases spell power by <%= this.amount %>.',
+					'itemStat:47'     : 'Equip: Increases spell penetration by <%= this.amount %>.',
+					'itemStat:49'     : 'Equip: Increases your mastery rating by <%= this.amount %>.',
+					'itemSpell'       : 'Equip / Use / Chance on Hit: <%= this.spell.description %>',
+					'sellPrice'       : '<% var c = this.moneySplitter(this.sellPrice); %>Sell Price: <% if(c.gold) { %> <span class="icon-gold"><%= c.gold %></span><% } %><% if(c.silver) { %> <span class="icon-silver"><%= c.silver %></span><% } %><% if(c.copper) { %> <span class="icon-copper"><%= c.copper %></span><% } %>'
 				},
 				'character': {
-					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
-					'ilvl': '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})'
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Level {{level}} {{side_loc}} Guild, {{realm}}',
-					'members': '{{membercount}} members'
+					'sri'    : 'Level <%= this.level %> <%= this.localize("factionSide:"+this.side) %> Guild, <%= this.realm %>',
+					'members': '<%= this.membercount %> members'
 				}
 			},
-			'loading-realm'    : 'Loading realm...',
-			'loading-item'     : 'Loading item...',
-			'loading-character': 'Loading character...',
-			'loading-guild'    : 'Loading guild...',
-			'realm-not-found'  : 'Realm not found!',
-			'itemBind:1'  : 'Binds when picked up',
-			'itemBind:2'  : 'Binds when equipped',
-			'itemBind:3'  : 'Binds when used',
+			'loading-realm':'Loading realm...',
+			'loading-item':'Loading item...',
+			'loading-character':'Loading character...',
+			'loading-guild':'Loading guild...',
+			'realm-not-found':'Realm not found!',
+			'itemBind:1':'Binds when picked up',
+			'itemBind:2':'Binds when equipped',
+			'itemBind:3':'Binds when used',
 			
-			'socket:BLUE'  : 'Blue Socket',
-			'socket:RED'   : 'Red Socket',
-			'socket:YELLOW': 'Yellow Socket',
-			'socket:META'  : 'Meta Socket',
+			'itemStat:3':'Agility',
+			'itemStat:4':'Strength',
+			'itemStat:5':'Intellect',
+			'itemStat:6':'Spirit',
+			'itemStat:7':'Stamina',
 			
+			'itemSocket:BLUE':'Blue Socket',
+			'itemSocket:RED':'Red Socket',
+			'itemSocket:YELLOW':'Yellow Socket',
+			'itemSocket:META':'Meta Socket',
+			'itemSocket:ORANGE':'Orange Socket',
+			'itemSocket:PURPLE':'Purple Socket',
+			'itemSocket:GREEN':'Green Socket',
+			'itemSocket:PRISMATIC':'Prismatic Socket',
+			'itemSocket:HYDRAULIC':'Hydraulic Socket',
+			'itemSocket:COGWHEEL':'Cogwheel Socket',
 			
+			'itemClass:0.0':'Consumeable',
+			'itemClass:0.1':'Potion',
+			'itemClass:0.2':'Elixir',
+			'itemClass:0.3':'Flask',
+			'itemClass:0.4':'Scroll',
+			'itemClass:0.5':'Food & Drink',
+			'itemClass:0.6':'Item Enhancement',
+			'itemClass:0.7':'Bandage',
+			'itemClass:0.8':'Other',
 			
-			'itemClass:0'   : 'Consumeable',
-			'itemClass:0.0' : 'Consumeable',
-			'itemClass:0.1' : 'Potion',
-			'itemClass:0.2' : 'Elixir',
-			'itemClass:0.3' : 'Flask',
-			'itemClass:0.4' : 'Scroll',
-			'itemClass:0.5' : 'Food & Drink',
-			'itemClass:0.6' : 'Item Enhancement',
-			'itemClass:0.7' : 'Bandage',
-			'itemClass:0.8' : 'Other',
+			'itemClass:1.0':'Bag',
+			'itemClass:1.1':'Soul Bag',
+			'itemClass:1.2':'Herb Bag',
+			'itemClass:1.3':'Enchanting Bag',
+			'itemClass:1.4':'Engineering Bag',
+			'itemClass:1.5':'Gem Bag',
+			'itemClass:1.6':'Mining Bag',
+			'itemClass:1.7':'Leatherworking Bag',
+			'itemClass:1.8':'Inscription Bag',
+			'itemClass:1.9':'Tackle Box',
 			
-			'itemClass:1'   : 'Container',
-			'itemClass:1.0' : 'Bag',
-			'itemClass:1.1' : 'Soul Bag',
-			'itemClass:1.2' : 'Herb Bag',
-			'itemClass:1.3' : 'Enchanting Bag',
-			'itemClass:1.4' : 'Engineering Bag',
-			'itemClass:1.5' : 'Gem Bag',
-			'itemClass:1.6' : 'Mining Bag',
-			'itemClass:1.7' : 'Leatherworking Bag',
-			'itemClass:1.8' : 'Inscription Bag',
-			'itemClass:1.9' : 'Tackle Box',
+			'itemClass:2.0':'Axe', // One-Handed
+			'itemClass:2.1':'Axe', // Two-Handed
+			'itemClass:2.2':'Bow',
+			'itemClass:2.3':'Gun',
+			'itemClass:2.4':'Mace', // One-Handed
+			'itemClass:2.5':'Mace', // Two-Handed
+			'itemClass:2.6':'Polearm',
+			'itemClass:2.7':'Sword', // One-Handed
+			'itemClass:2.8':'Sword', // Two-Handed
+			'itemClass:2.10':'Staff',
+			'itemClass:2.13':'Fist Weapon',
+			'itemClass:2.14':'Miscellaneous',
+			'itemClass:2.15':'Dagger',
+			'itemClass:2.16':'Thrown',
+			'itemClass:2.18':'Crossbow',
+			'itemClass:2.19':'Wand',
+			'itemClass:2.20':'Fishing Pole',
 			
-			'itemClass:2'   : 'Weapon',
-			'itemClass:2.0' : 'Axe', // One-Handed
-			'itemClass:2.1' : 'Axe', // Two-Handed
-			'itemClass:2.2' : 'Bow',
-			'itemClass:2.3' : 'Gun',
-			'itemClass:2.4' : 'Mace', // One-Handed
-			'itemClass:2.5' : 'Mace', // Two-Handed
-			'itemClass:2.6' : 'Polearm',
-			'itemClass:2.7' : 'Sword', // One-Handed
-			'itemClass:2.8' : 'Sword', // Two-Handed
-			'itemClass:2.10': 'Staff',
-			'itemClass:2.13': 'Fist Weapon',
-			'itemClass:2.14': 'Miscellaneous',
-			'itemClass:2.15': 'Dagger',
-			'itemClass:2.16': 'Thrown',
-			'itemClass:2.18': 'Crossbow',
-			'itemClass:2.19': 'Wand',
-			'itemClass:2.20': 'Fishing Pole',
+			'itemClass:3.0':'Red Gem',
+			'itemClass:3.1':'Blue Gem',
+			'itemClass:3.2':'Yellow Gem',
+			'itemClass:3.3':'Purple Gem',
+			'itemClass:3.4':'Green Gem',
+			'itemClass:3.5':'Orange Gem',
+			'itemClass:3.6':'Meta Gem',
+			'itemClass:3.7':'Simple Gem',
+			'itemClass:3.8':'Prismatic Gem',
+			'itemClass:3.9':'Hydraulic Gem',
+			'itemClass:3.10':'Cogwheel Gem',
 			
-			'itemClass:3'   : 'Gem',
-			'itemClass:3.0' : 'Red',
-			'itemClass:3.1' : 'Blue',
-			'itemClass:3.2' : 'Yellow',
-			'itemClass:3.3' : 'Purple',
-			'itemClass:3.4' : 'Green',
-			'itemClass:3.5' : 'Orange',
-			'itemClass:3.6' : 'Meta',
-			'itemClass:3.7' : 'Simple',
-			'itemClass:3.8' : 'Prismatic',
-			'itemClass:3.9' : 'Hydraulic',
-			'itemClass:3.10': 'Cogwheel',
+			'itemClass:4.0':'Miscellaneous',
+			'itemClass:4.1':'Cloth',
+			'itemClass:4.2':'Leather',
+			'itemClass:4.3':'Mail',
+			'itemClass:4.4':'Plate',
+			'itemClass:4.6':'Shield',
+			'itemClass:4.7':'Libram',
+			'itemClass:4.8':'Idol',
+			'itemClass:4.9':'Totem',
+			'itemClass:4.10':'Sigil',
+			'itemClass:4.11':'Relic',
 			
-			'itemClass:4' : 'Armour',
-			'itemClass:4.0' : 'Miscellaneous',
-			'itemClass:4.1' : 'Cloth',
-			'itemClass:4.2' : 'Leather',
-			'itemClass:4.3' : 'Mail',
-			'itemClass:4.4' : 'Plate',
-			'itemClass:4.6' : 'Shield',
-			'itemClass:4.7' : 'Libram',
-			'itemClass:4.8' : 'Idol',
-			'itemClass:4.9' : 'Totem',
-			'itemClass:4.10': 'Sigil',
-			'itemClass:4.11': 'Relic',
+			'itemClass:7.0':'Trade Goods',
+			'itemClass:7.1':'Parts',
+			'itemClass:7.2':'Explosives',
+			'itemClass:7.3':'Devices',
+			'itemClass:7.4':'Jewelcrafting',
+			'itemClass:7.5':'Cloth',
+			'itemClass:7.6':'Leather',
+			'itemClass:7.7':'Metal & Stone',
+			'itemClass:7.8':'Meat',
+			'itemClass:7.9':'Herb',
+			'itemClass:7.10':'Elemental',
+			'itemClass:7.11':'Other',
+			'itemClass:7.12':'Enchanting',
+			'itemClass:7.13':'Materials',
+			'itemClass:7.14':'Item Enchantment',
 			
-			'itemClass:7'   : 'Trade Goods',
-			'itemClass:7.0' : 'Trade Goods',
-			'itemClass:7.1' : 'Parts',
-			'itemClass:7.2' : 'Explosives',
-			'itemClass:7.3' : 'Devices',
-			'itemClass:7.4' : 'Jewelcrafting',
-			'itemClass:7.5' : 'Cloth',
-			'itemClass:7.6' : 'Leather',
-			'itemClass:7.7' : 'Metal & Stone',
-			'itemClass:7.8' : 'Meat',
-			'itemClass:7.9' : 'Herb',
-			'itemClass:7.10': 'Elemental',
-			'itemClass:7.11': 'Other',
-			'itemClass:7.12': 'Enchanting',
-			'itemClass:7.13': 'Materials',
-			'itemClass:7.14': 'Item Enchantment',
+			'itemClass:9.0':'Book',
+			'itemClass:9.1':'Leatherworking',
+			'itemClass:9.2':'Tailoring',
+			'itemClass:9.3':'Engineering',
+			'itemClass:9.4':'Blacksmithing',
+			'itemClass:9.5':'Cooking',
+			'itemClass:9.6':'Alchemy',
+			'itemClass:9.7':'First Aid',
+			'itemClass:9.8':'Enchanting',
+			'itemClass:9.9':'Fishing',
+			'itemClass:9.10':'Jewelcrafting',
+			'itemClass:9.11':'Inscription',
 			
-			'itemClass:9'   : 'Recipe',
-			'itemClass:9.0' : 'Book',
-			'itemClass:9.1' : 'Leatherworking',
-			'itemClass:9.2' : 'Tailoring',
-			'itemClass:9.3' : 'Engineering',
-			'itemClass:9.4' : 'Blacksmithing',
-			'itemClass:9.5' : 'Cooking',
-			'itemClass:9.6' : 'Alchemy',
-			'itemClass:9.7' : 'First Aid',
-			'itemClass:9.8' : 'Enchanting',
-			'itemClass:9.9' : 'Fishing',
-			'itemClass:9.10': 'Jewelcrafting',
-			'itemClass:9.11': 'Inscription',
+			'itemClass:12.0':'Quest Item',
 			
-			'itemClass:12'  : 'Quest',
-			'itemClass:12.0': 'Quest',
+			'itemClass:13.0':'Key',
 			
-			'itemClass:15'  : 'Miscellaneous',
-			'itemClass:15.0': 'Junk',
-			'itemClass:15.1': 'Reagent',
-			'itemClass:15.2': 'Pet',
-			'itemClass:15.3': 'Holiday',
-			'itemClass:15.4': 'Other',
-			'itemClass:15.5': 'Mount',
+			'itemClass:15.0':'Junk',
+			'itemClass:15.1':'Reagent',
+			'itemClass:15.2':'Pet',
+			'itemClass:15.3':'Holiday',
+			'itemClass:15.4':'Other',
+			'itemClass:15.5':'Mount',
 			
-			'itemClass:16'   : 'Glyph',
-			'itemClass:16.0' : 'Glyph',
-			'itemClass:16.1' : 'Warrior',
-			'itemClass:16.2' : 'Paladin',
-			'itemClass:16.3' : 'Hunter',
-			'itemClass:16.4' : 'Rogue',
-			'itemClass:16.5' : 'Priest',
-			'itemClass:16.6' : 'Death Knight',
-			'itemClass:16.7' : 'Shaman',
-			'itemClass:16.8' : 'Mage',
-			'itemClass:16.9' : 'Warlock',
-			'itemClass:16.11': 'Druid',
+			'itemClass:16.0':'Glyph',
+			'itemClass:16.1':'Warrior',
+			'itemClass:16.2':'Paladin',
+			'itemClass:16.3':'Hunter',
+			'itemClass:16.4':'Rogue',
+			'itemClass:16.5':'Priest',
+			'itemClass:16.6':'Death Knight',
+			'itemClass:16.7':'Shaman',
+			'itemClass:16.8':'Mage',
+			'itemClass:16.9':'Warlock',
+			'itemClass:16.11':'Druid',
 			
-			'inventoryType:1' : 'Head',
-			'inventoryType:2' : 'Neck',
-			'inventoryType:3' : 'Shoulder',
-			'inventoryType:4' : 'Shirt',
-			'inventoryType:5' : 'Chest',
-			'inventoryType:6' : 'Waist',
-			'inventoryType:7' : 'Legs',
-			'inventoryType:8' : 'Feet',
-			'inventoryType:9' : 'Wrist',
-			'inventoryType:10': 'Hands',
-			'inventoryType:11': 'Finger',
-			'inventoryType:12': 'Trinket',
-			'inventoryType:13': 'One-Hand',
-			'inventoryType:15': 'Ranged', // Bow
-			'inventoryType:16': 'Back',
-			'inventoryType:17': 'Two-Hand',
-			'inventoryType:21': 'Main-hand',
-			'inventoryType:22': 'Off-hand',
-			'inventoryType:23': 'Held in off-hand',
-			'inventoryType:25': 'Ranged', // Thrown
-			'inventoryType:26': 'Ranged', // Gun, Crossbow, Wand
+			'inventoryType:1':'Head',
+			'inventoryType:2':'Neck',
+			'inventoryType:3':'Shoulder',
+			'inventoryType:4':'Shirt',
+			'inventoryType:5':'Chest',
+			'inventoryType:6':'Waist',
+			'inventoryType:7':'Legs',
+			'inventoryType:8':'Feet',
+			'inventoryType:9':'Wrist',
+			'inventoryType:10':'Hands',
+			'inventoryType:11':'Finger',
+			'inventoryType:12':'Trinket',
+			'inventoryType:13':'One-Hand',
+			'inventoryType:15':'Ranged', // Bow
+			'inventoryType:16':'Back',
+			'inventoryType:17':'Two-Hand',
+			'inventoryType:18':'Bag',
+			'inventoryType:21':'Main-hand',
+			'inventoryType:22':'Off-hand',
+			'inventoryType:23':'Held in off-hand',
+			'inventoryType:25':'Ranged', // Thrown
+			'inventoryType:26':'Ranged', // Gun, Crossbow, Wand
 			
-			'class:1' : 'Warrior',
-			'class:2' : 'Paladin',
-			'class:3' : 'Hunter',
-			'class:4' : 'Rogue',
-			'class:5' : 'Priest',
-			'class:6' : 'Death Knight',
-			'class:7' : 'Shaman',
-			'class:8' : 'Mage',
-			'class:9' : 'Warlock',
-			'class:11': 'Druid',
-			'race:1'  : 'Human',
-			'race:2'  : 'Orc',
-			'race:3'  : 'Dwarf',
-			'race:4'  : 'Night Elf',
-			'race:5'  : 'Forsaken',
-			'race:6'  : 'Tauren',
-			'race:7'  : 'Gnome',
-			'race:8'  : 'Troll',
-			'race:9'  : 'Goblin',
-			'race:10' : 'Blood Elf',
-			'race:11' : 'Draenei',
-			'race:22' : 'Worgen',
-			'side:0'  : 'Alliance',
-			'side:1'  : 'Horde',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'characterSkill:129':'First Aid',
+			'characterSkill:164':'Blacksmithing',
+			'characterSkill:165':'Leatherworking',
+			'characterSkill:171':'Alchemy',
+			'characterSkill:182':'Herbalism',
+			'characterSkill:185':'Cooking',
+			'characterSkill:186':'Mining',
+			'characterSkill:197':'Tailoring',
+			'characterSkill:202':'Engineering',
+			'characterSkill:333':'Enchanting',
+			'characterSkill:356':'Fishing',
+			'characterSkill:393':'Skinning',
+			'characterSkill:755':'Jewelcrafting',
+			'characterSkill:762':'Riding',
+			'characterSkill:773':'Inscription',
+			'characterSkill:794':'Archeology',
+			
+			'characterClass:1':'Warrior',
+			'characterClass:2':'Paladin',
+			'characterClass:3':'Hunter',
+			'characterClass:4':'Rogue',
+			'characterClass:5':'Priest',
+			'characterClass:6':'Death Knight',
+			'characterClass:7':'Shaman',
+			'characterClass:8':'Mage',
+			'characterClass:9':'Warlock',
+			'characterClass:11':'Druid',
+			'characterRace:1':'Human',
+			'characterRace:2':'Orc',
+			'characterRace:3':'Dwarf',
+			'characterRace:4':'Night Elf',
+			'characterRace:5':'Forsaken',
+			'characterRace:6':'Tauren',
+			'characterRace:7':'Gnome',
+			'characterRace:8':'Troll',
+			'characterRace:9':'Goblin',
+			'characterRace:10':'Blood Elf',
+			'characterRace:11':'Draenei',
+			'characterRace:22':'Worgen',
+			
+			'factionSide:0':'Alliance',
+			'factionSide:1':'Horde',
+			
+			'realmType:pve':'PvE',
+			'realmType:pvp':'PvP',
+			'realmType:rp':'RP',
+			'realmType:rppvp':'RPPvP',
+			'realmQueue:false':'No queue',
+			'realmQueue:true':'Queue',
+			'realmStatus:false':'Offline',
+			'realmStatus:true':'Online',
+			'realmPopulation:low':'Low population',
+			'realmPopulation:medium':'Medium population',
+			'realmPopulation:high':'High population'
 		},
 		'es_MX': {
 			'templates': {
 				'character': {
-					'sri' : '{{class_loc}} de {{race_loc}}, nivel {{level}}',
-					'ilvl': '{{averageItemLevelEquipped}} nvl. de obj. promedio ({{averageItemLevel}})'
+					'sri' : '<%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %> de <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %>, nivel <%= this.level %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> nvl. de obj. promedio (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Hermandad {{side_loc}}, nivel {{level}}, {{realm}}',
-					'members': '{{membercount}} miembros'
+					'sri'    : 'Hermandad <%= this.localize("factionSide:"+this.side) %>, nivel <%= this.level %>, <%= this.realm %>',
+					'members': '<%= this.membercount %> miembros'
 				}
 			},
-			'loading-realm'    : 'Cargando reino ...',
-			'loading-item'     : 'Cargando Objeto...',
-			'loading-character': 'Cargando carácter ...',
-			'loading-guild'    : 'Carga del gremio ...',
-			'realm-not-found'  : 'Reino que no se encuentra!',
-			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
-			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
-			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
-			'class:4' : {'gender:0': 'Pícaro',                 'gender:1': 'Pícara'},
-			'class:5' : {'gender:0': 'Sacerdote',              'gender:1': 'Sacerdotisa'},
-			'class:6' : {'gender:0': 'Caballero de la Muerte', 'gender:1': 'Caballero de la Muerte'},
-			'class:7' : {'gender:0': 'Chamán',                 'gender:1': 'Chamán'},
-			'class:8' : {'gender:0': 'Mago',                   'gender:1': 'Maga'},
-			'class:9' : {'gender:0': 'Brujo',                  'gender:1': 'Bruja'},
-			'class:11': {'gender:0': 'Druida',                 'gender:1': 'Druida'},
-			'race:1'  : {'gender:0': 'Humano',                 'gender:1': 'Humana'},
-			'race:2'  : {'gender:0': 'Orco',                   'gender:1': 'Orco'},
-			'race:3'  : {'gender:0': 'Enano',                  'gender:1': 'Enana'},
-			'race:4'  : {'gender:0': 'Elfo de la noche',       'gender:1': 'Elfa de la noche'},
-			'race:5'  : {'gender:0': 'No-muerto',              'gender:1': 'No-muerta'},
-			'race:6'  : {'gender:0': 'Tauren',                 'gender:1': 'Tauren'},
-			'race:7'  : {'gender:0': 'Gnomo',                  'gender:1': 'Gnoma'},
-			'race:8'  : {'gender:0': 'Trol',                   'gender:1': 'Trol'},
-			'race:9'  : {'gender:0': 'Goblin',                 'gender:1': 'Goblin'},
-			'race:10' : {'gender:0': 'Elfo de sangre',         'gender:1': 'Elfa de sangre'},
-			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
-			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
-			'side:0'  : 'Alianza',
-			'side:1'  : 'Horda',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'no hay cola',
-			'realmqueue:true'       : 'cola',
-			'realmstatus:false'     : 'fuera de línea',
-			'realmstatus:true'      : 'en línea',
-			'realmpopulation:low'   : 'población de bajos',
-			'realmpopulation:medium': 'población media',
-			'realmpopulation:high'  : 'población de alto'
+			'loading-realm':'Cargando reino ...',
+			'loading-item':'Cargando Objeto...',
+			'loading-character':'Cargando carácter ...',
+			'loading-guild':'Carga del gremio ...',
+			'realm-not-found':'Reino que no se encuentra!',
+			'characterClass:1':{'gender:0':'Guerrero','gender:1':'Guerrera'},
+			'characterClass:2':{'gender:0':'Paladín','gender:1':'Paladín'},
+			'characterClass:3':{'gender:0':'Cazador','gender:1':'Cazadora'},
+			'characterClass:4':{'gender:0':'Pícaro','gender:1':'Pícara'},
+			'characterClass:5':{'gender:0':'Sacerdote','gender:1':'Sacerdotisa'},
+			'characterClass:6':{'gender:0':'Caballero de la Muerte','gender:1':'Caballero de la Muerte'},
+			'characterClass:7':{'gender:0':'Chamán','gender:1':'Chamán'},
+			'characterClass:8':{'gender:0':'Mago','gender:1':'Maga'},
+			'characterClass:9':{'gender:0':'Brujo','gender:1':'Bruja'},
+			'characterClass:11':{'gender:0':'Druida','gender:1':'Druida'},
+			'characterRace:1':{'gender:0':'Humano','gender:1':'Humana'},
+			'characterRace:2':{'gender:0':'Orco','gender:1':'Orco'},
+			'characterRace:3':{'gender:0':'Enano','gender:1':'Enana'},
+			'characterRace:4':{'gender:0':'Elfo de la noche','gender:1':'Elfa de la noche'},
+			'characterRace:5':{'gender:0':'No-muerto','gender:1':'No-muerta'},
+			'characterRace:6':{'gender:0':'Tauren','gender:1':'Tauren'},
+			'characterRace:7':{'gender:0':'Gnomo','gender:1':'Gnoma'},
+			'characterRace:8':{'gender:0':'Trol','gender:1':'Trol'},
+			'characterRace:9':{'gender:0':'Goblin','gender:1':'Goblin'},
+			'characterRace:10':{'gender:0':'Elfo de sangre','gender:1':'Elfa de sangre'},
+			'characterRace:11':{'gender:0':'Draenei','gender:1':'Draenei'},
+			'characterRace:22':{'gender:0':'Huargen','gender:1':'Huargen'},
+			'factionSide:0':'Alianza',
+			'factionSide:1':'Horda',
+			'realmType:pve':'PvE',
+			'realmType:pvp':'PvP',
+			'realmType:rp':'RP',
+			'realmType:rppvp':'RPPvP',
+			'realmQueue:false':'no hay cola',
+			'realmQueue:true':'cola',
+			'realmStatus:false':'fuera de línea',
+			'realmStatus:true':'en línea',
+			'realmPopulation:low':'población de bajos',
+			'realmPopulation:medium':'población media',
+			'realmPopulation:high':'población de alto'
 		},
 		'en_GB': {
 			'templates': {
 				'character': {
-					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
-					'ilvl': '{{averageItemLevelEquipped}} average item level ({{averageItemLevel}})'
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Level {{level}} {{side_loc}} Guild, {{realm}}',
-					'members': '{{membercount}} members'
+					'sri'    : 'Level <%= this.level %> <%= this.localize("factionSide:"+this.side) %> Guild, <%= this.realm %>',
+					'members': '<%= this.membercount %> members'
 				}
 			},
 			'loading-realm'    : 'Loading realm...',
@@ -1180,51 +1214,51 @@ var WowDataTooltip = {
 			'loading-character': 'Loading character...',
 			'loading-guild'    : 'Loading guild...',
 			'realm-not-found'  : 'Realm not found!',
-			'class:1' : 'Warrior',
-			'class:2' : 'Paladin',
-			'class:3' : 'Hunter',
-			'class:4' : 'Rogue',
-			'class:5' : 'Priest',
-			'class:6' : 'Death Knight',
-			'class:7' : 'Shaman',
-			'class:8' : 'Mage',
-			'class:9' : 'Warlock',
-			'class:11': 'Druid',
-			'race:1'  : 'Human',
-			'race:2'  : 'Orc',
-			'race:3'  : 'Dwarf',
-			'race:4'  : 'Night Elf',
-			'race:5'  : 'Forsaken',
-			'race:6'  : 'Tauren',
-			'race:7'  : 'Gnome',
-			'race:8'  : 'Troll',
-			'race:9'  : 'Goblin',
-			'race:10' : 'Blood Elf',
-			'race:11' : 'Draenei',
-			'race:22' : 'Worgen',
-			'side:0'  : 'Alliance',
-			'side:1'  : 'Horde',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'No queue',
-			'realmqueue:true'       : 'Queue',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Low population',
-			'realmpopulation:medium': 'Medium population',
-			'realmpopulation:high'  : 'High population'
+			'characterClass:1' : 'Warrior',
+			'characterClass:2' : 'Paladin',
+			'characterClass:3' : 'Hunter',
+			'characterClass:4' : 'Rogue',
+			'characterClass:5' : 'Priest',
+			'characterClass:6' : 'Death Knight',
+			'characterClass:7' : 'Shaman',
+			'characterClass:8' : 'Mage',
+			'characterClass:9' : 'Warlock',
+			'characterClass:11': 'Druid',
+			'characterRace:1'  : 'Human',
+			'characterRace:2'  : 'Orc',
+			'characterRace:3'  : 'Dwarf',
+			'characterRace:4'  : 'Night Elf',
+			'characterRace:5'  : 'Forsaken',
+			'characterRace:6'  : 'Tauren',
+			'characterRace:7'  : 'Gnome',
+			'characterRace:8'  : 'Troll',
+			'characterRace:9'  : 'Goblin',
+			'characterRace:10' : 'Blood Elf',
+			'characterRace:11' : 'Draenei',
+			'characterRace:22' : 'Worgen',
+			'factionSide:0'  : 'Alliance',
+			'factionSide:1'  : 'Horde',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : 'No queue',
+			'realmQueue:true'       : 'Queue',
+			'realmStatus:false'     : 'Offline',
+			'realmStatus:true'      : 'Online',
+			'realmPopulation:low'   : 'Low population',
+			'realmPopulation:medium': 'Medium population',
+			'realmPopulation:high'  : 'High population'
 		},
 		'es_ES': {
 			'templates': {
 				'character': {
-					'sri' : '{{race_loc}} {{class_loc}} {{level}}',
-					'ilvl': '{{averageItemLevelEquipped}} Nivel medio de objeto ({{averageItemLevel}})'
+					'sri' : '<%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %> <%= this.level %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> Nivel medio de objeto (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Hermandad ({{side_loc}}), nivel {{level}}, {{realm}}',
-					'members': '{{membercount}} miembros'
+					'sri'    : 'Hermandad (<%= this.localize("factionSide:"+this.side) %>), nivel <%= this.level %>, <%= this.realm %>',
+					'members': '<%= this.membercount %> miembros'
 				}
 			},
 			'loading-realm'    : 'Cargando reino ...',
@@ -1232,51 +1266,51 @@ var WowDataTooltip = {
 			'loading-character': 'Cargando carácter ...',
 			'loading-guild'    : 'Carga del gremio ...',
 			'realm-not-found'  : 'Reino que no se encuentra!',
-			'class:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
-			'class:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
-			'class:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
-			'class:4' : {'gender:0': 'Pícaro',                 'gender:1': 'Pícara'},
-			'class:5' : {'gender:0': 'Sacerdote',              'gender:1': 'Sacerdotisa'},
-			'class:6' : {'gender:0': 'Caballero de la Muerte', 'gender:1': 'Caballero de la Muerte'},
-			'class:7' : {'gender:0': 'Chamán',                 'gender:1': 'Chamán'},
-			'class:8' : {'gender:0': 'Mago',                   'gender:1': 'Maga'},
-			'class:9' : {'gender:0': 'Brujo',                  'gender:1': 'Bruja'},
-			'class:11': {'gender:0': 'Druida',                 'gender:1': 'Druida'},
-			'race:1'  : {'gender:0': 'Humano',                 'gender:1': 'Humana'},
-			'race:2'  : {'gender:0': 'Orco',                   'gender:1': 'Orco'},
-			'race:3'  : {'gender:0': 'Enano',                  'gender:1': 'Enana'},
-			'race:4'  : {'gender:0': 'Elfo de la noche',       'gender:1': 'Elfa de la noche'},
-			'race:5'  : {'gender:0': 'No-muerto',              'gender:1': 'No-muerta'},
-			'race:6'  : {'gender:0': 'Tauren',                 'gender:1': 'Tauren'},
-			'race:7'  : {'gender:0': 'Gnomo',                  'gender:1': 'Gnoma'},
-			'race:8'  : {'gender:0': 'Trol',                   'gender:1': 'Trol'},
-			'race:9'  : {'gender:0': 'Goblin',                 'gender:1': 'Goblin'},
-			'race:10' : {'gender:0': 'Elfo de sangre',         'gender:1': 'Elfa de sangre'},
-			'race:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
-			'race:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
-			'side:0'  : 'Alianza',
-			'side:1'  : 'Horda',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'no hay cola',
-			'realmqueue:true'       : 'cola',
-			'realmstatus:false'     : 'fuera de línea',
-			'realmstatus:true'      : 'en línea',
-			'realmpopulation:low'   : 'población de bajos',
-			'realmpopulation:medium': 'población media',
-			'realmpopulation:high'  : 'población de alto'
+			'characterClass:1' : {'gender:0': 'Guerrero',               'gender:1': 'Guerrera'},
+			'characterClass:2' : {'gender:0': 'Paladín',                'gender:1': 'Paladín'},
+			'characterClass:3' : {'gender:0': 'Cazador',                'gender:1': 'Cazadora'},
+			'characterClass:4' : {'gender:0': 'Pícaro',                 'gender:1': 'Pícara'},
+			'characterClass:5' : {'gender:0': 'Sacerdote',              'gender:1': 'Sacerdotisa'},
+			'characterClass:6' : {'gender:0': 'Caballero de la Muerte', 'gender:1': 'Caballero de la Muerte'},
+			'characterClass:7' : {'gender:0': 'Chamán',                 'gender:1': 'Chamán'},
+			'characterClass:8' : {'gender:0': 'Mago',                   'gender:1': 'Maga'},
+			'characterClass:9' : {'gender:0': 'Brujo',                  'gender:1': 'Bruja'},
+			'characterClass:11': {'gender:0': 'Druida',                 'gender:1': 'Druida'},
+			'characterRace:1'  : {'gender:0': 'Humano',                 'gender:1': 'Humana'},
+			'characterRace:2'  : {'gender:0': 'Orco',                   'gender:1': 'Orco'},
+			'characterRace:3'  : {'gender:0': 'Enano',                  'gender:1': 'Enana'},
+			'characterRace:4'  : {'gender:0': 'Elfo de la noche',       'gender:1': 'Elfa de la noche'},
+			'characterRace:5'  : {'gender:0': 'No-muerto',              'gender:1': 'No-muerta'},
+			'characterRace:6'  : {'gender:0': 'Tauren',                 'gender:1': 'Tauren'},
+			'characterRace:7'  : {'gender:0': 'Gnomo',                  'gender:1': 'Gnoma'},
+			'characterRace:8'  : {'gender:0': 'Trol',                   'gender:1': 'Trol'},
+			'characterRace:9'  : {'gender:0': 'Goblin',                 'gender:1': 'Goblin'},
+			'characterRace:10' : {'gender:0': 'Elfo de sangre',         'gender:1': 'Elfa de sangre'},
+			'characterRace:11' : {'gender:0': 'Draenei',                'gender:1': 'Draenei'},
+			'characterRace:22' : {'gender:0': 'Huargen',                'gender:1': 'Huargen'},
+			'factionSide:0'  : 'Alianza',
+			'factionSide:1'  : 'Horda',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : 'no hay cola',
+			'realmQueue:true'       : 'cola',
+			'realmStatus:false'     : 'fuera de línea',
+			'realmStatus:true'      : 'en línea',
+			'realmPopulation:low'   : 'población de bajos',
+			'realmPopulation:medium': 'población media',
+			'realmPopulation:high'  : 'población de alto'
 		},
 		'fr_FR': {
 			'templates': {
 				'character': {
-					'sri' : '{{class_loc}} {{race_loc}} niv. {{level}}',
-					'ilvl': '{{averageItemLevelEquipped}} Niveau moyen des objets ({{averageItemLevel}})'
+					'sri' : '<%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> niv. <%= this.level %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> Niveau moyen des objets (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Guilde de niveau {{level}}, faction {{side_loc}}, {{realm}}',
-					'members': '{{membercount}} membres'
+					'sri'    : 'Guilde de niveau <%= this.level %>, faction <%= this.localize("factionSide:"+this.side) %>, <%= this.realm %>',
+					'members': '<%= this.membercount %> membres'
 				}
 			},
 			'loading-realm'    : 'Chargement realm ...',
@@ -1284,51 +1318,51 @@ var WowDataTooltip = {
 			'loading-character': 'Chargement de caractère ...',
 			'loading-guild'    : 'Chargement de guilde ...',
 			'realm-not-found'  : 'Realm pas été trouvé!',
-			'class:1' : {'gender:0': 'Guerrier',             'gender:1': 'Guerrière'},
-			'class:2' : {'gender:0': 'Paladin',              'gender:1': 'Paladin'},
-			'class:3' : {'gender:0': 'Chasseur',             'gender:1': 'Chasseresse'},
-			'class:4' : {'gender:0': 'Voleur',               'gender:1': 'Voleuse'},
-			'class:5' : {'gender:0': 'Prêtre',               'gender:1': 'Prêtresse'},
-			'class:6' : {'gender:0': 'Chevalier de la mort', 'gender:1': 'Chevalier de la mort'},
-			'class:7' : {'gender:0': 'Chaman',               'gender:1': 'Chamane'},
-			'class:8' : {'gender:0': 'Mage',                 'gender:1': 'Mage'},
-			'class:9' : {'gender:0': 'Démoniste',            'gender:1': 'Démoniste'},
-			'class:11': {'gender:0': 'Druide',               'gender:1': 'Druidesse'},
-			'race:1'  : {'gender:0': 'Humain',               'gender:1': 'Humaine'},
-			'race:2'  : {'gender:0': 'Orc',                  'gender:1': 'Orque'},
-			'race:3'  : {'gender:0': 'Nain',                 'gender:1': 'Naine'},
-			'race:4'  : {'gender:0': 'Elfe de la nuit',      'gender:1': 'Elfe de la nuit'},
-			'race:5'  : {'gender:0': 'Mort-vivant',          'gender:1': 'Morte-vivante'},
-			'race:6'  : {'gender:0': 'Tauren',               'gender:1': 'Tauren'},
-			'race:7'  : {'gender:0': 'Gnome',                'gender:1': 'Gnome'},
-			'race:8'  : {'gender:0': 'Troll',                'gender:1': 'Trollesse'},
-			'race:9'  : {'gender:0': 'Gobelin',              'gender:1': 'Gobeline'},
-			'race:10' : {'gender:0': 'Elfe de sang',         'gender:1': 'Elfe de sang'},
-			'race:11' : {'gender:0': 'Draeneï',              'gender:1': 'Draeneï'},
-			'race:22' : {'gender:0': 'Worgen',               'gender:1': 'Worgen'},
-			'side:0'  : 'Alliance',
-			'side:1'  : 'Horde',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'aucune file d\'attente',
-			'realmqueue:true'       : 'file d\'attente',
-			'realmstatus:false'     : 'Hors',
-			'realmstatus:true'      : 'En ligne',
-			'realmpopulation:low'   : 'la population est faible',
-			'realmpopulation:medium': 'la population moyenne',
-			'realmpopulation:high'  : 'élevée de la population'
+			'characterClass:1' : {'gender:0': 'Guerrier',             'gender:1': 'Guerrière'},
+			'characterClass:2' : {'gender:0': 'Paladin',              'gender:1': 'Paladin'},
+			'characterClass:3' : {'gender:0': 'Chasseur',             'gender:1': 'Chasseresse'},
+			'characterClass:4' : {'gender:0': 'Voleur',               'gender:1': 'Voleuse'},
+			'characterClass:5' : {'gender:0': 'Prêtre',               'gender:1': 'Prêtresse'},
+			'characterClass:6' : {'gender:0': 'Chevalier de la mort', 'gender:1': 'Chevalier de la mort'},
+			'characterClass:7' : {'gender:0': 'Chaman',               'gender:1': 'Chamane'},
+			'characterClass:8' : {'gender:0': 'Mage',                 'gender:1': 'Mage'},
+			'characterClass:9' : {'gender:0': 'Démoniste',            'gender:1': 'Démoniste'},
+			'characterClass:11': {'gender:0': 'Druide',               'gender:1': 'Druidesse'},
+			'characterRace:1'  : {'gender:0': 'Humain',               'gender:1': 'Humaine'},
+			'characterRace:2'  : {'gender:0': 'Orc',                  'gender:1': 'Orque'},
+			'characterRace:3'  : {'gender:0': 'Nain',                 'gender:1': 'Naine'},
+			'characterRace:4'  : {'gender:0': 'Elfe de la nuit',      'gender:1': 'Elfe de la nuit'},
+			'characterRace:5'  : {'gender:0': 'Mort-vivant',          'gender:1': 'Morte-vivante'},
+			'characterRace:6'  : {'gender:0': 'Tauren',               'gender:1': 'Tauren'},
+			'characterRace:7'  : {'gender:0': 'Gnome',                'gender:1': 'Gnome'},
+			'characterRace:8'  : {'gender:0': 'Troll',                'gender:1': 'Trollesse'},
+			'characterRace:9'  : {'gender:0': 'Gobelin',              'gender:1': 'Gobeline'},
+			'characterRace:10' : {'gender:0': 'Elfe de sang',         'gender:1': 'Elfe de sang'},
+			'characterRace:11' : {'gender:0': 'Draeneï',              'gender:1': 'Draeneï'},
+			'characterRace:22' : {'gender:0': 'Worgen',               'gender:1': 'Worgen'},
+			'factionSide:0'  : 'Alliance',
+			'factionSide:1'  : 'Horde',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : 'aucune file d\'attente',
+			'realmQueue:true'       : 'file d\'attente',
+			'realmStatus:false'     : 'Hors',
+			'realmStatus:true'      : 'En ligne',
+			'realmPopulation:low'   : 'la population est faible',
+			'realmPopulation:medium': 'la population moyenne',
+			'realmPopulation:high'  : 'élevée de la population'
 		},
 		'ru_RU': {
 			'templates': {
 				'character': {
-					'sri' : '{{class_loc}}-{{race_loc}} {{level}} yp.',
-					'ilvl': '{{averageItemLevelEquipped}} средний ({{averageItemLevel}})'
+					'sri' : '<%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>-<%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.level %> yp.',
+					'ilvl': '<%= this.averageItemLevelEquipped %> средний (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Гильдия {{level}}-го ур. ({{side_loc}}), {{realm}}',
-					'members': 'Членов гильдии: {{membercount}}'
+					'sri'    : 'Гильдия <%= this.level %>-го ур. (<%= this.localize("factionSide:"+this.side) %>), <%= this.realm %>',
+					'members': 'Членов гильдии: <%= this.membercount %>'
 				}
 			},
 			'loading-realm'    : 'Загрузка области ...',
@@ -1336,51 +1370,51 @@ var WowDataTooltip = {
 			'loading-character': 'Загрузка характер ...',
 			'loading-guild'    : 'Загрузка гильдии ...',
 			'realm-not-found'  : 'Площадь не найден!',
-			'class:1' : {'gender:0': 'Воин',          'gender:1': 'Воин'},
-			'class:2' : {'gender:0': 'Паладин',       'gender:1': 'Паладин'},
-			'class:3' : {'gender:0': 'Охотник',       'gender:1': 'Охотница'},
-			'class:4' : {'gender:0': 'Разбойник',     'gender:1': 'Разбойница'},
-			'class:5' : {'gender:0': 'Жрец',          'gender:1': 'Жрица'},
-			'class:6' : {'gender:0': 'Рыцарь смерти', 'gender:1': 'Рыцарь смерти'},
-			'class:7' : {'gender:0': 'Шаман',         'gender:1': 'Шаманка'},
-			'class:8' : {'gender:0': 'Маг',           'gender:1': 'Маг'},
-			'class:9' : {'gender:0': 'Чернокнижник',  'gender:1': 'Чернокнижница'},
-			'class:11': {'gender:0': 'Друид',         'gender:1': 'Друид'},
-			'race:1'  : {'gender:0': 'Человек',       'gender:1': 'Человек'},
-			'race:2'  : {'gender:0': 'Орк',           'gender:1': 'Орк'},
-			'race:3'  : {'gender:0': 'Дворф',         'gender:1': 'Дворф'},
-			'race:4'  : {'gender:0': 'Ночной эльф',   'gender:1': 'Ночная эльфийка'},
-			'race:5'  : {'gender:0': 'Отрекшийся',    'gender:1': 'Нежить'},
-			'race:6'  : {'gender:0': 'Таурен',        'gender:1': 'Таурен'},
-			'race:7'  : {'gender:0': 'Гном',          'gender:1': 'Гном'},
-			'race:8'  : {'gender:0': 'Тролль',        'gender:1': 'Тролль'},
-			'race:9'  : {'gender:0': 'Гоблин',        'gender:1': 'Гоблин'},
-			'race:10' : {'gender:0': 'Эльф крови',    'gender:1': 'Эльфийка крови'},
-			'race:11' : {'gender:0': 'Дреней',        'gender:1': 'Дреней'},
-			'race:22' : {'gender:0': 'Ворген',        'gender:1': 'Ворген'},
-			'side:0'  : 'Альянс',
-			'side:1'  : 'Орда',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'Нет очередей',
-			'realmqueue:true'       : 'очередь',
-			'realmstatus:false'     : 'автономно',
-			'realmstatus:true'      : 'Интернет',
-			'realmpopulation:low'   : 'Низкий населения',
-			'realmpopulation:medium': 'Средний населения',
-			'realmpopulation:high'  : 'Высокая населения'
+			'characterClass:1' : {'gender:0': 'Воин',          'gender:1': 'Воин'},
+			'characterClass:2' : {'gender:0': 'Паладин',       'gender:1': 'Паладин'},
+			'characterClass:3' : {'gender:0': 'Охотник',       'gender:1': 'Охотница'},
+			'characterClass:4' : {'gender:0': 'Разбойник',     'gender:1': 'Разбойница'},
+			'characterClass:5' : {'gender:0': 'Жрец',          'gender:1': 'Жрица'},
+			'characterClass:6' : {'gender:0': 'Рыцарь смерти', 'gender:1': 'Рыцарь смерти'},
+			'characterClass:7' : {'gender:0': 'Шаман',         'gender:1': 'Шаманка'},
+			'characterClass:8' : {'gender:0': 'Маг',           'gender:1': 'Маг'},
+			'characterClass:9' : {'gender:0': 'Чернокнижник',  'gender:1': 'Чернокнижница'},
+			'characterClass:11': {'gender:0': 'Друид',         'gender:1': 'Друид'},
+			'characterRace:1'  : {'gender:0': 'Человек',       'gender:1': 'Человек'},
+			'characterRace:2'  : {'gender:0': 'Орк',           'gender:1': 'Орк'},
+			'characterRace:3'  : {'gender:0': 'Дворф',         'gender:1': 'Дворф'},
+			'characterRace:4'  : {'gender:0': 'Ночной эльф',   'gender:1': 'Ночная эльфийка'},
+			'characterRace:5'  : {'gender:0': 'Отрекшийся',    'gender:1': 'Нежить'},
+			'characterRace:6'  : {'gender:0': 'Таурен',        'gender:1': 'Таурен'},
+			'characterRace:7'  : {'gender:0': 'Гном',          'gender:1': 'Гном'},
+			'characterRace:8'  : {'gender:0': 'Тролль',        'gender:1': 'Тролль'},
+			'characterRace:9'  : {'gender:0': 'Гоблин',        'gender:1': 'Гоблин'},
+			'characterRace:10' : {'gender:0': 'Эльф крови',    'gender:1': 'Эльфийка крови'},
+			'characterRace:11' : {'gender:0': 'Дреней',        'gender:1': 'Дреней'},
+			'characterRace:22' : {'gender:0': 'Ворген',        'gender:1': 'Ворген'},
+			'factionSide:0'  : 'Альянс',
+			'factionSide:1'  : 'Орда',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : 'Нет очередей',
+			'realmQueue:true'       : 'очередь',
+			'realmStatus:false'     : 'автономно',
+			'realmStatus:true'      : 'Интернет',
+			'realmPopulation:low'   : 'Низкий населения',
+			'realmPopulation:medium': 'Средний населения',
+			'realmPopulation:high'  : 'Высокая населения'
 		},
 		'de_DE': {
 			'templates': {
 				'character': {
-					'sri' : '{{level}}, {{race_loc}}, {{class_loc}}',
-					'ilvl': '{{averageItemLevelEquipped}} Durchschnittliche Gegenstandsstufe ({{averageItemLevel}})'
+					'sri' : '<%= this.level %>, <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %>, <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> Durchschnittliche Gegenstandsstufe (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Stufe {{level}} {{side_loc}}-Gilde, {{realm}}',
-					'members': '{{membercount}} Mitglieder'
+					'sri'    : 'Stufe <%= this.level %> <%= this.localize("factionSide:"+this.side) %>-Gilde, <%= this.realm %>',
+					'members': '<%= this.membercount %> Mitglieder'
 				}
 			},
 			'loading-realm'    : 'Lade Realm ...',
@@ -1388,51 +1422,51 @@ var WowDataTooltip = {
 			'loading-character': 'Lade Charakter ...',
 			'loading-guild'    : 'Lade Gilde ...',
 			'realm-not-found'  : 'Realm nicht gefunden!',
-			'class:1' : {'gender:0': 'Krieger',      'gender:1': 'Kriegerin'},
-			'class:2' : {'gender:0': 'Paladin',      'gender:1': 'Paladin'},
-			'class:3' : {'gender:0': 'Jäger',        'gender:1': 'Jägerin'},
-			'class:4' : {'gender:0': 'Schurke',      'gender:1': 'Schurkin'},
-			'class:5' : {'gender:0': 'Priester',     'gender:1': 'Priesterin'},
-			'class:6' : {'gender:0': 'Todesritter',  'gender:1': 'Todesritter'},
-			'class:7' : {'gender:0': 'Schamane',     'gender:1': 'Schamanin'},
-			'class:8' : {'gender:0': 'Magier',       'gender:1': 'Magierin'},
-			'class:9' : {'gender:0': 'Hexenmeister', 'gender:1': 'Hexenmeisterin'},
-			'class:11': {'gender:0': 'Druide',       'gender:1': 'Druidin'},
-			'race:1'  : {'gender:0': 'Mensch',       'gender:1': 'Mensch'},
-			'race:2'  : {'gender:0': 'Orc',          'gender:1': 'Orc'},
-			'race:3'  : {'gender:0': 'Zwerg',        'gender:1': 'Zwerg'},
-			'race:4'  : {'gender:0': 'Nachtelf',     'gender:1': 'Nachtelfe'},
-			'race:5'  : {'gender:0': 'Untoter',      'gender:1': 'Untote'},
-			'race:6'  : {'gender:0': 'Tauren',       'gender:1': 'Tauren'},
-			'race:7'  : {'gender:0': 'Gnom',         'gender:1': 'Gnom'},
-			'race:8'  : {'gender:0': 'Troll',        'gender:1': 'Troll'},
-			'race:9'  : {'gender:0': 'Goblin',       'gender:1': 'Goblin'},
-			'race:10' : {'gender:0': 'Blutelf',      'gender:1': 'Blutelfe'},
-			'race:11' : {'gender:0': 'Draenei',      'gender:1': 'Draenei'},
-			'race:22' : {'gender:0': 'Worgen',       'gender:1': 'Worgen'},
-			'side:0'  : 'Allianz',
-			'side:1'  : 'Horde',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : 'Keine Warteschlange',
-			'realmqueue:true'       : 'Warteschlange',
-			'realmstatus:false'     : 'Offline',
-			'realmstatus:true'      : 'Online',
-			'realmpopulation:low'   : 'Niedrige Bevölkerung',
-			'realmpopulation:medium': 'Mittlere Bevölkerung',
-			'realmpopulation:high'  : 'Hohe Bevölkerung'
+			'characterClass:1' : {'gender:0': 'Krieger',      'gender:1': 'Kriegerin'},
+			'characterClass:2' : {'gender:0': 'Paladin',      'gender:1': 'Paladin'},
+			'characterClass:3' : {'gender:0': 'Jäger',        'gender:1': 'Jägerin'},
+			'characterClass:4' : {'gender:0': 'Schurke',      'gender:1': 'Schurkin'},
+			'characterClass:5' : {'gender:0': 'Priester',     'gender:1': 'Priesterin'},
+			'characterClass:6' : {'gender:0': 'Todesritter',  'gender:1': 'Todesritter'},
+			'characterClass:7' : {'gender:0': 'Schamane',     'gender:1': 'Schamanin'},
+			'characterClass:8' : {'gender:0': 'Magier',       'gender:1': 'Magierin'},
+			'characterClass:9' : {'gender:0': 'Hexenmeister', 'gender:1': 'Hexenmeisterin'},
+			'characterClass:11': {'gender:0': 'Druide',       'gender:1': 'Druidin'},
+			'characterRace:1'  : {'gender:0': 'Mensch',       'gender:1': 'Mensch'},
+			'characterRace:2'  : {'gender:0': 'Orc',          'gender:1': 'Orc'},
+			'characterRace:3'  : {'gender:0': 'Zwerg',        'gender:1': 'Zwerg'},
+			'characterRace:4'  : {'gender:0': 'Nachtelf',     'gender:1': 'Nachtelfe'},
+			'characterRace:5'  : {'gender:0': 'Untoter',      'gender:1': 'Untote'},
+			'characterRace:6'  : {'gender:0': 'Tauren',       'gender:1': 'Tauren'},
+			'characterRace:7'  : {'gender:0': 'Gnom',         'gender:1': 'Gnom'},
+			'characterRace:8'  : {'gender:0': 'Troll',        'gender:1': 'Troll'},
+			'characterRace:9'  : {'gender:0': 'Goblin',       'gender:1': 'Goblin'},
+			'characterRace:10' : {'gender:0': 'Blutelf',      'gender:1': 'Blutelfe'},
+			'characterRace:11' : {'gender:0': 'Draenei',      'gender:1': 'Draenei'},
+			'characterRace:22' : {'gender:0': 'Worgen',       'gender:1': 'Worgen'},
+			'factionSide:0'  : 'Allianz',
+			'factionSide:1'  : 'Horde',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : 'Keine Warteschlange',
+			'realmQueue:true'       : 'Warteschlange',
+			'realmStatus:false'     : 'Offline',
+			'realmStatus:true'      : 'Online',
+			'realmPopulation:low'   : 'Niedrige Bevölkerung',
+			'realmPopulation:medium': 'Mittlere Bevölkerung',
+			'realmPopulation:high'  : 'Hohe Bevölkerung'
 		},
 		'ko_KR': {
 			'templates': {
 				'character': {
-					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
-					'ilvl': '{{averageItemLevelEquipped}} 평균 아이템 레벨 ({{averageItemLevel}})'
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> 평균 아이템 레벨 (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : '{{level}} 레벨 {{side_loc}} 길드, {{realm}}',
-					'members': '구성원 {{membercount}}명'
+					'sri'    : '<%= this.level %> 레벨 <%= this.localize("factionSide:"+this.side) %> 길드, <%= this.realm %>',
+					'members': '구성원 <%= this.membercount %>명'
 				}
 			},
 			'loading-realm'    : '영역을로드하는 중 ...',
@@ -1440,51 +1474,51 @@ var WowDataTooltip = {
 			'loading-character': '문자를로드 중입니다 ...',
 			'loading-guild'    : '로딩 길드 ...',
 			'realm-not-found'  : '영역을 찾을 수 없습니다!',
-			'class:1' : '전사',
-			'class:2' : '성기사',
-			'class:3' : '사냥꾼',
-			'class:4' : '도적',
-			'class:5' : '사제',
-			'class:6' : '죽음의 기사',
-			'class:7' : '주술사',
-			'class:8' : '마법사',
-			'class:9' : '흑마법사',
-			'class:11': '드루이드',
-			'race:1'  : '인간',
-			'race:2'  : '오크',
-			'race:3'  : '드워프',
-			'race:4'  : '나이트 엘프',
-			'race:5'  : '언데드',
-			'race:6'  : '타우렌',
-			'race:7'  : '노움',
-			'race:8'  : '트롤',
-			'race:9'  : '고블린',
-			'race:10' : '블러드 엘프',
-			'race:11' : '드레나이',
-			'race:22' : '늑대인간',
-			'side:0'  : '얼라이언스',
-			'side:1'  : '호드',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : '없음 대기열 없음',
-			'realmqueue:true'       : '대기열',
-			'realmstatus:false'     : '오프라인',
-			'realmstatus:true'      : '온라인으로',
-			'realmpopulation:low'   : '낮은 인구',
-			'realmpopulation:medium': '중간 인구',
-			'realmpopulation:high'  : '높은 인구'
+			'characterClass:1' : '전사',
+			'characterClass:2' : '성기사',
+			'characterClass:3' : '사냥꾼',
+			'characterClass:4' : '도적',
+			'characterClass:5' : '사제',
+			'characterClass:6' : '죽음의 기사',
+			'characterClass:7' : '주술사',
+			'characterClass:8' : '마법사',
+			'characterClass:9' : '흑마법사',
+			'characterClass:11': '드루이드',
+			'characterRace:1'  : '인간',
+			'characterRace:2'  : '오크',
+			'characterRace:3'  : '드워프',
+			'characterRace:4'  : '나이트 엘프',
+			'characterRace:5'  : '언데드',
+			'characterRace:6'  : '타우렌',
+			'characterRace:7'  : '노움',
+			'characterRace:8'  : '트롤',
+			'characterRace:9'  : '고블린',
+			'characterRace:10' : '블러드 엘프',
+			'characterRace:11' : '드레나이',
+			'characterRace:22' : '늑대인간',
+			'factionSide:0'  : '얼라이언스',
+			'factionSide:1'  : '호드',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : '없음 대기열 없음',
+			'realmQueue:true'       : '대기열',
+			'realmStatus:false'     : '오프라인',
+			'realmStatus:true'      : '온라인으로',
+			'realmPopulation:low'   : '낮은 인구',
+			'realmPopulation:medium': '중간 인구',
+			'realmPopulation:high'  : '높은 인구'
 		},
 		'zh_TW': {
 			'templates': {
 				'character': {
-					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
-					'ilvl': '{{averageItemLevelEquipped}} 平均物品等級 ({{averageItemLevel}})'
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> 平均物品等級 (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : '等級{{level}}{{side_loc}}公會, {{realm}}',
-					'members': '共{{membercount}}位成員'
+					'sri'    : '等級<%= this.level %><%= this.localize("factionSide:"+this.side) %>公會, <%= this.realm %>',
+					'members': '共<%= this.membercount %>位成員'
 				}
 			},
 			'loading-realm'    : '載入境界...',
@@ -1492,51 +1526,51 @@ var WowDataTooltip = {
 			'loading-character': '載入字符...',
 			'loading-guild'    : '載入公會...',
 			'realm-not-found'  : '境界不存在！',
-			'class:1' : '戰士',
-			'class:2' : '聖騎士',
-			'class:3' : '獵人',
-			'class:4' : '流氓',
-			'class:5' : '牧師',
-			'class:6' : '死亡騎士',
-			'class:7' : '巫',
-			'class:8' : '法師',
-			'class:9' : '術士',
-			'class:11': '德魯伊',
-			'race:1'  : '人類',
-			'race:2'  : '獸人',
-			'race:3'  : '侏儒',
-			'race:4'  : '暗夜精靈',
-			'race:5'  : '被遺忘者',
-			'race:6'  : '牛頭人',
-			'race:7'  : '侏儒',
-			'race:8'  : '拖釣',
-			'race:9'  : '小妖精',
-			'race:10' : '血精靈',
-			'race:11' : '德萊尼',
-			'race:22' : '狼人',
-			'side:0'  : '的聯盟',
-			'side:1'  : '部落',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : '沒有隊列',
-			'realmqueue:true'       : '隊列中',
-			'realmstatus:false'     : '離線',
-			'realmstatus:true'      : '在線',
-			'realmpopulation:low'   : '低人口',
-			'realmpopulation:medium': '中等人口',
-			'realmpopulation:high'  : '高人口'
+			'characterClass:1' : '戰士',
+			'characterClass:2' : '聖騎士',
+			'characterClass:3' : '獵人',
+			'characterClass:4' : '流氓',
+			'characterClass:5' : '牧師',
+			'characterClass:6' : '死亡騎士',
+			'characterClass:7' : '巫',
+			'characterClass:8' : '法師',
+			'characterClass:9' : '術士',
+			'characterClass:11': '德魯伊',
+			'characterRace:1'  : '人類',
+			'characterRace:2'  : '獸人',
+			'characterRace:3'  : '侏儒',
+			'characterRace:4'  : '暗夜精靈',
+			'characterRace:5'  : '被遺忘者',
+			'characterRace:6'  : '牛頭人',
+			'characterRace:7'  : '侏儒',
+			'characterRace:8'  : '拖釣',
+			'characterRace:9'  : '小妖精',
+			'characterRace:10' : '血精靈',
+			'characterRace:11' : '德萊尼',
+			'characterRace:22' : '狼人',
+			'factionSide:0'  : '的聯盟',
+			'factionSide:1'  : '部落',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : '沒有隊列',
+			'realmQueue:true'       : '隊列中',
+			'realmStatus:false'     : '離線',
+			'realmStatus:true'      : '在線',
+			'realmPopulation:low'   : '低人口',
+			'realmPopulation:medium': '中等人口',
+			'realmPopulation:high'  : '高人口'
 		},
 		'zh_CN': {
 			'templates': {
 				'character': {
-					'sri' : '{{level}} {{race_loc}} {{class_loc}}',
-					'ilvl': '{{averageItemLevelEquipped}} 物品平均等级 ({{averageItemLevel}})'
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'ilvl': '<%= this.averageItemLevelEquipped %> 物品平均等级 (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : '{{level}} 级 {{side_loc}} 公会, {{realm}}',
-					'members': '{{membercount}} 个成员'
+					'sri'    : '<%= this.level %> 级 <%= this.localize("factionSide:"+this.side) %> 公会, <%= this.realm %>',
+					'members': '<%= this.membercount %> 个成员'
 				}
 			},
 			'loading-realm'    : '载入境界...',
@@ -1544,41 +1578,41 @@ var WowDataTooltip = {
 			'loading-character': '载入字符...',
 			'loading-guild'    : '正在载入公会...',
 			'realm-not-found'  : '没有发现的境界！',
-			'class:1' : '战士',
-			'class:2' : '圣骑士',
-			'class:3' : '猎人',
-			'class:4' : '潜行者',
-			'class:5' : '牧师',
-			'class:6' : '死亡骑士',
-			'class:7' : '萨满祭司',
-			'class:8' : '法师',
-			'class:9' : '术士',
-			'class:11': '德鲁伊',
-			'race:1'  : '人类',
-			'race:2'  : '兽人',
-			'race:3'  : '矮人',
-			'race:4'  : '暗夜精灵',
-			'race:5'  : '亡灵',
-			'race:6'  : '牛头人',
-			'race:7'  : '侏儒',
-			'race:8'  : '巨魔',
-			'race:9'  : '地精',
-			'race:10' : '血精灵',
-			'race:11' : '德莱尼',
-			'race:22' : '狼人',
-			'side:0'  : '联盟',
-			'side:1'  : '部落',
-			'realmtype:pve'         : 'PvE',
-			'realmtype:pvp'         : 'PvP',
-			'realmtype:rp'          : 'RP',
-			'realmtype:rppvp'       : 'RPPvP',
-			'realmqueue:false'      : '没有队列',
-			'realmqueue:true'       : '队列中',
-			'realmstatus:false'     : '离线',
-			'realmstatus:true'      : '在线',
-			'realmpopulation:low'   : '低人口',
-			'realmpopulation:medium': '中等人口',
-			'realmpopulation:high'  : '高人口'
+			'characterClass:1' : '战士',
+			'characterClass:2' : '圣骑士',
+			'characterClass:3' : '猎人',
+			'characterClass:4' : '潜行者',
+			'characterClass:5' : '牧师',
+			'characterClass:6' : '死亡骑士',
+			'characterClass:7' : '萨满祭司',
+			'characterClass:8' : '法师',
+			'characterClass:9' : '术士',
+			'characterClass:11': '德鲁伊',
+			'characterRace:1'  : '人类',
+			'characterRace:2'  : '兽人',
+			'characterRace:3'  : '矮人',
+			'characterRace:4'  : '暗夜精灵',
+			'characterRace:5'  : '亡灵',
+			'characterRace:6'  : '牛头人',
+			'characterRace:7'  : '侏儒',
+			'characterRace:8'  : '巨魔',
+			'characterRace:9'  : '地精',
+			'characterRace:10' : '血精灵',
+			'characterRace:11' : '德莱尼',
+			'characterRace:22' : '狼人',
+			'factionSide:0'  : '联盟',
+			'factionSide:1'  : '部落',
+			'realmType:pve'         : 'PvE',
+			'realmType:pvp'         : 'PvP',
+			'realmType:rp'          : 'RP',
+			'realmType:rppvp'       : 'RPPvP',
+			'realmQueue:false'      : '没有队列',
+			'realmQueue:true'       : '队列中',
+			'realmStatus:false'     : '离线',
+			'realmStatus:true'      : '在线',
+			'realmPopulation:low'   : '低人口',
+			'realmPopulation:medium': '中等人口',
+			'realmPopulation:high'  : '高人口'
 		}
 	},
 	
@@ -1595,24 +1629,47 @@ var WowDataTooltip = {
 			'guild'    : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/#]+).*/
 		},
 		'api': {
-			'data.classes': 'http://{{host}}/api/wow/data/character/classes?locale={{locale}}',
-			'data.races'  : 'http://{{host}}/api/wow/data/character/races?locale={{locale}}',
-			'realm'       : 'http://{{host}}/api/wow/realm/status?realm={{realm}}&locale={{locale}}',
-			'item'        : 'http://{{host}}/api/wow/item/{{itemid}}?locale={{locale}}',
-			'character'   : 'http://{{host}}/api/wow/character/{{realm}}/{{character}}?fields=guild,talents,items,professions&locale={{locale}}',
-			'guild'       : 'http://{{host}}/api/wow/guild/{{realm}}/{{guild}}?fields=members&locale={{locale}}',
+			'data.classes': 'http://<%= this.host %>/api/wow/data/character/classes?locale=<%= this.locale %>',
+			'data.races'  : 'http://<%= this.host %>/api/wow/data/character/races?locale=<%= this.locale %>',
+			'realm'       : 'http://<%= this.host %>/api/wow/realm/status?realm=<%= this.realm %>&locale=<%= this.locale %>',
+			'item'        : 'http://<%= this.host %>/api/wow/item/<%= this.itemid %>?locale=<%= this.locale %>',
+			'character'   : 'http://<%= this.host %>/api/wow/character/<%= this.realm %>/<%= this.character %>?fields=guild,talents,items,professions&locale=<%= this.locale %>',
+			'guild'       : 'http://<%= this.host %>/api/wow/guild/<%= this.realm %>/<%= this.guild %>?fields=members&locale=<%= this.locale %>',
 		},
 		'hash': {
-			'data.classes': '{{host}}#{{locale}}',
-			'data.races'  : '{{host}}#{{locale}}',
-			'realm'       : '{{host}}#{{realm}}#{{locale}}',
-			'item'        : '{{host}}#{{itemid}}#{{locale}}',
-			'character'   : '{{host}}#{{realm}}#{{character}}#{{locale}}',
-			'guild'       : '{{host}}#{{realm}}#{{guild}}#{{locale}}',			
+			'data.classes': '<%= this.host %>#<%= this.locale %>',
+			'data.races'  : '<%= this.host %>#<%= this.locale %>',
+			'realm'       : '<%= this.host %>#<%= this.realm %>#<%= this.locale %>',
+			'item'        : '<%= this.host %>#<%= this.itemid %>#<%= this.locale %>',
+			'character'   : '<%= this.host %>#<%= this.realm %>#<%= this.character %>#<%= this.locale %>',
+			'guild'       : '<%= this.host %>#<%= this.realm %>#<%= this.guild %>#<%= this.locale %>',			
 		}
 	},
 	
 	'maps': {
+		'item': {
+			'primaryStats': {
+				'3': true, // Agility
+				'4': true, // Strength
+				'5': true, // Intellect
+				'6': true, // Spirit
+				'7': true  // Stamina
+			},
+			'secondaryStats': {
+				'13': true, // Dodge rating
+				'14': true, // Parry rating
+				'31': true, // Hit rating
+				'32': true, // Critical strike rating
+				'35': true, // Resilience rating
+				'36': true, // Haste rating
+				'37': true, // Expertise rating
+				'38': true, // Attack power
+				'46': true, // Health regeneration
+				'45': true, // Spell power
+				'47': true, // Spell penetration
+				'49': true  // Mastery rating
+			}
+		},
 		'host2region': {
 			'us.battle.net'       : 'us',
 			'eu.battle.net'       : 'eu',
