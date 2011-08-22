@@ -72,7 +72,7 @@
 			'layout': {
 				'width': {
 					'realm'    : 200,
-					'item'     : 350,
+					'item'     : 420,
 					'character': 300,
 					'guild'    : 200
 				}

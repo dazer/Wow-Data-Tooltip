@@ -24,725 +24,600 @@ if(!window.yepnope) {
 	/*yepnope1.0.2|WTFPL*/(function(a,b,c){function H(){var a=z;a.loader={load:G,i:0};return a}function G(a,b,c){var e=b=="c"?r:q;i=0,b=b||"j",u(a)?F(e,a,b,this.i++,d,c):(h.splice(this.i++,0,a),h.length==1&&E());return this}function F(a,c,d,g,j,l){function q(){!o&&A(n.readyState)&&(p.r=o=1,!i&&B(),n.onload=n.onreadystatechange=null,e(function(){m.removeChild(n)},0))}var n=b.createElement(a),o=0,p={t:d,s:c,e:l};n.src=n.data=c,!k&&(n.style.display="none"),n.width=n.height="0",a!="object"&&(n.type=d),n.onload=n.onreadystatechange=q,a=="img"?n.onerror=q:a=="script"&&(n.onerror=function(){p.e=p.r=1,E()}),h.splice(g,0,p),m.insertBefore(n,k?null:f),e(function(){o||(m.removeChild(n),p.r=p.e=o=1,B())},z.errorTimeout)}function E(){var a=h.shift();i=1,a?a.t?e(function(){a.t=="c"?D(a):C(a)},0):(a(),B()):i=0}function D(a){var c=b.createElement("link"),d;c.href=a.s,c.rel="stylesheet",c.type="text/css";if(!a.e&&(o||j)){var g=function(a){e(function(){if(!d)try{a.sheet.cssRules.length?(d=1,B()):g(a)}catch(b){b.code==1e3||b.message=="security"||b.message=="denied"?(d=1,e(function(){B()},0)):g(a)}},0)};g(c)}else c.onload=function(){d||(d=1,e(function(){B()},0))},a.e&&c.onload();e(function(){d||(d=1,B())},z.errorTimeout),!a.e&&f.parentNode.insertBefore(c,f)}function C(a){var c=b.createElement("script"),d;c.src=a.s,c.onreadystatechange=c.onload=function(){!d&&A(c.readyState)&&(d=1,B(),c.onload=c.onreadystatechange=null)},e(function(){d||(d=1,B())},z.errorTimeout),a.e?c.onload():f.parentNode.insertBefore(c,f)}function B(){var a=1,b=-1;while(h.length- ++b)if(h[b].s&&!(a=h[b].r))break;a&&E()}function A(a){return!a||a=="loaded"||a=="complete"}var d=b.documentElement,e=a.setTimeout,f=b.getElementsByTagName("script")[0],g={}.toString,h=[],i=0,j="MozAppearance"in d.style,k=j&&!!b.createRange().compareNode,l=j&&!k,m=k?d:f.parentNode,n=a.opera&&g.call(a.opera)=="[object Opera]",o="webkitAppearance"in d.style,p=o&&"async"in b.createElement("script"),q=j?"object":n||p?"img":"script",r=o?"img":q,s=Array.isArray||function(a){return g.call(a)=="[object Array]"},t=function(a){return Object(a)===a},u=function(a){return typeof a=="string"},v=function(a){return g.call(a)=="[object Function]"},w=[],x={},y,z;z=function(a){function h(a,b){function i(a){if(u(a))g(a,f,b,0,c);else if(t(a))for(h in a)a.hasOwnProperty(h)&&g(a[h],f,b,h,c)}var c=!!a.test,d=c?a.yep:a.nope,e=a.load||a.both,f=a.callback,h;i(d),i(e),a.complete&&b.load(a.complete)}function g(a,b,d,e,g){var h=f(a),i=h.autoCallback;if(!h.bypass){b&&(b=v(b)?b:b[a]||b[e]||b[a.split("/").pop().split("?")[0]]);if(h.instead)return h.instead(a,b,d,e,g);d.load(h.url,h.forceCSS||!h.forceJS&&/css$/.test(h.url)?"c":c,h.noexec),(v(b)||v(i))&&d.load(function(){H(),b&&b(h.origUrl,g,e),i&&i(h.origUrl,g,e)})}}function f(a){var b=a.split("!"),c=w.length,d=b.pop(),e=b.length,f={url:d,origUrl:d,prefixes:b},g,h;for(h=0;h<e;h++)g=x[b[h]],g&&(f=g(f));for(h=0;h<c;h++)f=w[h](f);return f}var b,d,e=this.yepnope.loader;if(u(a))g(a,0,e,0);else if(s(a))for(b=0;b<a.length;b++)d=a[b],u(d)?g(d,0,e,0):s(d)?z(d):t(d)&&h(d,e);else t(a)&&h(a,e)},z.addPrefix=function(a,b){x[a]=b},z.addFilter=function(a){w.push(a)},z.errorTimeout=1e4,b.readyState==null&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",y=function(){b.removeEventListener("DOMContentLoaded",y,0),b.readyState="complete"},0)),a.yepnope=H()})(this,this.document)
 }
 
-var WowDataTooltip = {
-	
-	'config': {
-		'merged' : {},
-		'user'   : window.___WowDataTooltip_Config || {},
-		'default': {
-			'files': {
-				'jquery.js': 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-				'qtip2.js' : 'qtip2/jquery.qtip.min.js',
-				'qtip2.css': 'qtip2/jquery.qtip.min.css',
-				'wdt.css'  : 'wdt/WowDataTooltip.css'
+var WowDataTooltip={
+	'config':{
+		'merged':{},
+		'user':window.___WowDataTooltip_Config||{},
+		'default':{
+			'files':{
+				'jquery.js':'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+				'qtip2.js':'qtip2/jquery.qtip.min.js',
+				'qtip2.css':'qtip2/jquery.qtip.min.css',
+				'wdt.css':'wdt/WowDataTooltip.css'
 			},
-			'applyTo': {
-				'explicit' : true,
-				'battlenet': true
+			'applyTo':{
+				'explicit':true,
+				'battlenet':true
 			},
-			'extendedMode': {
-				'active'       : true,
-				'keyCode'      : 16,
-				'keyCode.label': 'SHIFT'
+			'extendedMode':{
+				'active':true,
+				'keyCode':16,
+				'keyCode.label':'SHIFT'
 			},
-			'layout': {
-				'width': {
-					'realm'    : 200,
-					'item'     : 300,
-					'character': 300,
-					'guild'    : 200
+			'layout':{
+				'width':{
+					'realm':200,
+					'item':300,
+					'character':300,
+					'guild':200
 				}
 			},
-			'extras': {
-				'applyCssColorToCaller': false
+			'extras':{
+				'applyCssColorToCaller':false
 			}
 		}
 	},
-		
-	init: function() {
+	init:function(){
 		this.mergeConfig();
 		this.attachEventHandlers();
 	},
-	
-	mergeConfig: function() {
-		var cfgu = this.config['user'];
-		var cfgm = this.config['default'];
-		if('undefined' !== typeof(cfgu['auth'])) {
-			if('undefined' !== typeof(cfgu['auth']['key']))    cfgm['auth']['key']    = cfgu['auth']['key'];
-			if('undefined' !== typeof(cfgu['auth']['secret'])) cfgm['auth']['secret'] = cfgu['auth']['secret'];
+	mergeConfig:function(){
+		var cfgu=this.config['user'];
+		var cfgm=this.config['default'];
+		if('undefined'!==typeof(cfgu['auth'])){
+			if('undefined'!==typeof(cfgu['auth']['key'])) cfgm['auth']['key']=cfgu['auth']['key'];
+			if('undefined'!==typeof(cfgu['auth']['secret'])) cfgm['auth']['secret']=cfgu['auth']['secret'];
 		}
-		if('undefined' !== typeof(cfgu['files'])) {
-			if('undefined' !== typeof(cfgu['files']['jquery.js'])) cfgm['files']['jquery.js'] = cfgu['files']['jquery.js'];
-			if('undefined' !== typeof(cfgu['files']['qtip2.js']))  cfgm['files']['qtip2.js']  = cfgu['files']['qtip2.js'];
-			if('undefined' !== typeof(cfgu['files']['qtip2.css'])) cfgm['files']['qtip2.css'] = cfgu['files']['qtip2.css'];
-			if('undefined' !== typeof(cfgu['files']['wdt.css']))   cfgm['files']['wdt.css']   = cfgu['files']['wdt.css'];			
+		if('undefined'!==typeof(cfgu['files'])){
+			if('undefined'!==typeof(cfgu['files']['jquery.js'])) cfgm['files']['jquery.js']=cfgu['files']['jquery.js'];
+			if('undefined'!==typeof(cfgu['files']['qtip2.js'])) cfgm['files']['qtip2.js']=cfgu['files']['qtip2.js'];
+			if('undefined'!==typeof(cfgu['files']['qtip2.css'])) cfgm['files']['qtip2.css']=cfgu['files']['qtip2.css'];
+			if('undefined'!==typeof(cfgu['files']['wdt.css'])) cfgm['files']['wdt.css']=cfgu['files']['wdt.css'];			
 		}
-		if('undefined' !== typeof(cfgu['applyTo'])) {
-			if('undefined' !== typeof(cfgu['applyTo']['explicit']))  cfgm['applyTo']['explicit']  = cfgu['applyTo']['explicit'];
-			if('undefined' !== typeof(cfgu['applyTo']['battlenet'])) cfgm['applyTo']['battlenet'] = cfgu['applyTo']['battlenet'];
+		if('undefined'!==typeof(cfgu['applyTo'])){
+			if('undefined'!==typeof(cfgu['applyTo']['explicit'])) cfgm['applyTo']['explicit']=cfgu['applyTo']['explicit'];
+			if('undefined'!==typeof(cfgu['applyTo']['battlenet'])) cfgm['applyTo']['battlenet']=cfgu['applyTo']['battlenet'];
 		}
-		if('undefined' !== typeof(cfgu['extendedMode'])) {
-			if('undefined' !== typeof(cfgu['extendedMode']['active']))        cfgm['extendedMode']['active']        = cfgu['extendedMode']['active'];
-			if('undefined' !== typeof(cfgu['extendedMode']['keyCode']))       cfgm['extendedMode']['keyCode']       = cfgu['extendedMode']['keyCode'];
-			if('undefined' !== typeof(cfgu['extendedMode']['keyCode.label'])) cfgm['extendedMode']['keyCode.label'] = cfgu['extendedMode']['keyCode.label'];
+		if('undefined'!==typeof(cfgu['extendedMode'])){
+			if('undefined'!==typeof(cfgu['extendedMode']['active'])) cfgm['extendedMode']['active']=cfgu['extendedMode']['active'];
+			if('undefined'!==typeof(cfgu['extendedMode']['keyCode'])) cfgm['extendedMode']['keyCode']=cfgu['extendedMode']['keyCode'];
+			if('undefined'!==typeof(cfgu['extendedMode']['keyCode.label'])) cfgm['extendedMode']['keyCode.label']=cfgu['extendedMode']['keyCode.label'];
 		}
-		if('undefined' !== typeof(cfgu['layout'])) {
-			if('undefined' !== typeof(cfgu['layout']['width'])) {
-				if('undefined' !== typeof(cfgu['layout']['width']['realm']))     cfgm['layout']['width']['realm']     = cfgu['layout']['width']['realm'];
-				if('undefined' !== typeof(cfgu['layout']['width']['item']))      cfgm['layout']['width']['item']      = cfgu['layout']['width']['item'];
-				if('undefined' !== typeof(cfgu['layout']['width']['character'])) cfgm['layout']['width']['character'] = cfgu['layout']['width']['character'];
-				if('undefined' !== typeof(cfgu['layout']['width']['guild']))     cfgm['layout']['width']['guild']     = cfgu['layout']['width']['guild'];
+		if('undefined'!==typeof(cfgu['layout'])){
+			if('undefined'!==typeof(cfgu['layout']['width'])){
+				if('undefined'!==typeof(cfgu['layout']['width']['realm'])) cfgm['layout']['width']['realm']=cfgu['layout']['width']['realm'];
+				if('undefined'!==typeof(cfgu['layout']['width']['item'])) cfgm['layout']['width']['item']=cfgu['layout']['width']['item'];
+				if('undefined'!==typeof(cfgu['layout']['width']['character'])) cfgm['layout']['width']['character']=cfgu['layout']['width']['character'];
+				if('undefined'!==typeof(cfgu['layout']['width']['guild'])) cfgm['layout']['width']['guild']=cfgu['layout']['width']['guild'];
 			}
 		}
-		if('undefined' !== typeof(cfgu['extras'])) {
-			if('undefined' !== typeof(cfgu['extras']['applyCssColorToCaller'])) cfgm['extras']['applyCssColorToCaller'] = cfgu['extras']['applyCssColorToCaller'];
+		if('undefined'!==typeof(cfgu['extras'])){
+			if('undefined'!==typeof(cfgu['extras']['applyCssColorToCaller'])) cfgm['extras']['applyCssColorToCaller']=cfgu['extras']['applyCssColorToCaller'];
 		}
-		this.config['merged'] = cfgm;
+		this.config['merged']=cfgm;
 	},
-	
-	attachEventHandlers: function() {
+	attachEventHandlers:function(){
 		yepnope([{
-			test: window.jQuery,
-			nope: WowDataTooltip.getSetting(['files', 'jquery.js']),
-			complete: function () {
-				if(!window.jQuery.jqote) {
+			test:window.jQuery,
+			nope:WowDataTooltip.getSetting(['files','jquery.js']),
+			complete:function(){
+				if(!window.jQuery.jqote){
 					/* jQote2 - client-side Javascript templating engine | Copyright (C) 2010, aefxx | http://aefxx.com/ | Dual licensed under the WTFPL v2 or MIT (X11) licenses | WTFPL v2 Copyright (C) 2004, Sam Hocevar | Date: Thu, Oct 21st, 2010 | Version: 0.9.7 */
 					(function($){var _=false,E1="UndefinedTemplateError",E2="TemplateCompilationError",E3="TemplateExecutionError",A="[object Array]",S="[object String]",F="[object Function]",n=1,c="%",q=/^[^<]*(<[\w\W]+>)[^>]*$/,ts=Object.prototype.toString;function r(e,x){throw ($.extend(e,x),e)}function dns(f) {var a=[];if(ts.call(f)!==A)return _;for(var i=0,l=f.length;i<l;i++)a[i]=f[i].jqote_id;return a.length?a.sort().join('.').replace(/(\b\d+\b)\.(?:\1(\.|$))+/g,"$1$2"):_}function l(s,t){var f,g=[],t=t||c,x=ts.call(s);if(x===F)return s.jqote_id?[s]:_;if(x!==A)return[$.jqotec(s,t)];if(x===A)for(var i=0,l=s.length;i<l;i++)return g.length?g:_}$.fn.extend({jqote:function(x,y){var x=ts.call(x)===A?x:[x],d="";this.each(function(i){var f=$.jqotec(this,y);for(var j=0;j<x.length;j++)d+=f.call(x[j],i,j,x,f)});return d}});$.each({app:"append",pre:"prepend",sub:"html"},function(x,y){$.fn["jqote"+x]=function(e,d,t){var p,r,s=$.jqote(e,d,t),$$=!q.test(s)?function(s){return $(document.createTextNode(s))}:$;if(!!(p=dns(l(e))))r=new RegExp("(^|\\.)"+p.split(".").join("\\.(.*)?")+"(\\.|$)");return this.each(function(){var z=$$(s);$(this)[y](z);(z[0].nodeType===3?$(this):z).trigger("jqote."+x,[z,r])})}});
 					$.extend({jqote:function(e,d,t){var s="",t=t||c,f=l(e);if(f===_)r(new Error("Empty or undefined template passed to $.jqote"),{type:E1});d=ts.call(d)!==A?[d]:d;for(var i=0,m=f.length;i<m;i++)for(var j=0;j<d.length;j++)s+=f[i].call(d[j],i,j,d,f[i]);return s},jqotec:function(x,t){var h,e,y,t=t||c,z=ts.call(x);if(z===S&&q.test(x)){e=y=x;if(h=$.jqotecache[x])return h}else{e=z===S||x.nodeType?$(x):x instanceof jQuery?x:null;if(!e[0]||!(y=e[0].innerHTML)&&!(y=e.text()))r(new Error("Empty or undefined template passed to $.jqotec"),{type:E1});if(h=$.jqotecache[$.data(e[0],"jqote_id")])return h}var s="",i,a=y.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]/g,"").split("<"+t).join(t+">\x1b").split(t+">");for(var m=0,k=a.length;m<k;m++)s+=a[m].charAt(0)!=="\x1b"?"out+='"+a[m].replace(/(\\|["'])/g,"\\$1")+"'":(a[m].charAt(1)==="="?";out+=("+a[m].substr(2)+");":(a[m].charAt(1)==="!"?";out+=$.jqotenc(("+a[m].substr(2)+"));":";"+a[m].substr(1)));s="try{"+('var out="";'+s+";return out;").split("out+='';").join("").split('var out="";out+=').join("var out=")+'}catch(e){e.type="'+E3+'";e.args=arguments;e.template=arguments.callee.toString();throw e;}';try{var f=new Function("i, j, data, fn",s)}catch(e){r(e,{type:E2})}i=e instanceof jQuery?$.data(e[0],"jqote_id",n):e;return $.jqotecache[i]=(f.jqote_id=n++,f)},
 					jqotefn:function(e){var t=ts.call(e),i=t===S&&q.test(e)?e:$.data($(e)[0],"jqote_id");return $.jqotecache[i]||_},jqotetag:function(s){if(ts.call(s)===S)c=s},jqotenc:function(s){return s.toString().replace(/&(?!\w+;)/g,'&#38;').split('<').join('&#60;').split('>').join('&#62;').split('"').join('&#34;').split("'").join('&#39;')},jqotecache:{}});$.event.special.jqote={add:function(o){var n,h=o.handler,d=!o.data?[]:ts.call(o.data)!==A?[o.data]:o.data;if(!o.namespace)o.namespace="app.pre.sub";if(!d.length||!(n=dns(l(d))))return;o.handler=function(e,m,r){return !r||r.test(n)?h.apply(this,[e,m]):null}}}})(jQuery);
 				}
 				yepnope({
-					test: jQuery.qtip,
-					nope: [
-						WowDataTooltip.getSetting(['files', 'qtip2.js']),
-						WowDataTooltip.getSetting(['files', 'qtip2.css']),
-						WowDataTooltip.getSetting(['files', 'wdt.css'])
+					test:jQuery.qtip,
+					nope:[
+						WowDataTooltip.getSetting(['files','qtip2.js']),
+						WowDataTooltip.getSetting(['files','qtip2.css']),
+						WowDataTooltip.getSetting(['files','wdt.css'])
 					],	
-					complete: function () {
-						jQuery(function () {
-							// --- Loading complete ------------------------------------
-							if(WowDataTooltip.getSetting(['extendedMode', 'active'])) {
-								jQuery(document).keydown(function(event) {
-									// ExtendedMode Key is pressed
-									if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
+					complete:function(){
+						jQuery(function(){
+							if(WowDataTooltip.getSetting(['extendedMode','active'])){
+								jQuery(document).keydown(function(event){
+									if(event.keyCode==WowDataTooltip.getSetting(['extendedMode','keyCode'])){
 										jQuery('body').addClass('wdt-show-extended');
 										WowDataTooltip.repositionActiveTooltips();
 									}
 								});
-								jQuery(document).keyup(function(event) {
-									// ExtendedMode Key is released
-									if(event.keyCode == WowDataTooltip.getSetting(['extendedMode', 'keyCode'])) {
+								jQuery(document).keyup(function(event){
+									if(event.keyCode==WowDataTooltip.getSetting(['extendedMode','keyCode'])){
 										jQuery('body').removeClass('wdt-show-extended');
 										WowDataTooltip.repositionActiveTooltips();
 									}
 								});
 							}
-							if(WowDataTooltip.getSetting(['applyTo', 'explicit'])) {
-								jQuery('[data-wowdatatooltip]').live('mouseover', function() {
+							if(WowDataTooltip.getSetting(['applyTo','explicit'])){
+								jQuery('[data-wowdatatooltip]').live('mouseover',function(){
 									WowDataTooltip.handleExplicitHover(this);
 								});
 							}
-							if(WowDataTooltip.getSetting(['applyTo', 'battlenet'])) {
-								jQuery('a[href]').live('mouseover', function() {
+							if(WowDataTooltip.getSetting(['applyTo','battlenet'])){
+								jQuery('a[href]').live('mouseover',function(){
 									WowDataTooltip.handleHyperlinkHover(this);
 								});
 							}
-							// --- End of completion block -----------------------------
 						});
 					}
 				});
 			}
 		}]);
 	},
-	
-	addToActiveTooltips: function(id) {
-		var found = false;
-		for (var i = 0; i < this.activeTooltips.length; i++) {
-			if(this.activeTooltips[i] === id) {
-				found = true;
+	addToActiveTooltips:function(id){
+		var found=false;
+		for(var i=0;i<this.activeTooltips.length;i++){
+			if(this.activeTooltips[i]===id){
+				found=true;
 			}
 		}
-		if(found === false) {
+		if(found===false){
 			this.activeTooltips.push(id);
 		}
 	},
-	
-	removeFromActiveTooltips: function(id) {
-		var found = false;
-		for (var i = 0; i < this.activeTooltips.length; i++) {
-			if(this.activeTooltips[i] === id) {
-				found = i;
+	removeFromActiveTooltips:function(id){
+		var found=false;
+		for(var i=0;i<this.activeTooltips.length;i++){
+			if(this.activeTooltips[i]===id){
+				found=i;
 			}
 		}
-		if(found !== false) {
-			this.activeTooltips.splice(i, 1);
+		if(found!==false){
+			this.activeTooltips.splice(i,1);
 		}
 	},
-	
-	repositionActiveTooltips: function() {
-		// Find all active wdt tooltips and run .reposition on them
-		for (var i = 0; i < this.activeTooltips.length; i++) {
+	repositionActiveTooltips:function(){
+		for(var i=0;i<this.activeTooltips.length;i++){
 			jQuery('#ui-tooltip-'+this.activeTooltips[i]).qtip('reposition');
 		}
 	},
-	
-	handleExplicitHover: function(element) {
-		if('object' === typeof(jQuery(element).data('qtip'))) {
+	handleExplicitHover:function(element){
+		if('object'===typeof(jQuery(element).data('qtip'))){
 			jQuery(element).qtip('show');
-		} else {
-			var content  = '';
-			var wdtroute = new String(jQuery(element).data('wowdatatooltip'));
-			var apicall  = null;
-			var hash     = null;
-			var params   = null;
-			/* ------------------------------------------------------------
-			 * - Realm Tooltip from [data-wowdatatooltip]
-			 * ------------------------------------------------------------ */
-			var result  = wdtroute.match(this['patterns']['explicit']['realm']);
-			if(result) {
-				params = {
-					'region'   : result[1],
-					'realm'    : result[2],
-					'lang'     : result[3],
-					'locale'   : this.getLocaleFromRegionLang(result[1], result[3]),
-					'host'     : this.getHostFromRegion(result[1])
-				};
-				apicall = jQuery.jqote(this['patterns']['api']['realm'], params);
-				hash    = jQuery.jqote(this['patterns']['hash']['realm'], params);
-				content = this.getFromCache('template', 'realm', hash);
-				if(content != false) {
-					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'realm']));
-				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-realm'), WowDataTooltip.getSetting(['layout', 'width', 'realm']));
+		}else{
+			var content='';
+			var wdtroute=new String(jQuery(element).data('wowdatatooltip'));
+			var apicall=null;
+			var hash=null;
+			var params=null;
+			// Realm Tooltip from [data-wowdatatooltip]
+			var result=wdtroute.match(this['patterns']['explicit']['realm']);
+			if(result){
+				params={'region':result[1],'realm':result[2],'lang':result[3],'locale':this.getLocaleFromRegionLang(result[1],result[3]),'host':this.getHostFromRegion(result[1])};
+				apicall=jQuery.jqote(this['patterns']['api']['realm'],params);
+				hash=jQuery.jqote(this['patterns']['hash']['realm'],params);
+				content=this.getFromCache('template','realm',hash);
+				if(content!=false){
+					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width','realm']));
+				}else{
+					this.addTip(element,this.localize(this.getLocaleData(params.locale),'loading-realm'),WowDataTooltip.getSetting(['layout','width','realm']));
 					jQuery.ajax({
-						url: apicall,
-						crossDomain: true,
-						dataType: 'JSONP',
-						jsonp: 'jsonp',
-						success: function(data) {
-							var content = WowDataTooltip.buildRealmTooltip(params['host'], params.locale, data);
-							jQuery(element).qtip('api').set('content.text', content);
-							WowDataTooltip.addToCache('template', 'realm', hash, content);
+						url:apicall,
+						crossDomain:true,
+						dataType:'JSONP',
+						jsonp:'jsonp',
+						success:function(data){
+							var content=WowDataTooltip.buildRealmTooltip(params['host'],params.locale,data);
+							jQuery(element).qtip('api').set('content.text',content);
+							WowDataTooltip.addToCache('template','realm',hash,content);
 						}
 					});
 				}
 			}
-			/* ------------------------------------------------------------
-			 * - Item Tooltip from [data-wowdatatooltip]
-			 * ------------------------------------------------------------ */
-			var result  = wdtroute.match(this['patterns']['explicit']['item']);
-			if(result) {
-				params = {
-					'region': result[1],
-					'itemid': result[2],
-					'lang'  : result[3],
-					'locale': this.getLocaleFromRegionLang(result[1], result[3]),
-					'host'  : this.getHostFromRegion(result[1])
-				};
-				apicall = jQuery.jqote(this['patterns']['api']['item'], params);
-				hash    = jQuery.jqote(this['patterns']['hash']['item'], params);
-				content = this.getFromCache('template', 'item', hash);
-				if(content != false) {
-					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'item']));
-				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-item'), WowDataTooltip.getSetting(['layout', 'width', 'item']));
+			// Item Tooltip from [data-wowdatatooltip]
+			var result=wdtroute.match(this['patterns']['explicit']['item']);
+			if(result){
+				params={'region':result[1],'itemid':result[2],'lang':result[3],'locale':this.getLocaleFromRegionLang(result[1],result[3]),'host':this.getHostFromRegion(result[1])};
+				apicall=jQuery.jqote(this['patterns']['api']['item'],params);
+				hash=jQuery.jqote(this['patterns']['hash']['item'],params);
+				content=this.getFromCache('template','item',hash);
+				if(content!=false){
+					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width','item']));
+				}else{
+					this.addTip(element,this.localize(this.getLocaleData(params.locale),'loading-item'),WowDataTooltip.getSetting(['layout','width','item']));
 					jQuery.ajax({
-						url: apicall,
-						crossDomain: true,
-						dataType: 'JSONP',
-						jsonp: 'jsonp',
-						success: function(data) {
-							var content = WowDataTooltip.buildItemTooltip(params['host'], params.locale, data);
-							jQuery(element).qtip('api').set('content.text', content);
-							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+						url:apicall,
+						crossDomain:true,
+						dataType:'JSONP',
+						jsonp:'jsonp',
+						success:function(data){
+							var content=WowDataTooltip.buildItemTooltip(params['host'],params.locale,data);
+							jQuery(element).qtip('api').set('content.text',content);
+							if(WowDataTooltip.getSetting(['extras','applyCssColorToCaller'])){
 								jQuery(element).addClass('cquality-'+data['quality']);
 							}
-							WowDataTooltip.addToCache('template', 'item', hash, content);
+							WowDataTooltip.addToCache('template','item',hash,content);
 						}
 					});
 				}
 			}
-			/* ------------------------------------------------------------
-			 * - Character Tooltip from [data-wowdatatooltip]
-			 * ------------------------------------------------------------ */
-			var result  = wdtroute.match(this['patterns']['explicit']['character']);
-			if(result) {
-				params = {
-					'region'   : result[1],
-					'realm'    : result[2],
-					'character': result[3],
-					'lang'     : result[4],
-					'locale'   : this.getLocaleFromRegionLang(result[1], result[4]),
-					'host'     : this.getHostFromRegion(result[1])
-				};
-				apicall = jQuery.jqote(this['patterns']['api']['character'], params);
-				hash    = jQuery.jqote(this['patterns']['hash']['character'], params);
-				content = this.getFromCache('template', 'character', hash);
-				if(content != false) {
-					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'character']));
-				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'), WowDataTooltip.getSetting(['layout', 'width', 'character']));
+			// Character Tooltip from [data-wowdatatooltip]
+			var result=wdtroute.match(this['patterns']['explicit']['character']);
+			if(result){
+				params={'region':result[1],'realm':result[2],'character':result[3],'lang':result[4],'locale':this.getLocaleFromRegionLang(result[1],result[4]),'host':this.getHostFromRegion(result[1])};
+				apicall=jQuery.jqote(this['patterns']['api']['character'],params);
+				hash=jQuery.jqote(this['patterns']['hash']['character'],params);
+				content=this.getFromCache('template','character',hash);
+				if(content!=false){
+					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width','character']));
+				}else{
+					this.addTip(element,this.localize(this.getLocaleData(params.locale),'loading-character'),WowDataTooltip.getSetting(['layout','width','character']));
 					jQuery.ajax({
-						url: apicall,
-						crossDomain: true,
-						dataType: 'JSONP',
-						jsonp: 'jsonp',
-						success: function(data) {
-							var content = WowDataTooltip.buildCharacterTooltip(params['host'], params.locale, data);
-							jQuery(element).qtip('api').set('content.text', content);
-							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+						url:apicall,
+						crossDomain:true,
+						dataType:'JSONP',
+						jsonp:'jsonp',
+						success:function(data){
+							var content=WowDataTooltip.buildCharacterTooltip(params['host'],params.locale,data);
+							jQuery(element).qtip('api').set('content.text',content);
+							if(WowDataTooltip.getSetting(['extras','applyCssColorToCaller'])){
 								jQuery(element).addClass('cclass-'+data['class']);
 							}
-							WowDataTooltip.addToCache('template', 'character', hash, content);
+							WowDataTooltip.addToCache('template','character',hash,content);
 						}
 					});
 				}
 			}
-			/* ------------------------------------------------------------
-			 * - Guild Tooltip from [data-wowdatatooltip]
-			 * ------------------------------------------------------------ */
-			var result  = wdtroute.match(this['patterns']['explicit']['guild']);
-			if(result) {
-				params = {
-					'region': result[1],
-					'realm' : result[2],
-					'guild' : result[3],
-					'lang'  : result[4],
-					'locale': this.getLocaleFromRegionLang(result[1], result[4]),
-					'host'  : this.getHostFromRegion(result[1])
-				};
-				apicall = jQuery.jqote(this['patterns']['api']['guild'], params);
-				hash    = jQuery.jqote(this['patterns']['hash']['guild'], params);
-				content = this.getFromCache('template', 'guild', hash);
-				if(content != false) {
-					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'guild']));
-				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'), WowDataTooltip.getSetting(['layout', 'width', 'guild']));
+			// Guild Tooltip from [data-wowdatatooltip]
+			var result=wdtroute.match(this['patterns']['explicit']['guild']);
+			if(result){
+				params={'region':result[1],'realm':result[2],'guild':result[3],'lang':result[4],'locale':this.getLocaleFromRegionLang(result[1],result[4]),'host':this.getHostFromRegion(result[1])};
+				apicall=jQuery.jqote(this['patterns']['api']['guild'],params);
+				hash=jQuery.jqote(this['patterns']['hash']['guild'],params);
+				content=this.getFromCache('template','guild',hash);
+				if(content!=false){
+					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width','guild']));
+				}else{
+					this.addTip(element,this.localize(this.getLocaleData(params.locale),'loading-guild'),WowDataTooltip.getSetting(['layout','width','guild']));
 					jQuery.ajax({
-						url: apicall,
-						crossDomain: true,
-						dataType: 'JSONP',
-						jsonp: 'jsonp',
-						success: function(data) {
-							var content = WowDataTooltip.buildGuildTooltip(params['host'], params.locale, data);
-							jQuery(element).qtip('api').set('content.text', content);
-							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+						url:apicall,
+						crossDomain:true,
+						dataType:'JSONP',
+						jsonp:'jsonp',
+						success:function(data){
+							var content=WowDataTooltip.buildGuildTooltip(params['host'],params.locale,data);
+							jQuery(element).qtip('api').set('content.text',content);
+							if(WowDataTooltip.getSetting(['extras','applyCssColorToCaller'])){
 								jQuery(element).addClass('cside-'+data['side']);
 							}
-							WowDataTooltip.addToCache('template', 'guild', hash, content);
+							WowDataTooltip.addToCache('template','guild',hash,content);
 						}
 					});
 				}
 			}
 		}
 	},
-	
-	handleHyperlinkHover: function(element) {
-		// In a tooltip is already attached, don't re-render it, just show it
-		if('object' === typeof(jQuery(element).data('qtip'))) {
+	handleHyperlinkHover:function(element){
+		if('object'===typeof(jQuery(element).data('qtip'))){
 			jQuery(element).qtip('show');
-		} else {
-			var content = '';
-			var href    = new String(jQuery(element).attr('href'));
-			var apicall = null;
-			var params  = null;
-			/* ------------------------------------------------------------
-			 * - Item Tooltip from a[href]
-			 * ------------------------------------------------------------ */
-			var result  = href.match(this['patterns']['battlenet']['item']);
-			if(result) {
-				params = {
-					'host'  : result[1],
-					'lang'  : result[2],
-					'itemid': result[3],
-					'locale': this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
-				};
-				apicall = jQuery.jqote(this['patterns']['api']['item'], params);
-				hash    = jQuery.jqote(this['patterns']['hash']['item'], params);
-				content = this.getFromCache('template', 'item', hash);
-				if(content != false) {
-					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'item']));
-				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-item'), WowDataTooltip.getSetting(['layout', 'width', 'item']));
+		}else{
+			var content='';
+			var href=new String(jQuery(element).attr('href'));
+			var apicall=null;
+			var params=null;
+			// Item Tooltip from a[href]
+			var result=href.match(this['patterns']['battlenet']['item']);
+			if(result){
+				params={'host':result[1],'lang':result[2],'itemid':result[3],'locale':this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])};
+				apicall=jQuery.jqote(this['patterns']['api']['item'],params);
+				hash=jQuery.jqote(this['patterns']['hash']['item'],params);
+				content=this.getFromCache('template','item',hash);
+				if(content!=false){
+					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width','item']));
+				}else{
+					this.addTip(element,this.localize(this.getLocaleData(params.locale),'loading-item'),WowDataTooltip.getSetting(['layout','width','item']));
 					jQuery.ajax({
-						url: apicall,
-						crossDomain: true,
-						dataType: 'JSONP',
-						jsonp: 'jsonp',
-						success: function(data) {
-							var content = WowDataTooltip.buildItemTooltip(params['host'], params.locale, data);
-							jQuery(element).qtip('api').set('content.text', content);
-							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+						url:apicall,
+						crossDomain:true,
+						dataType:'JSONP',
+						jsonp:'jsonp',
+						success:function(data){
+							var content=WowDataTooltip.buildItemTooltip(params['host'],params.locale,data);
+							jQuery(element).qtip('api').set('content.text',content);
+							if(WowDataTooltip.getSetting(['extras','applyCssColorToCaller'])){
 								jQuery(element).addClass('cquality-'+data['quality']);
 							}
-							WowDataTooltip.addToCache('template', 'item', hash, content);
+							WowDataTooltip.addToCache('template','item',hash,content);
 						}
 					});
 				}
 			}
-			/* ------------------------------------------------------------
-			 * - Character Tooltip from a[href]
-			 * ------------------------------------------------------------ */
-			var result  = href.match(this['patterns']['battlenet']['character']);
-			if(result) {
-				params = {
-					'host'     : result[1],
-					'lang'     : result[2],
-					'realm'    : result[3],
-					'character': result[4],
-					'locale'   : this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
-				};
-				apicall = jQuery.jqote(this['patterns']['api']['character'], params);
-				hash    = jQuery.jqote(this['patterns']['hash']['character'], params);
-				content = this.getFromCache('template', 'character', hash);
-				if(content != false) {
-					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'character']));
-				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-character'), WowDataTooltip.getSetting(['layout', 'width', 'character']));
+			// Character Tooltip from a[href]
+			var result=href.match(this['patterns']['battlenet']['character']);
+			if(result){
+				params={'host':result[1],'lang':result[2],'realm':result[3],'character':result[4],'locale':this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]),result[2])};
+				apicall=jQuery.jqote(this['patterns']['api']['character'],params);
+				hash=jQuery.jqote(this['patterns']['hash']['character'],params);
+				content=this.getFromCache('template','character',hash);
+				if(content!=false){
+					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width','character']));
+				}else{
+					this.addTip(element,this.localize(this.getLocaleData(params.locale),'loading-character'),WowDataTooltip.getSetting(['layout','width','character']));
 					jQuery.ajax({
-						url: apicall,
-						crossDomain: true,
-						dataType: 'JSONP',
-						jsonp: 'jsonp',
-						success: function(data) {
-							var content = WowDataTooltip.buildCharacterTooltip(params['host'], params.locale, data);
-							jQuery(element).qtip('api').set('content.text', content);
-							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+						url:apicall,
+						crossDomain:true,
+						dataType:'JSONP',
+						jsonp:'jsonp',
+						success:function(data){
+							var content=WowDataTooltip.buildCharacterTooltip(params['host'],params.locale,data);
+							jQuery(element).qtip('api').set('content.text',content);
+							if(WowDataTooltip.getSetting(['extras','applyCssColorToCaller'])){
 								jQuery(element).addClass('cclass-'+data['class']);
 							}
-							WowDataTooltip.addToCache('template', 'character', hash, content);
+							WowDataTooltip.addToCache('template','character',hash,content);
 						}
 					});
 				}
 			}
-			/* ------------------------------------------------------------
-			 * - Guild Tooltip from a[href]
-			 * ------------------------------------------------------------ */
-			var result  = href.match(this['patterns']['battlenet']['guild']);
-			if(result) {
-				params = {
-					'host'  : result[1],
-					'lang'  : result[2],
-					'realm' : result[3],
-					'guild' : result[4],
-					'locale': this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])
-				};
-				apicall = jQuery.jqote(this['patterns']['api']['guild'], params);
-				hash    = jQuery.jqote(this['patterns']['hash']['guild'], params);
-				content = this.getFromCache('template', 'guild', hash);
-				if(content != false) {
-					this.addTip(element, content, WowDataTooltip.getSetting(['layout', 'width', 'guild']));
-				} else {
-					this.addTip(element, this.localize(this.getLocaleData(params.locale), 'loading-guild'), WowDataTooltip.getSetting(['layout', 'width', 'guild']));
+			// Guild Tooltip from a[href]
+			var result=href.match(this['patterns']['battlenet']['guild']);
+			if(result){
+				params={'host':result[1],'lang':result[2],'realm':result[3],'guild':result[4],'locale':this.getLocaleFromRegionLang(this.getRegionFromHost(result[1]), result[2])};
+				apicall=jQuery.jqote(this['patterns']['api']['guild'],params);
+				hash=jQuery.jqote(this['patterns']['hash']['guild'],params);
+				content=this.getFromCache('template','guild',hash);
+				if(content!=false){
+					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width','guild']));
+				}else{
+					this.addTip(element,this.localize(this.getLocaleData(params.locale),'loading-guild'),WowDataTooltip.getSetting(['layout','width','guild']));
 					jQuery.ajax({
-						url: apicall,
-						crossDomain: true,
-						dataType: 'JSONP',
-						jsonp: 'jsonp',
-						success: function(data) {
-							var content = WowDataTooltip.buildGuildTooltip(params['host'], params.locale, data);
-							jQuery(element).qtip('api').set('content.text', content);
-							if(WowDataTooltip.getSetting(['extras', 'applyCssColorToCaller'])) {
+						url:apicall,
+						crossDomain:true,
+						dataType:'JSONP',
+						jsonp:'jsonp',
+						success:function(data){
+							var content=WowDataTooltip.buildGuildTooltip(params['host'],params.locale,data);
+							jQuery(element).qtip('api').set('content.text',content);
+							if(WowDataTooltip.getSetting(['extras','applyCssColorToCaller'])){
 								jQuery(element).addClass('cside-'+data['side']);
 							}
-							WowDataTooltip.addToCache('template', 'guild', hash, content);
+							WowDataTooltip.addToCache('template','guild',hash,content);
 						}
 					});
 				}
 			}
 		}		
 	},
-	
-	addTip: function(element, tipcontent, width) {
-		if('undefined' === typeof(width)) {
-			width = 300;
+	addTip:function(element,tipcontent,width){
+		if('undefined'===typeof(width)){
+			width=300;
 		}
-		
 		jQuery(element).qtip({
-			'overwrite': false, // Make sure another tooltip can't overwrite this one without it being explicitly destroyed
-			'show': {
-				'ready': true // Needed to make it show on first mouseover event
-			},
-			'events': {
-				'render': function(event, api) {
-					var tooltip = api.elements.tooltip;
-					tooltip.bind('tooltipshow', function(event, api) {
-						WowDataTooltip.addToActiveTooltips(api.id);
-					});
-					tooltip.bind('tooltiphide', function(event, api) {
-						WowDataTooltip.removeFromActiveTooltips(api.id);
-					});
+			'overwrite':false,
+			'show':{'ready':true},
+			'events':{
+				'render':function(event,api){
+					var tooltip=api.elements.tooltip;
+					tooltip.bind('tooltipshow',function(event,api){WowDataTooltip.addToActiveTooltips(api.id);});
+					tooltip.bind('tooltiphide',function(event,api){WowDataTooltip.removeFromActiveTooltips(api.id);});
 				},
 			},
-			'content': {
-				'text': tipcontent
-			},
-			'position': {
-				'my': 'bottom middle',
-				'at': 'top middle',
-				'viewport': jQuery(window),
-				'effect': false
-			},
-			'hide': 'mouseout',
-			'style': {
-				'width': width+'px',
-				'classes': 'wdt-tooltip ui-tooltip-wdt-dark ui-tooltip-cluetip'
-			}
+			'content':{'text':tipcontent},
+			'position':{'my':'bottom middle','at':'top middle','viewport':jQuery(window),'effect':false},
+			'hide':'mouseout',
+			'style':{'width':width+'px','classes':'wdt-tooltip ui-tooltip-wdt-dark ui-tooltip-cluetip'}
 		});
 	},
-	
-	getLocaleData: function(locale) {
-		if('object' === typeof(this['i18n'][locale])) {
-			var loc = this['i18n'][locale];
-		} else {
-			var loc = this['i18n']['en_US'];
+	getLocaleData:function(locale){
+		if('object'===typeof(this['i18n'][locale])){
+			var loc=this['i18n'][locale];
+		}else{
+			var loc=this['i18n']['en_US'];
 		}
 		return loc;
 	},
-	
-	getTemplate: function(template, type) {
-		if('undefined' == typeof(this['templates'][template])) {
+	getTemplate:function(template,type){
+		if('undefined'===typeof(this['templates'][template])){
 			return 'Template "'+template+'" not found!';
 		}
-		if('undefined' == typeof(this['templates'][template][type])) {
+		if('undefined'===typeof(this['templates'][template][type])){
 			return 'Type "'+type+'" not found in template "'+template+'"!';
 		}
 		return this['templates'][template][type];
 	},
-	
-	getSetting: function(route) {
-		var temp   = this.config.merged;
-		var result = undefined;
-		
-		if('string' === typeof(route)) {
-			route = [route]; 
+	getSetting:function(route){
+		var temp=this.config.merged;
+		var result=undefined;
+		if('string'===typeof(route)){
+			route=[route];
 		}
-		
-		for (var i = 0; i < route.length; i++) {
-			if('undefined' === typeof(temp[route[i]])) {
-				result = '';
+		for(var i=0;i<route.length;i++){
+			if('undefined'===typeof(temp[route[i]])){
+				result='';
 				break;
-			} else {
-				if('object' === typeof(temp[route[i]])) {
-					temp = temp[route[i]];
-				} else {
-					result = temp[route[i]];
+			}else{
+				if('object'===typeof(temp[route[i]])){
+					temp=temp[route[i]];
+				}else{
+					result=temp[route[i]];
 					break;
 				}
 			}
 		}
-		
 		return result;
 	},
-	
-	localize: function(repository, keys) {
-		var temp   = repository;
-		var result = undefined;
-		
-		if('string' === typeof(keys)) {
-			keys = [keys]; 
+	localize:function(repository,keys){
+		var temp=repository;
+		var result=undefined;
+		if('string'===typeof(keys)){
+			keys=[keys];
 		}
-		
-		for (var i = 0; i < keys.length; i++) {
-			if('undefined' === typeof(temp[keys[i]])) {
-				if('object' === typeof(temp)) {
-					result = undefined;
+		for(var i=0;i<keys.length;i++){
+			if('undefined'===typeof(temp[keys[i]])){
+				if('object'===typeof(temp)){
+					result=undefined;
 				}
 				break;
-			} else {
-				temp   = temp[keys[i]];
-				result = temp;
+			}else{
+				temp=temp[keys[i]];
+				result=temp;
 			}
 		}
-		
-		// console.log('First level lookup in ('+repository.meta.locale+') yielded: '+result);
-		
-		if((result == undefined) && (repository['meta']['locale'] != 'en_US')) {
-			var temp = this.getLocaleData('en_US');
-			for (var i = 0; i < keys.length; i++) {
-				if('undefined' === typeof(temp[keys[i]])) {
-					if('object' === typeof(temp)) {
-						result = undefined;
+		if((result===undefined)&&(repository['meta']['locale']!=='en_US')){
+			var temp=this.getLocaleData('en_US');
+			for(var i=0;i<keys.length;i++){
+				if('undefined'===typeof(temp[keys[i]])){
+					if('object'===typeof(temp)){
+						result=undefined;
 					}
 					break;
-				} else {
-					temp   = temp[keys[i]];
-					result = temp;
+				}else{
+					temp=temp[keys[i]];
+					result=temp;
 				}
 			}
-			// console.log('Second level lookup in (en_US) yielded: '+result);
 		}
-		
-		return result || '';
+		return result||'';
 	},
-	
-	getMetaTVars: function(loc, scheme) {
-		return {
-			'extendedActive': this.getSetting(['extendedMode', 'active']),
-			'extendedKeyCodeLabel': this.getSetting(['extendedMode', 'keyCode.label']),
-			localize: function(route) {
-				return WowDataTooltip.localize(loc, route);
+	getMetaTVars:function(loc,scheme){
+		return{
+			'extendedActive':this.getSetting(['extendedMode','active']),
+			'extendedKeyCodeLabel':this.getSetting(['extendedMode','keyCode.label']),
+			localize:function(route){
+				return WowDataTooltip.localize(loc,route);
 			},
-			subrender: function(route, data) {
-				if('string' === typeof(route)) {
-					route = [route]; 
+			subrender:function(route,data){
+				if('string'===typeof(route)){
+					route=[route];
 				}
-				route.unshift('templates', scheme);
-				return jQuery.jqote(WowDataTooltip.localize(loc, route), data);
+				route.unshift('templates',scheme);
+				return jQuery.jqote(WowDataTooltip.localize(loc,route),data);
 			},
-			moneySplitter: function(total) {
-				var temp   = total.toString();
-				var result = temp.match(WowDataTooltip['patterns']['helper']['money']);
-				if(result) {
-					if(result[3] != undefined) {
-						return({ 'gold': parseInt(result[1]), 'silver': parseInt(result[2]), 'copper': parseInt(result[3]) });
+			moneySplitter:function(total){
+				var temp=total.toString();
+				var result=temp.match(WowDataTooltip['patterns']['helper']['money']);
+				if(result){
+					if(result[3]!==undefined){
+						return({'gold':parseInt(result[1]),'silver':parseInt(result[2]),'copper':parseInt(result[3])});
 					}
-					if(result[5] != undefined) {
-						return({ 'gold': -1, 'silver': parseInt(result[4]), 'copper': parseInt(result[5]) });
+					if(result[5]!==undefined){
+						return({'gold':-1,'silver':parseInt(result[4]),'copper':parseInt(result[5])});
 					}
-					return({ 'gold': -1, 'silver': -1, 'copper': parseInt(result[6]) });
+					return({'gold':-1,'silver':-1,'copper':parseInt(result[6])});
 				}
-				return({ 'gold': -1, 'silver': -1, 'copper': 0 });
+				return({'gold':-1,'silver':-1,'copper':0});
 			}
 		};
 	},
-	
-	buildRealmTooltip: function(host, locale, data) {
-		var content   = '';
-		var loc       = this.getLocaleData(locale);
-		var region    = this.getRegionFromHost(host);
-		var mediahost = this.getMediahostFromRegion(region);
-        var realm     = {};
-
-		if(data.realms.length == 1) {
-			realm   = data.realms[0];
-			var add = {
-				'path_host'      : 'http://' + host,
-				'path_host_media': 'http://' + mediahost,
-				'region'         : region
+	buildRealmTooltip:function(host,locale,data){
+		var content='';
+		var loc=this.getLocaleData(locale);
+		var region=this.getRegionFromHost(host);
+		var mediahost=this.getMediahostFromRegion(region);
+		var realm={};
+		if(data.realms.length===1){
+			realm=data.realms[0];
+			var add={
+				'path_host':'http://'+host,
+				'path_host_media':'http://'+mediahost,
+				'region':region
 			};
-		} else {
-			var add = {
-				'notfound': this.localize(loc, 'realm-not-found')
+		}else{
+			var add={
+				'notfound':this.localize(loc,'realm-not-found')
 			};
 		}
-		
 		return window.jQuery.jqote(
-			this.getTemplate('default', 'realm'),
-			jQuery.extend(true, {}, this.getMetaTVars(loc, 'realm'), realm, add)
+			this.getTemplate('default','realm'),
+			jQuery.extend(true,{},this.getMetaTVars(loc,'realm'),realm,add)
 		);
-		
 	},
-	
-	buildItemTooltip: function(host, locale, data) {
-		var loc       = this.getLocaleData(locale);
-		var region    = this.getRegionFromHost(host);
-		var mediahost = this.getMediahostFromRegion(region);
-		
-		var add = {
-			'path_host'        : 'http://' + host,
-			'path_host_media'  : 'http://' + mediahost,
-			'region'           : region
+	buildItemTooltip:function(host,locale,data){
+		var loc=this.getLocaleData(locale);
+		var region=this.getRegionFromHost(host);
+		var mediahost=this.getMediahostFromRegion(region);
+		var add={
+			'path_host':'http://'+host,
+			'path_host_media':'http://'+mediahost,
+			'region':region
 		};
-		
 		return window.jQuery.jqote(
-			this.getTemplate('default', 'item'),
-			jQuery.extend(true, {}, this.getMetaTVars(loc, 'item'), data, add)
+			this.getTemplate('default','item'),
+			jQuery.extend(true,{},this.getMetaTVars(loc,'item'),data,add)
 		);
 	},
-	
-	buildCharacterTooltip: function(host, locale, data) {
-		var loc       = this.getLocaleData(locale);
-		var region    = this.getRegionFromHost(host);
-		var mediahost = this.getMediahostFromRegion(region);
-		
-		var add = {
-			'path_host'      : 'http://' + host,
-			'path_host_media': 'http://' + mediahost,
-			'region'         : region
+	buildCharacterTooltip:function(host,locale,data){
+		var loc=this.getLocaleData(locale);
+		var region=this.getRegionFromHost(host);
+		var mediahost=this.getMediahostFromRegion(region);
+		var add={
+			'path_host':'http://'+host,
+			'path_host_media':'http://'+mediahost,
+			'region':region
 		};
-		
 		return jQuery.jqote(
-			this.getTemplate('default', 'character'),
-			jQuery.extend(true, {}, this.getMetaTVars(loc, 'character'), data, add)
+			this.getTemplate('default','character'),
+			jQuery.extend(true,{},this.getMetaTVars(loc,'character'),data,add)
 		);
 	},
-	
-	buildGuildTooltip: function(host, locale, data) {
-		var loc       = this.getLocaleData(locale);
-		var region    = this.getRegionFromHost(host);
-		var mediahost = this.getMediahostFromRegion(region);
-		
-		var add = {
-			'path_host'      : 'http://' + host,
-			'path_host_media': 'http://' + mediahost,
-			'region'         : region,
-			'membercount'    : data['members'].length || 0
+	buildGuildTooltip:function(host,locale,data){
+		var loc=this.getLocaleData(locale);
+		var region=this.getRegionFromHost(host);
+		var mediahost=this.getMediahostFromRegion(region);
+		var add={
+			'path_host':'http://'+host,
+			'path_host_media':'http://'+mediahost,
+			'region':region,
+			'membercount':data['members'].length||0
 		};
-		
 		return jQuery.jqote(
-			this.getTemplate('default', 'guild'),
-			jQuery.extend(true, {}, this.getMetaTVars(loc, 'guild'), data, add)
+			this.getTemplate('default','guild'),
+			jQuery.extend(true,{},this.getMetaTVars(loc,'guild'),data,add)
 		);
 	},
-	
-	addToCache: function(type, scheme, hash, content) {
-		this['cache'][type][scheme][hash] = content;
+	addToCache:function(type,scheme,hash,content){
+		this['cache'][type][scheme][hash]=content;
 		return true;
 	},
-	
-	getFromCache: function(type, scheme, hash) {
-		if('undefined' == typeof(this['cache'][type])) {
-			this['cache'][type] = {};
+	getFromCache:function(type,scheme,hash){
+		if('undefined'===typeof(this['cache'][type])){
+			this['cache'][type]={};
 			return false;
 		}
-		if('undefined' == typeof(this['cache'][type][scheme])) {
-			this['cache'][type][scheme] = {};
+		if('undefined'===typeof(this['cache'][type][scheme])){
+			this['cache'][type][scheme]={};
 			return false;
 		}
-		if('string' == typeof(this['cache'][type][scheme][hash])) {
+		if('string'===typeof(this['cache'][type][scheme][hash])){
 			return this['cache'][type][scheme][hash];
 		}
 		return false;
 	},
-	
-	getHostFromRegion: function(region) {
-		if('undefined' !== typeof(this.maps['region2host'][region])) {
+	getHostFromRegion:function(region){
+		if('undefined'!==typeof(this.maps['region2host'][region])){
 			return(this.maps['region2host'][region]);
 		}
 		return '';
 	},
-	
-	getRegionFromHost: function(host) {
-		if('undefined' !== typeof(this.maps['host2region'][host])) {
+	getRegionFromHost:function(host){
+		if('undefined'!==typeof(this.maps['host2region'][host])){
 			return(this.maps['host2region'][host]);
 		}
 		return '';
 	},
-	
-	getMediahostFromRegion: function(region) {
-		if('undefined' === typeof(this.maps['region2mediahost'][region])) {
+	getMediahostFromRegion:function(region){
+		if('undefined'===typeof(this.maps['region2mediahost'][region])){
 			return '';
-		} else {
+		}else{
 			return this.maps['region2mediahost'][region];
 		}
 	},
-	
-	getLocaleFromRegionLang: function(region, lang) {
-		if('undefined' === typeof(this.maps['regionlang2locale'][region])) {
+	getLocaleFromRegionLang:function(region,lang){
+		if('undefined'===typeof(this.maps['regionlang2locale'][region])){
 			return 'en_US';
-		} else {
-			if('undefined' == typeof(this.maps['regionlang2locale'][region][lang])) {
+		}else{
+			if('undefined'===typeof(this.maps['regionlang2locale'][region][lang])){
 				return 'en_US';
-			} else {
+			}else{
 				return this.maps['regionlang2locale'][region][lang];
 			}
 		}
 	},
-	
-	'templates': {
-		'default': {
-			'item': (
+	'templates':{
+		'default':{
+			'item':(
 				'<div class="tooltip-item template-default">' +
 		    		'<img class="icon" src="<%= this.path_host_media %>/wow/icons/56/<% if(this.icon) { %><%= this.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg" />' +
 			    	 /* --- START simple mode -------------------------------- */
@@ -780,7 +655,7 @@ var WowDataTooltip = {
 						'<% if(this.bonusStats) { for(var i=0; i<this.bonusStats.length; i++) { var current = this.bonusStats[i]; if(current.stat in WowDataTooltip.maps.item.secondaryStats) { %><div class="row secondaryStat"><%= this.subrender(["itemStat", current.stat], current) %></div><% } } } %>' +
 						'<% if(this.itemSpells) { for(var i=0; i<this.itemSpells.length; i++) { var current = this.itemSpells[i]; if(current.spell.description) { %><div class="row secondaryStat"><%= this.subrender("itemSpell", current) %></div><% } } } %>' +
 						'<% if(this.description) { %><div class="row description">&quot;<%= this.description %>&quot;</div><% } %>' +
-				    	'<% if(this.extendedActive) { %><div class="info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div><% } %>' +
+				    	'<% if(this.extendedActive) { %><div class="row info-meta"><%= this.subrender("extendedInactive", this) %></div><% } %>' +
 					'</div>' +
 					 /* --- END simple mode ---------------------------------- */
 					 /* --- START extended mode ------------------------------ */
@@ -792,64 +667,63 @@ var WowDataTooltip = {
 							// itemSource, maybe...
 							'<div class="row sellPrice"><%= this.subrender("sellPrice", this) %></div>' +
 							'<% if(this.isAuctionable) { %><div class="row isAuctionable"><%= this.localize("itemIsAuctionable") %></div><% } %>' +
-							'<div class="info-meta">Release [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
+							'<div class="row info-meta"><%= this.subrender("extendedActive", this) %></div>' +
 				    	'</div>' +
 			    	'<% } %>' +
 					 /* --- END extended mode -------------------------------- */
 				'</div>'
 			),
-			'character': (
+			'character':(
 				'<div class="tooltip-character template-default">' +
 			    	'<img class="thumbnail" src="<%= this.path_host %>/static-render/<%= this.region %>/<%= this.thumbnail %>?alt=/wow/static/images/2d/avatar/<%= this.race %>-<%= this.gender %>.jpg" />' +
 			    	 /* --- START simple mode -------------------------------- */
 					'<div class="data wdt-show-only-simple">' +
-			    		'<div class="name cclass-<%= this.class %>"><%= this.name %></div>' +
-			    		'<div class="char-sri"><%= this.subrender("sri", this) %></div>' +
-						'<% if(this.talents) { for(var i=0; i<this.talents.length; i++) { var current = this.talents[i]; %><div class="talentspec <% if(current.selected) { %> active<% } %>"><img class="icon-talentspec" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %></div><% } } %>' +
-						'<% if(this.guild) { %><div class="guild"><div class="guildname">&lt;<%= this.guild.name %>&gt;<% if(this.guild.level) { %><span class="guildlevel"> (<%= this.guild.level %>)</span><% } %></div></div><% } %>' +
-						'<div class="realm"><%= this.realm %></div>' +
-						'<div class="achievementpoints"><span class="achpoints"><%= this.achievementPoints %></span></div>' +
-				    	'<% if(this.extendedActive) { %><div class="info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div><% } %>' +
+			    		'<div class="row name cclass-<%= this.class %>"><%= this.name %></div>' +
+			    		'<div class="row sri"><%= this.subrender("sri", this) %></div>' +
+						'<% if(this.talents) { for(var i=0; i<this.talents.length; i++) { var current = this.talents[i]; %><div class="row talentspec <% if(current.selected) { %> active<% } %>"><img class="icon-talentspec" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %></div><% } } %>' +
+						'<% if(this.guild) { %><div class="row guild"><div class="guildname">&lt;<%= this.guild.name %>&gt;<% if(this.guild.level) { %><span class="guildlevel"> (<%= this.guild.level %>)</span><% } %></div></div><% } %>' +
+						'<div class="row realm"><%= this.realm %></div>' +
+						'<div class="row achievementpoints"><span class="icon-achievenemtpoints"><%= this.achievementPoints %></span></div>' +
+				    	'<% if(this.extendedActive) { %><div class="row info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div><% } %>' +
 			    	'</div>' +
 					 /* --- END simple mode ---------------------------------- */
 					 /* --- START extended mode ------------------------------ */
 				    '<% if(this.extendedActive) { %>' +
 						'<div class="data wdt-show-only-extended">' +
-				    		'<div class="name cclass-<%= this.class %>"><%= this.name %></div>' +
-							'<% if(this.items) { %><div class="itemlevel"><%= this.subrender("ilvl", this.items) %></div><% } %>' +
+				    		'<div class="row name cclass-<%= this.class %>"><%= this.name %></div>' +
+							'<% if(this.items) { %><div class="row itemlevel"><%= this.subrender("ilvl", this.items) %></div><% } %>' +
 							'<% if(this.professions) { %><div class="professions">' +
-								'<% if(this.professions.primary) { for(var i=0; i<this.professions.primary.length; i++) { var current = this.professions.primary[i]; if(current.rank > 0) { %><div class="profession-primary"><img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %></div><% } } } %>' +
-								'<% if(this.professions.secondary) { for(var i=0; i<this.professions.secondary.length; i++) { var current = this.professions.secondary[i]; if(current.rank > 0) { %><div class="profession-secondary"><img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %></div><% } } } %>' +
+								'<% if(this.professions.primary) { for(var i=0; i<this.professions.primary.length; i++) { var current = this.professions.primary[i]; if(current.rank > 0) { %><div class="row profession-primary"><img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %></div><% } } } %>' +
+								'<% if(this.professions.secondary) { for(var i=0; i<this.professions.secondary.length; i++) { var current = this.professions.secondary[i]; if(current.rank > 0) { %><div class="row profession-secondary"><img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %></div><% } } } %>' +
 							'</div><% } %>' +
-							'<div class="info-meta">Release [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
+							'<div class="row info-meta">Release [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
 				    	'</div>' +
 			    	'<% } %>' +
 					 /* --- END extended mode -------------------------------- */
 			    '</div>'
 			),
-			'guild': (
+			'guild':(
 				'<div class="tooltip-guild template-default">' +
-	    			'<div class="name cside-<%= this.side %>"><%= this.name %></div>' +
-		    		'<div class="guild-sri"><%= this.subrender("sri", this) %></div>' +
+	    			'<div class="row name cside-<%= this.side %>"><%= this.name %></div>' +
+		    		'<div class="row sri"><%= this.subrender("sri", this) %></div>' +
 					'<% if(this.membercount) { %><div class="guild-members"><%= this.subrender("members", this) %></div><% } %>' +
-					'<div class="achievementpoints last"><span class="achpoints"><%= this.achievementPoints %></span></div>' +
+					'<div class="row achievementpoints"><span class="icon-achievenemtpoints"><%= this.achievementPoints %></span></div>' +
 				'</div>'
 			),
-			'realm': (
+			'realm':(
 				'<div class="tooltip-realm template-default">' +
 					'<% if(this.notfound) { %>' +
-	    				'<div class="notfound"><%= this.notfound %></div>' +
+	    				'<div class="row notfound"><%= this.notfound %></div>' +
 					'<% } else { %>' +
     					'<div class="type type-<%= this.type %>"><%= this.localize(["realmType", this.type]) %></div>' +
-    					'<div class="name"><%= this.name %></div>' +
-						'<% if(this.queue) { %><div class="status queue-<%= this.queue %>"><%= this.localize(["realmStatus", this.status]) %> (<%= this.localize(["realmQueue", this.queue]) %>)</div><% } else { %><div class="status status-<%= this.status %>"><%= this.localize(["realmStatus", this.status]) %></div><% } %>' +
-    					'<div class="population"><%= this.localize(["realmPopulation", this.population]) %></div>' +
+    					'<div class="row name"><%= this.name %></div>' +
+						'<% if(this.queue) { %><div class="row status queue-<%= this.queue %>"><%= this.localize(["realmStatus", this.status]) %> (<%= this.localize(["realmQueue", this.queue]) %>)</div><% } else { %><div class="row status status-<%= this.status %>"><%= this.localize(["realmStatus", this.status]) %></div><% } %>' +
+    					'<div class="row population"><%= this.localize(["realmPopulation", this.population]) %></div>' +
 					'<% } %>' +
 				'</div>'				
 			)
 		}
 	},
-	
 	'i18n':{
 		'en_US':{
 			'meta':{'locale':'en_US'},
@@ -885,11 +759,15 @@ var WowDataTooltip = {
 					},
 					'itemSpell':'Equip / Use / Chance on Hit: <%= this.spell.description %>',
 					'sellPrice':'<% var c = this.moneySplitter(this.sellPrice); %>Sell Price: <% if(c.gold > -1) { %><span class="icon-gold"><%= c.gold %></span><% } %><% if(c.silver > -1) { %><span class="icon-silver"><%= c.silver %></span><% } %><% if(c.copper) { %><span class="icon-copper"><%= c.copper %></span><% } else { %><span class="icon-copper">0</span><%} %>',
-					'stackable':'Stackable (<%= this.stackable %>)'
+					'stackable':'Stackable (<%= this.stackable %>)',
+					'extendedInactive':'Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!',
+					'extendedActive':'Release [<%= this.extendedKeyCodeLabel %>] to switch modes!'
 				},
 				'character':{
 					'sri':'<%= this.level %> <%= this.localize(["characterRace", this.race]) %> <%= this.localize(["characterClass", this.class]) %>',
-					'ilvl':'<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
+					'ilvl':'<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)',
+					'extendedInactive':'Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!',
+					'extendedActive':'Release [<%= this.extendedKeyCodeLabel %>] to switch modes!'
 				},
 				'guild':{
 					'sri':'Level <%= this.level %> <%= this.localize(["factionSide", this.side]) %> Guild, <%= this.realm %>',
@@ -989,11 +867,15 @@ var WowDataTooltip = {
 					},
 					'itemSpell':'Equip / Use / Chance on Hit: <%= this.spell.description %>',
 					'sellPrice':'<% var c = this.moneySplitter(this.sellPrice); %>Sell Price: <% if(c.gold > -1) { %><span class="icon-gold"><%= c.gold %></span><% } %><% if(c.silver > -1) { %><span class="icon-silver"><%= c.silver %></span><% } %><% if(c.copper) { %><span class="icon-copper"><%= c.copper %></span><% } else { %><span class="icon-copper">0</span><%} %>',
-					'stackable':'Stackable (<%= this.stackable %>)'
+					'stackable':'Stackable (<%= this.stackable %>)',
+					'extendedInactive':'Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!',
+					'extendedActive':'Release [<%= this.extendedKeyCodeLabel %>] to switch modes!'
 				},
 				'character':{
 					'sri':'<%= this.level %> <%= this.localize(["characterRace", this.race]) %> <%= this.localize(["characterClass", this.class]) %>',
-					'ilvl':'<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
+					'ilvl':'<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)',
+					'extendedInactive':'Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!',
+					'extendedActive':'Release [<%= this.extendedKeyCodeLabel %>] to switch modes!'
 				},
 				'guild':{
 					'sri':'Level <%= this.level %> <%= this.localize(["factionSide", this.side]) %> Guild, <%= this.realm %>',
@@ -1141,11 +1023,15 @@ var WowDataTooltip = {
 					},
 					'itemSpell':'Anlegen / Benutzen / Chance beim Treffer: <%= this.spell.description %>',
 					'sellPrice':'<% var c = this.moneySplitter(this.sellPrice); %>Verkaufspreis: <% if(c.gold > -1) { %><span class="icon-gold"><%= c.gold %></span><% } %><% if(c.silver > -1) { %><span class="icon-silver"><%= c.silver %></span><% } %><% if(c.copper) { %><span class="icon-copper"><%= c.copper %></span><% } else { %><span class="icon-copper">0</span><%} %>',
-					'stackable':'Stapelbar (<%= this.stackable %>)'
+					'stackable':'Stapelbar (<%= this.stackable %>)',
+					'extendedInactive':'[<%= this.extendedKeyCodeLabel %>] gedrückt halten um den Modus zu wechseln!',
+					'extendedActive':'[<%= this.extendedKeyCodeLabel %>] loslassen um den Modus zu wechseln!'
 				},
 				'character':{
 					'sri':'<%= this.level %>, <%= this.localize(["characterRace", this.race, this.gender]) %>, <%= this.localize(["characterClass", this.class, this.gender]) %>',
-					'ilvl':'<%= this.averageItemLevelEquipped %> Durchschnittliche Gegenstandsstufe (<%= this.averageItemLevel %>)'
+					'ilvl':'<%= this.averageItemLevelEquipped %> Durchschnittliche Gegenstandsstufe (<%= this.averageItemLevel %>)',
+					'extendedInactive':'[<%= this.extendedKeyCodeLabel %>] gedrückt halten um den Modus zu wechseln!',
+					'extendedActive':'[<%= this.extendedKeyCodeLabel %>] loslassen um den Modus zu wechseln!'
 				},
 				'guild':{
 					'sri':'Stufe <%= this.level %> <%= this.localize(["factionSide", this.side]) %>-Gilde, <%= this.realm %>',
@@ -1260,126 +1146,66 @@ var WowDataTooltip = {
 			'realmPopulation':{'low':'低人口','medium':'中等人口','high':'高人口'}
 		}
 	},
-	
-	'patterns': {
-		'explicit': {
-			'realm'    : /realm:(us|eu|kr|tw|cn)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
-			'item'     : /item:(us|eu|kr|tw|cn)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
-			'character': /character:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
-			'guild'    : /guild:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
+	'patterns':{
+		'explicit':{
+			'realm':/realm:(us|eu|kr|tw|cn)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
+			'item':/item:(us|eu|kr|tw|cn)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
+			'character':/character:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
+			'guild':/guild:(us|eu|kr|tw|cn)\.([^\.]+)\.([^\(]+)\((en|de|fr|es|ru|ko|zh)\)/,
 		},
-		'battlenet': {
-			'item'     : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/item\/([^\/#]+).*/,
-			'character': /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/#]+).*/,
-			'guild'    : /http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/#]+).*/
+		'battlenet':{
+			'item':/http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/item\/([^\/#]+).*/,
+			'character':/http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/character\/([^\/]+)\/([^\/#]+).*/,
+			'guild':/http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/guild\/([^\/]+)\/([^\/#]+).*/
 		},
-		'api': {
-			'data.classes': 'http://<%= this.host %>/api/wow/data/character/classes?locale=<%= this.locale %>',
-			'data.races'  : 'http://<%= this.host %>/api/wow/data/character/races?locale=<%= this.locale %>',
-			'realm'       : 'http://<%= this.host %>/api/wow/realm/status?realm=<%= this.realm %>&locale=<%= this.locale %>',
-			'item'        : 'http://<%= this.host %>/api/wow/item/<%= this.itemid %>?locale=<%= this.locale %>',
-			'character'   : 'http://<%= this.host %>/api/wow/character/<%= this.realm %>/<%= this.character %>?fields=guild,talents,items,professions&locale=<%= this.locale %>',
-			'guild'       : 'http://<%= this.host %>/api/wow/guild/<%= this.realm %>/<%= this.guild %>?fields=members&locale=<%= this.locale %>',
+		'api':{
+			'data.classes':'http://<%= this.host %>/api/wow/data/character/classes?locale=<%= this.locale %>',
+			'data.races':'http://<%= this.host %>/api/wow/data/character/races?locale=<%= this.locale %>',
+			'realm':'http://<%= this.host %>/api/wow/realm/status?realm=<%= this.realm %>&locale=<%= this.locale %>',
+			'item':'http://<%= this.host %>/api/wow/item/<%= this.itemid %>?locale=<%= this.locale %>',
+			'character':'http://<%= this.host %>/api/wow/character/<%= this.realm %>/<%= this.character %>?fields=guild,talents,items,professions&locale=<%= this.locale %>',
+			'guild':'http://<%= this.host %>/api/wow/guild/<%= this.realm %>/<%= this.guild %>?fields=members&locale=<%= this.locale %>',
 		},
-		'hash': {
-			'data.classes': '<%= this.host %>#<%= this.locale %>',
-			'data.races'  : '<%= this.host %>#<%= this.locale %>',
-			'realm'       : '<%= this.host %>#<%= this.realm %>#<%= this.locale %>',
-			'item'        : '<%= this.host %>#<%= this.itemid %>#<%= this.locale %>',
-			'character'   : '<%= this.host %>#<%= this.realm %>#<%= this.character %>#<%= this.locale %>',
-			'guild'       : '<%= this.host %>#<%= this.realm %>#<%= this.guild %>#<%= this.locale %>',			
+		'hash':{
+			'data.classes':'<%= this.host %>#<%= this.locale %>',
+			'data.races':'<%= this.host %>#<%= this.locale %>',
+			'realm':'<%= this.host %>#<%= this.realm %>#<%= this.locale %>',
+			'item':'<%= this.host %>#<%= this.itemid %>#<%= this.locale %>',
+			'character':'<%= this.host %>#<%= this.realm %>#<%= this.character %>#<%= this.locale %>',
+			'guild':'<%= this.host %>#<%= this.realm %>#<%= this.guild %>#<%= this.locale %>',			
 		},
 		'helper': {
 			'money': /^([0-9]+)([0-9]{2})([0-9]{2})$|([0-9]{1,2})([0-9]{2})$|([0-9]{1,2})$/
 		}
 	},
-	
-	'maps': {
-		'item': {
-			'primaryStats': {
-				'3': true, // Agility
-				'4': true, // Strength
-				'5': true, // Intellect
-				'6': true, // Spirit
-				'7': true  // Stamina
-			},
-			'secondaryStats': {
-				'13': true, // Dodge rating
-				'14': true, // Parry rating
-				'31': true, // Hit rating
-				'32': true, // Critical strike rating
-				'35': true, // Resilience rating
-				'36': true, // Haste rating
-				'37': true, // Expertise rating
-				'38': true, // Attack power
-				'46': true, // Health regeneration
-				'45': true, // Spell power
-				'47': true, // Spell penetration
-				'49': true  // Mastery rating
-			}
+	'maps':{
+		'item':{
+			'primaryStats':{'3':1/*Agility*/,'4':1/*Strength*/,'5':1/*Intellect*/,'6':1/*Spirit*/,'7':1/*Stamina*/},
+			'secondaryStats':{'13':1/*Dodge rating*/,'14':1/*Parry rating*/,'31':1/*Hit rating*/,'32':1/*Critical strike rating*/,'35':1/*Resilience rating*/,'36':1/*Haste rating*/,'37':1/*Expertise rating*/,'38':1/*Attack power*/,'46':1/*Health regeneration*/,'45':1/*Spell power*/,'47':1/*Spell penetration*/,'49':1/*Mastery rating*/}
 		},
-		'host2region': {
-			'us.battle.net'       : 'us',
-			'eu.battle.net'       : 'eu',
-			'kr.battle.net'       : 'kr',
-			'tw.battle.net'       : 'tw',
-			'www.battlenet.com.cn': 'cn'
-		},
-		'region2host': {
-			'us': 'us.battle.net',
-			'eu': 'eu.battle.net',
-			'kr': 'kr.battle.net',
-			'tw': 'tw.battle.net',
-			'cn': 'www.battlenet.com.cn'
-		},
-		'region2mediahost': {
-			'us': 'us.media.blizzard.com',
-			'eu': 'eu.media.blizzard.com',
-			'kr': 'kr.media.blizzard.com',
-			'tw': 'us.media.blizzard.com',
-			'cn': 'content.battlenet.com.cn'
-		},
-		'regionlang2locale': {
-			'us': {
-				'en': 'en_US',
-				'es': 'es_MX'
-			},
-			'eu': {
-				'en': 'en_GB',
-				'es': 'es_ES',
-				'fr': 'fr_FR',
-				'ru': 'ru_RU',
-				'de': 'de_DE'
-			},
-			'kr': {
-				'ko': 'ko_KR',
-				'en': 'en_US'
-			},
-			'tw': {
-				'zh': 'zh_TW',
-				'en': 'en_US'
-			},
-			'cn': {
-				'zh': 'zh_CN',
-				'en': 'en_US'
-			}
+		'host2region':{'us.battle.net':'us','eu.battle.net':'eu','kr.battle.net':'kr','tw.battle.net':'tw','www.battlenet.com.cn':'cn'},
+		'region2host':{'us':'us.battle.net','eu':'eu.battle.net','kr':'kr.battle.net','tw':'tw.battle.net','cn':'www.battlenet.com.cn'},
+		'region2mediahost':{'us':'us.media.blizzard.com','eu':'eu.media.blizzard.com','kr':'kr.media.blizzard.com','tw':'us.media.blizzard.com','cn':'content.battlenet.com.cn'},
+		'regionlang2locale':{
+			'us':{'en':'en_US','es':'es_MX'},
+			'eu':{'en':'en_GB','es':'es_ES','fr':'fr_FR','ru':'ru_RU','de':'de_DE'},
+			'kr':{'ko':'ko_KR','en':'en_US'},
+			'tw':{'zh':'zh_TW','en':'en_US'},
+			'cn':{'zh':'zh_CN','en':'en_US'}
 		}
 	},
-	
-	'cache': {
-		'data': {
-			'character-class': {},
-			'character-race': {}
+	'cache':{
+		'data':{
+			'character-class':{},
+			'character-race':{}
 		},
-		'template': {
-			'item'     : {},
-			'character': {},
-			'guild'    : {}			
+		'template':{
+			'item':{},
+			'character':{},
+			'guild':{},
+			'realm':{}
 		}
 	},
-	
-	'activeTooltips': []
-	
+	'activeTooltips':[]
 };
-
 WowDataTooltip.init();
