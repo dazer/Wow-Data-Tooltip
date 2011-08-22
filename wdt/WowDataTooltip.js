@@ -60,10 +60,7 @@ var WowDataTooltip = {
 	},
 		
 	init: function() {
-		// generate merged config
 		this.mergeConfig();
-		// this.config['merged'] = jQuery.extend(true, {}, this.config['default'], this.config['user']);
-		// attach event handlers
 		this.attachEventHandlers();
 	},
 	
@@ -548,8 +545,8 @@ var WowDataTooltip = {
 		
 		for (var i = 0; i < keys.length; i++) {
 			if('undefined' === typeof(temp[keys[i]])) {
-				if('undefined' === typeof(result)) {
-					result = '';
+				if('object' === typeof(temp)) {
+					result = undefined;
 				}
 				break;
 			} else {
@@ -558,29 +555,54 @@ var WowDataTooltip = {
 			}
 		}
 		
-		return result;
+		// console.log('First level lookup in ('+repository.meta.locale+') yielded: '+result);
+		
+		if((result == undefined) && (repository['meta']['locale'] != 'en_US')) {
+			var temp = this.getLocaleData('en_US');
+			for (var i = 0; i < keys.length; i++) {
+				if('undefined' === typeof(temp[keys[i]])) {
+					if('object' === typeof(temp)) {
+						result = undefined;
+					}
+					break;
+				} else {
+					temp   = temp[keys[i]];
+					result = temp;
+				}
+			}
+			// console.log('Second level lookup in (en_US) yielded: '+result);
+		}
+		
+		return result || '';
 	},
 	
 	getMetaTVars: function(loc, scheme) {
-		var templates = WowDataTooltip.localize(loc, ['templates', scheme]);
 		return {
-			'extendedActive'      : this.getSetting(['extendedMode', 'active']),
+			'extendedActive': this.getSetting(['extendedMode', 'active']),
 			'extendedKeyCodeLabel': this.getSetting(['extendedMode', 'keyCode.label']),
-			'localize'            : function(route) {
+			localize: function(route) {
 				return WowDataTooltip.localize(loc, route);
 			},
-			'subrender'           : function(template, data) {
-				return jQuery.jqote(templates[template], data);
+			subrender: function(route, data) {
+				if('string' === typeof(route)) {
+					route = [route]; 
+				}
+				route.unshift('templates', scheme);
+				return jQuery.jqote(WowDataTooltip.localize(loc, route), data);
 			},
-			'moneySplitter'       : function(total) {
-				var gold   = (total / 10000).toFixed(0);
-				var silver = (total / 100).toFixed(0) - (gold * 100);
-				var copper = total - ((gold * 10000) + (silver * 100));
-				return({
-					'gold'  : gold,
-					'silver': silver,
-					'copper': copper
-				});
+			moneySplitter: function(total) {
+				var temp   = total.toString();
+				var result = temp.match(WowDataTooltip['patterns']['helper']['money']);
+				if(result) {
+					if(result[3] != undefined) {
+						return({ 'gold': parseInt(result[1]), 'silver': parseInt(result[2]), 'copper': parseInt(result[3]) });
+					}
+					if(result[5] != undefined) {
+						return({ 'gold': -1, 'silver': parseInt(result[4]), 'copper': parseInt(result[5]) });
+					}
+					return({ 'gold': -1, 'silver': -1, 'copper': parseInt(result[6]) });
+				}
+				return({ 'gold': -1, 'silver': -1, 'copper': 0 });
 			}
 		};
 	},
@@ -664,32 +686,6 @@ var WowDataTooltip = {
 		);
 	},
 	
-	/*
-	getRaceData: function(host, locale) {
-		var tvars = {
-			'host'  : host,
-			'locale': locale
-		};
-		var apicall = jQuery.jqote(this['patterns']['api']['data.races'], tvars);
-		var hash    = jQuery.jqote(this['patterns']['hash']['data.races'], tvars);
-		var data    = this.getFromCache('data', 'character-race', hash);
-		if(data != false) {
-			return data;
-		} else {
-			jQuery.ajax({
-				url: apicall,
-				crossDomain: true,
-				dataType: 'JSONP',
-				jsonp: 'jsonp',
-				success: function(data) {
-					WowDataTooltip.addToCache('data', 'character-race', hash, data);
-					return data;
-				}
-			});
-		}
-	},
-	*/
-	
 	addToCache: function(type, scheme, hash, content) {
 		this['cache'][type][scheme][hash] = content;
 		return true;
@@ -754,14 +750,14 @@ var WowDataTooltip = {
 						'<div class="row name cquality-<%= this.quality %>"><%= this.name %></div>' +
 						'<% if(this.heroic) { %><div class="row heroic"><%= this.subrender("heroic", this) %></div><% } %>' +
 						'<% if(this.boundZone) { %><div class="row boundZone"><%= this.boundZone.name %></div><% } %>' +
-						'<% if(this.itemBind) { %><div class="row itemBind"><%= this.localize("itemBind:"+this.itemBind) %></div><% } %>' +
+						'<% if(this.itemBind) { %><div class="row itemBind"><%= this.localize(["itemBind", this.itemBind]) %></div><% } %>' +
 						'<% if(this.maxCount) { %><div class="row maxCount"><%= this.subrender("maxCount", this) %></div><% } %>' +
 						'<div class="row classification">' +
 							'<% if(this.containerSlots) { %>' +
 								'<div class="itemClass"><%= this.subrender("containerSlots", this) %></div>' +
 							'<% } else { %>' +
-								'<% if(this.equippable) { %><div class="inventoryType"><%= this.localize("inventoryType:"+this.inventoryType) %></div><% } %>' +
-								'<div class="itemClass"><%= this.localize("itemClass:"+this.itemClass+"."+this.itemSubClass) %></div>' +
+								'<% if(this.equippable) { %><div class="inventoryType"><%= this.localize(["inventoryType", this.inventoryType]) %></div><% } %>' +
+								'<div class="itemClass"><%= this.localize(["itemClass", this.itemClass, this.itemSubClass]) %></div>' +
 							'<% } %>' +
 						'</div>' +
 						'<% if(this.baseArmor) { %><div class="row baseArmor"><%= this.subrender("baseArmor", this) %></div><% } %>' +
@@ -772,16 +768,16 @@ var WowDataTooltip = {
 								'<div class="row dps"><%= this.subrender("dps", this.weaponInfo) %></div>' +
 							'</div>' +
 						'<% } %>' +
-						'<% if(this.bonusStats) { for(var i=0; i<this.bonusStats.length; i++) { var current = this.bonusStats[i]; if(current.stat in WowDataTooltip.maps.item.primaryStats) { %><div class="row primaryStat"><% if(current.amount >= 0) { %>+<% } %><%= current.amount %> <%= this.localize("itemStat:"+current.stat) %></div><% } } } %>' +
+						'<% if(this.bonusStats) { for(var i=0; i<this.bonusStats.length; i++) { var current = this.bonusStats[i]; if(current.stat in WowDataTooltip.maps.item.primaryStats) { %><div class="row primaryStat"><% if(current.amount >= 0) { %>+<% } %><%= current.amount %> <%= this.localize(["itemStat", current.stat]) %></div><% } } } %>' +
 						'<% if(this.gemInfo) { %><div class="row gemInfo"><%= this.gemInfo.bonus.name %></div><% } %>' +
-						'<% if(this.socketInfo) { %><div class="socketInfo"><% if(this.socketInfo.sockets) { for(var i=0; i<this.socketInfo.sockets.length; i++) { var current = this.socketInfo.sockets[i]; %><div class="row socket"><span class="icon-socket socket-<%= current.type %>"><span class="empty"></span><span class="frame"></span></span> <%= this.localize("itemSocket:"+current.type) %></div><% } } %></div><% } %>' +
+						'<% if(this.socketInfo) { %><div class="socketInfo"><% if(this.socketInfo.sockets) { for(var i=0; i<this.socketInfo.sockets.length; i++) { var current = this.socketInfo.sockets[i]; %><div class="row socket"><span class="icon-socket socket-<%= current.type %>"><span class="empty"></span><span class="frame"></span></span> <%= this.localize(["itemSocket", current.type]) %></div><% } } %></div><% } %>' +
 						'<% if(this.maxDurability) { %><div class="row maxDurability"><%= this.subrender("maxDurability", this) %></div><% } %>' +
 						'<% if(this.allowableClasses) { %><div class="row allowableClasses"><%= this.subrender("allowableClasses", this) %></div><% } %>' +
 						'<% if(this.allowableRaces) { %><div class="row allowableRaces"><%= this.subrender("allowableRaces", this) %></div><% } %>' +
 						'<% if(this.requiredLevel) { %><div class="row requiredLevel"><%= this.subrender("requiredLevel", this) %></div><% } %>' +
 						'<% if(this.requiredSkill) { %><div class="row requiredSkill"><%= this.subrender("requiredSkill", this) %></div><% } %>' +
 						'<% if(this.itemLevel) { %><div class="row itemLevel"><%= this.subrender("itemLevel", this) %></div><% } %>' +
-						'<% if(this.bonusStats) { for(var i=0; i<this.bonusStats.length; i++) { var current = this.bonusStats[i]; if(current.stat in WowDataTooltip.maps.item.secondaryStats) { %><div class="row secondaryStat"><%= this.subrender("itemStat:"+current.stat, current) %></div><% } } } %>' +
+						'<% if(this.bonusStats) { for(var i=0; i<this.bonusStats.length; i++) { var current = this.bonusStats[i]; if(current.stat in WowDataTooltip.maps.item.secondaryStats) { %><div class="row secondaryStat"><%= this.subrender(["itemStat", current.stat], current) %></div><% } } } %>' +
 						'<% if(this.itemSpells) { for(var i=0; i<this.itemSpells.length; i++) { var current = this.itemSpells[i]; if(current.spell.description) { %><div class="row secondaryStat"><%= this.subrender("itemSpell", current) %></div><% } } } %>' +
 						'<% if(this.description) { %><div class="row description">&quot;<%= this.description %>&quot;</div><% } %>' +
 				    	'<% if(this.extendedActive) { %><div class="info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div><% } %>' +
@@ -792,13 +788,10 @@ var WowDataTooltip = {
 						'<div class="data wdt-show-only-extended">' +
 							'<div class="row name cquality-<%= this.quality %>"><%= this.name %></div>' +
 							'<div class="row id"><%= this.subrender("itemId", this) %></div>' +
+							'<% if(this.stackable > 1) { %><div class="row stackable"><%= this.subrender("stackable", this) %></div><% } %>' +
+							// itemSource, maybe...
 							'<div class="row sellPrice"><%= this.subrender("sellPrice", this) %></div>' +
-							
-							// buyPrice / sellPrice
-							// stackable
-							// itemSource
-							// isAuctionable
-							
+							'<% if(this.isAuctionable) { %><div class="row isAuctionable"><%= this.localize("itemIsAuctionable") %></div><% } %>' +
 							'<div class="info-meta">Release [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
 				    	'</div>' +
 			    	'<% } %>' +
@@ -812,44 +805,22 @@ var WowDataTooltip = {
 					'<div class="data wdt-show-only-simple">' +
 			    		'<div class="name cclass-<%= this.class %>"><%= this.name %></div>' +
 			    		'<div class="char-sri"><%= this.subrender("sri", this) %></div>' +
-						'<% if(this.talents) { for(var i=0; i<this.talents.length; i++) { var current = this.talents[i]; %>' +
-			    			'<div class="talentspec <% if(current.selected) { %> active<% } %>">' +
-								'<img class="icon-talentspec" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>' +
-							'</div>' +
-						'<% } } %>' +
-						'<% if(this.guild) { %>' +
-							'<div class="guild">' +
-								'<div class="guildname">&lt;<%= this.guild.name %>&gt;<% if(this.guild.level) { %><span class="guildlevel"> (<%= this.guild.level %>)</span><% } %></div>' +
-							'</div>' +
-						'<% } %>' +
+						'<% if(this.talents) { for(var i=0; i<this.talents.length; i++) { var current = this.talents[i]; %><div class="talentspec <% if(current.selected) { %> active<% } %>"><img class="icon-talentspec" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %></div><% } } %>' +
+						'<% if(this.guild) { %><div class="guild"><div class="guildname">&lt;<%= this.guild.name %>&gt;<% if(this.guild.level) { %><span class="guildlevel"> (<%= this.guild.level %>)</span><% } %></div></div><% } %>' +
 						'<div class="realm"><%= this.realm %></div>' +
 						'<div class="achievementpoints"><span class="achpoints"><%= this.achievementPoints %></span></div>' +
-				    	'<% if(this.extendedActive) { %>' +
-							'<div class="info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
-				    	'<% } %>' +
+				    	'<% if(this.extendedActive) { %><div class="info-meta">Hold [<%= this.extendedKeyCodeLabel %>] to switch modes!</div><% } %>' +
 			    	'</div>' +
 					 /* --- END simple mode ---------------------------------- */
 					 /* --- START extended mode ------------------------------ */
 				    '<% if(this.extendedActive) { %>' +
 						'<div class="data wdt-show-only-extended">' +
 				    		'<div class="name cclass-<%= this.class %>"><%= this.name %></div>' +
-							'<% if(this.items) { %>' +
-								'<div class="itemlevel"><%= this.subrender("ilvl", this.items) %></div>' +
-							'<% } %>' +
-							'<% if(this.professions) { %>' +
-								'<div class="professions">' +
-									'<% if(this.professions.primary) { for(var i=0; i<this.professions.primary.length; i++) { var current = this.professions.primary[i]; if(current.rank > 0) { %>' +
-										'<div class="profession-primary">' +
-											'<img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %>' +
-										'</div>' +
-									'<% } } } %>' +
-									'<% if(this.professions.secondary) { for(var i=0; i<this.professions.secondary.length; i++) { var current = this.professions.secondary[i]; if(current.rank > 0) { %>' +
-										'<div class="profession-secondary">' +
-											'<img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %>' +
-										'</div>' +
-									'<% } } } %>' +
-								'</div>' +
-							'<% } %>' +
+							'<% if(this.items) { %><div class="itemlevel"><%= this.subrender("ilvl", this.items) %></div><% } %>' +
+							'<% if(this.professions) { %><div class="professions">' +
+								'<% if(this.professions.primary) { for(var i=0; i<this.professions.primary.length; i++) { var current = this.professions.primary[i]; if(current.rank > 0) { %><div class="profession-primary"><img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %></div><% } } } %>' +
+								'<% if(this.professions.secondary) { for(var i=0; i<this.professions.secondary.length; i++) { var current = this.professions.secondary[i]; if(current.rank > 0) { %><div class="profession-secondary"><img class="icon-profession" src="<%= this.path_host_media %>/wow/icons/18/<% if(current.icon) { %><%= current.icon %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current.name %>: <%= current.rank %></div><% } } } %>' +
+							'</div><% } %>' +
 							'<div class="info-meta">Release [<%= this.extendedKeyCodeLabel %>] to switch modes!</div>' +
 				    	'</div>' +
 			    	'<% } %>' +
@@ -860,9 +831,7 @@ var WowDataTooltip = {
 				'<div class="tooltip-guild template-default">' +
 	    			'<div class="name cside-<%= this.side %>"><%= this.name %></div>' +
 		    		'<div class="guild-sri"><%= this.subrender("sri", this) %></div>' +
-					'<% if(this.membercount) { %>' +
-		    			'<div class="guild-members"><%= this.subrender("members", this) %></div>' +
-					'<% } %>' +
+					'<% if(this.membercount) { %><div class="guild-members"><%= this.subrender("members", this) %></div><% } %>' +
 					'<div class="achievementpoints last"><span class="achpoints"><%= this.achievementPoints %></span></div>' +
 				'</div>'
 			),
@@ -871,14 +840,10 @@ var WowDataTooltip = {
 					'<% if(this.notfound) { %>' +
 	    				'<div class="notfound"><%= this.notfound %></div>' +
 					'<% } else { %>' +
-    					'<div class="type type-<%= this.type %>"><%= this.localize("realmType:"+this.type) %></div>' +
+    					'<div class="type type-<%= this.type %>"><%= this.localize(["realmType", this.type]) %></div>' +
     					'<div class="name"><%= this.name %></div>' +
-						'<% if(this.queue) { %>' +
-   							'<div class="status queue-<%= this.queue %>"><%= this.localize("realmStatus:"+this.status) %> (<%= this.localize("realmQueue:"+this.queue) %>)</div>' +
-						'<% } else { %>' +
-    						'<div class="status status-<%= this.status %>"><%= this.localize("realmStatus:"+this.status) %></div>' +
-						'<% } %>' +
-    					'<div class="population"><%= this.localize("realmPopulation:"+this.population) %></div>' +
+						'<% if(this.queue) { %><div class="status queue-<%= this.queue %>"><%= this.localize(["realmStatus", this.status]) %> (<%= this.localize(["realmQueue", this.queue]) %>)</div><% } else { %><div class="status status-<%= this.status %>"><%= this.localize(["realmStatus", this.status]) %></div><% } %>' +
+    					'<div class="population"><%= this.localize(["realmPopulation", this.population]) %></div>' +
 					'<% } %>' +
 				'</div>'				
 			)
@@ -887,44 +852,50 @@ var WowDataTooltip = {
 	
 	'i18n': {
 		'en_US': {
+			'meta': {
+				'locale':'en_US'
+			},
 			'templates': {
 				'item': {
-					'itemId'          : 'Item ID: <%= this.id %>',
-					'heroic'          : 'Heroic',
-					'maxCount'        : 'Unique<% if(this.maxCount > 1) { %> (<%= this.maxCount %>)<% } %>',
-					'containerSlots'  : '<%= this.containerSlots %> Slot <%= this.localize("itemClass:"+this.itemClass+"."+this.itemSubClass) %>',
-					'damage'          : '<%= this.minDamage %> - <%= this.maxDamage %> Damage',
-					'weaponSpeed'     : 'Speed <%= this.weaponSpeed %>',
-					'dps'             : '(<%= this.dps.toFixed(2) %> damage per second)',
-					'baseArmor'       : '<%= this.baseArmor %> Armor',
-					'maxDurability'   : 'Durability <%= this.maxDurability %> / <%= this.maxDurability %>',
-					'requiredLevel'   : 'Requires Level <%= this.requiredLevel %>',
-					'requiredSkill'   : 'Requires <%= this.localize("characterSkill:"+this.requiredSkill) %> (<%= this.requiredSkillRank %>)',
-					'itemLevel'       : 'Item Level <%= this.itemLevel %>',
-					'allowableClasses': 'Classes: <% for(var i=0; i<this.allowableClasses.length; i++) { var current = this.allowableClasses[i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this.localize(["characterClass:"+current, "gender:0"])%></span><% } %>',
-					'allowableRaces'  : 'Races: <% for(var i=0; i<this.allowableRaces.length; i++) { var current = this.allowableRaces[i]; %><% if(i > 0) { %>, <% } %><span><%= this.localize(["characterRace:"+current, "gender:0"])%></span><% } %>',
-					'itemStat:13'     : 'Equip: Increases your dodge rating by <%= this.amount %>.',
-					'itemStat:14'     : 'Equip: Increases your parry rating by <%= this.amount %>.',
-					'itemStat:31'     : 'Equip: Increases your hit rating by <%= this.amount %>.',
-					'itemStat:32'     : 'Equip: Increases your critical strike rating by <%= this.amount %>.',
-					'itemStat:35'     : 'Equip: Increases your resilience rating by <%= this.amount %>.',
-					'itemStat:36'     : 'Equip: Increases your haste rating by <%= this.amount %>.',
-					'itemStat:37'     : 'Equip: Increases your expertise rating by <%= this.amount %>.',
-					'itemStat:38'     : 'Equip: Increases your attack power by <%= this.amount %>.',
-					'itemStat:46'     : 'Equip: Increases your health regeneration by <%= this.amount %>.',
-					'itemStat:45'     : 'Equip: Increases spell power by <%= this.amount %>.',
-					'itemStat:47'     : 'Equip: Increases spell penetration by <%= this.amount %>.',
-					'itemStat:49'     : 'Equip: Increases your mastery rating by <%= this.amount %>.',
-					'itemSpell'       : 'Equip / Use / Chance on Hit: <%= this.spell.description %>',
-					'sellPrice'       : '<% var c = this.moneySplitter(this.sellPrice); %>Sell Price: <% if(c.gold) { %> <span class="icon-gold"><%= c.gold %></span><% } %><% if(c.silver) { %> <span class="icon-silver"><%= c.silver %></span><% } %><% if(c.copper) { %> <span class="icon-copper"><%= c.copper %></span><% } %>'
+					'itemId':'Item ID: <%= this.id %>',
+					'heroic':'Heroic',
+					'maxCount':'Unique<% if(this.maxCount > 1) { %> (<%= this.maxCount %>)<% } %>',
+					'containerSlots':'<%= this.containerSlots %> Slot <%= this.localize(["itemClass", this.itemClass, this.itemSubClass]) %>',
+					'damage':'<%= this.minDamage %> - <%= this.maxDamage %> Damage',
+					'weaponSpeed':'Speed <%= this.weaponSpeed %>',
+					'dps':'(<%= this.dps.toFixed(2) %> damage per second)',
+					'baseArmor':'<%= this.baseArmor %> Armor',
+					'maxDurability':'Durability <%= this.maxDurability %> / <%= this.maxDurability %>',
+					'requiredLevel':'Requires Level <%= this.requiredLevel %>',
+					'requiredSkill':'Requires <%= this.localize(["characterSkill", this.requiredSkill]) %> (<%= this.requiredSkillRank %>)',
+					'itemLevel':'Item Level <%= this.itemLevel %>',
+					'allowableClasses':'Classes: <% for(var i=0; i<this.allowableClasses.length; i++) { var current = this.allowableClasses[i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this.localize(["characterClass", current])%></span><% } %>',
+					'allowableRaces':'Races: <% for(var i=0; i<this.allowableRaces.length; i++) { var current = this.allowableRaces[i]; %><% if(i > 0) { %>, <% } %><span><%= this.localize(["characterRace", current])%></span><% } %>',
+					'itemStat':{
+						'13':'Equip: Increases your dodge rating by <%= this.amount %>.',
+						'14':'Equip: Increases your parry rating by <%= this.amount %>.',
+						'31':'Equip: Increases your hit rating by <%= this.amount %>.',
+						'32':'Equip: Increases your critical strike rating by <%= this.amount %>.',
+						'35':'Equip: Increases your resilience rating by <%= this.amount %>.',
+						'36':'Equip: Increases your haste rating by <%= this.amount %>.',
+						'37':'Equip: Increases your expertise rating by <%= this.amount %>.',
+						'38':'Equip: Increases your attack power by <%= this.amount %>.',
+						'46':'Equip: Increases your health regeneration by <%= this.amount %>.',
+						'45':'Equip: Increases spell power by <%= this.amount %>.',
+						'47':'Equip: Increases spell penetration by <%= this.amount %>.',
+						'49':'Equip: Increases your mastery rating by <%= this.amount %>.'
+					},
+					'itemSpell':'Equip / Use / Chance on Hit: <%= this.spell.description %>',
+					'sellPrice':'<% var c = this.moneySplitter(this.sellPrice); %>Sell Price: <% if(c.gold > -1) { %><span class="icon-gold"><%= c.gold %></span><% } %><% if(c.silver > -1) { %><span class="icon-silver"><%= c.silver %></span><% } %><% if(c.copper) { %><span class="icon-copper"><%= c.copper %></span><% } else { %><span class="icon-copper">0</span><%} %>',
+					'stackable':'Stackable (<%= this.stackable %>)'
 				},
 				'character': {
-					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
-					'ilvl': '<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
+					'sri':'<%= this.level %> <%= this.localize(["characterRace", this.race]) %> <%= this.localize(["characterClass", this.class]) %>',
+					'ilvl':'<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Level <%= this.level %> <%= this.localize("factionSide:"+this.side) %> Guild, <%= this.realm %>',
-					'members': '<%= this.membercount %> members'
+					'sri':'Level <%= this.level %> <%= this.localize(["factionSide", this.side]) %> Guild, <%= this.realm %>',
+					'members':'<%= this.membercount %> members'
 				}
 			},
 			'loading-realm':'Loading realm...',
@@ -932,228 +903,44 @@ var WowDataTooltip = {
 			'loading-character':'Loading character...',
 			'loading-guild':'Loading guild...',
 			'realm-not-found':'Realm not found!',
-			'itemBind:1':'Binds when picked up',
-			'itemBind:2':'Binds when equipped',
-			'itemBind:3':'Binds when used',
-			
-			'itemStat:3':'Agility',
-			'itemStat:4':'Strength',
-			'itemStat:5':'Intellect',
-			'itemStat:6':'Spirit',
-			'itemStat:7':'Stamina',
-			
-			'itemSocket:BLUE':'Blue Socket',
-			'itemSocket:RED':'Red Socket',
-			'itemSocket:YELLOW':'Yellow Socket',
-			'itemSocket:META':'Meta Socket',
-			'itemSocket:ORANGE':'Orange Socket',
-			'itemSocket:PURPLE':'Purple Socket',
-			'itemSocket:GREEN':'Green Socket',
-			'itemSocket:PRISMATIC':'Prismatic Socket',
-			'itemSocket:HYDRAULIC':'Hydraulic Socket',
-			'itemSocket:COGWHEEL':'Cogwheel Socket',
-			
-			'itemClass:0.0':'Consumeable',
-			'itemClass:0.1':'Potion',
-			'itemClass:0.2':'Elixir',
-			'itemClass:0.3':'Flask',
-			'itemClass:0.4':'Scroll',
-			'itemClass:0.5':'Food & Drink',
-			'itemClass:0.6':'Item Enhancement',
-			'itemClass:0.7':'Bandage',
-			'itemClass:0.8':'Other',
-			
-			'itemClass:1.0':'Bag',
-			'itemClass:1.1':'Soul Bag',
-			'itemClass:1.2':'Herb Bag',
-			'itemClass:1.3':'Enchanting Bag',
-			'itemClass:1.4':'Engineering Bag',
-			'itemClass:1.5':'Gem Bag',
-			'itemClass:1.6':'Mining Bag',
-			'itemClass:1.7':'Leatherworking Bag',
-			'itemClass:1.8':'Inscription Bag',
-			'itemClass:1.9':'Tackle Box',
-			
-			'itemClass:2.0':'Axe', // One-Handed
-			'itemClass:2.1':'Axe', // Two-Handed
-			'itemClass:2.2':'Bow',
-			'itemClass:2.3':'Gun',
-			'itemClass:2.4':'Mace', // One-Handed
-			'itemClass:2.5':'Mace', // Two-Handed
-			'itemClass:2.6':'Polearm',
-			'itemClass:2.7':'Sword', // One-Handed
-			'itemClass:2.8':'Sword', // Two-Handed
-			'itemClass:2.10':'Staff',
-			'itemClass:2.13':'Fist Weapon',
-			'itemClass:2.14':'Miscellaneous',
-			'itemClass:2.15':'Dagger',
-			'itemClass:2.16':'Thrown',
-			'itemClass:2.18':'Crossbow',
-			'itemClass:2.19':'Wand',
-			'itemClass:2.20':'Fishing Pole',
-			
-			'itemClass:3.0':'Red Gem',
-			'itemClass:3.1':'Blue Gem',
-			'itemClass:3.2':'Yellow Gem',
-			'itemClass:3.3':'Purple Gem',
-			'itemClass:3.4':'Green Gem',
-			'itemClass:3.5':'Orange Gem',
-			'itemClass:3.6':'Meta Gem',
-			'itemClass:3.7':'Simple Gem',
-			'itemClass:3.8':'Prismatic Gem',
-			'itemClass:3.9':'Hydraulic Gem',
-			'itemClass:3.10':'Cogwheel Gem',
-			
-			'itemClass:4.0':'Miscellaneous',
-			'itemClass:4.1':'Cloth',
-			'itemClass:4.2':'Leather',
-			'itemClass:4.3':'Mail',
-			'itemClass:4.4':'Plate',
-			'itemClass:4.6':'Shield',
-			'itemClass:4.7':'Libram',
-			'itemClass:4.8':'Idol',
-			'itemClass:4.9':'Totem',
-			'itemClass:4.10':'Sigil',
-			'itemClass:4.11':'Relic',
-			
-			'itemClass:7.0':'Trade Goods',
-			'itemClass:7.1':'Parts',
-			'itemClass:7.2':'Explosives',
-			'itemClass:7.3':'Devices',
-			'itemClass:7.4':'Jewelcrafting',
-			'itemClass:7.5':'Cloth',
-			'itemClass:7.6':'Leather',
-			'itemClass:7.7':'Metal & Stone',
-			'itemClass:7.8':'Meat',
-			'itemClass:7.9':'Herb',
-			'itemClass:7.10':'Elemental',
-			'itemClass:7.11':'Other',
-			'itemClass:7.12':'Enchanting',
-			'itemClass:7.13':'Materials',
-			'itemClass:7.14':'Item Enchantment',
-			
-			'itemClass:9.0':'Book',
-			'itemClass:9.1':'Leatherworking',
-			'itemClass:9.2':'Tailoring',
-			'itemClass:9.3':'Engineering',
-			'itemClass:9.4':'Blacksmithing',
-			'itemClass:9.5':'Cooking',
-			'itemClass:9.6':'Alchemy',
-			'itemClass:9.7':'First Aid',
-			'itemClass:9.8':'Enchanting',
-			'itemClass:9.9':'Fishing',
-			'itemClass:9.10':'Jewelcrafting',
-			'itemClass:9.11':'Inscription',
-			
-			'itemClass:12.0':'Quest Item',
-			
-			'itemClass:13.0':'Key',
-			
-			'itemClass:15.0':'Junk',
-			'itemClass:15.1':'Reagent',
-			'itemClass:15.2':'Pet',
-			'itemClass:15.3':'Holiday',
-			'itemClass:15.4':'Other',
-			'itemClass:15.5':'Mount',
-			
-			'itemClass:16.0':'Glyph',
-			'itemClass:16.1':'Warrior',
-			'itemClass:16.2':'Paladin',
-			'itemClass:16.3':'Hunter',
-			'itemClass:16.4':'Rogue',
-			'itemClass:16.5':'Priest',
-			'itemClass:16.6':'Death Knight',
-			'itemClass:16.7':'Shaman',
-			'itemClass:16.8':'Mage',
-			'itemClass:16.9':'Warlock',
-			'itemClass:16.11':'Druid',
-			
-			'inventoryType:1':'Head',
-			'inventoryType:2':'Neck',
-			'inventoryType:3':'Shoulder',
-			'inventoryType:4':'Shirt',
-			'inventoryType:5':'Chest',
-			'inventoryType:6':'Waist',
-			'inventoryType:7':'Legs',
-			'inventoryType:8':'Feet',
-			'inventoryType:9':'Wrist',
-			'inventoryType:10':'Hands',
-			'inventoryType:11':'Finger',
-			'inventoryType:12':'Trinket',
-			'inventoryType:13':'One-Hand',
-			'inventoryType:15':'Ranged', // Bow
-			'inventoryType:16':'Back',
-			'inventoryType:17':'Two-Hand',
-			'inventoryType:18':'Bag',
-			'inventoryType:21':'Main-hand',
-			'inventoryType:22':'Off-hand',
-			'inventoryType:23':'Held in off-hand',
-			'inventoryType:25':'Ranged', // Thrown
-			'inventoryType:26':'Ranged', // Gun, Crossbow, Wand
-			
-			'characterSkill:129':'First Aid',
-			'characterSkill:164':'Blacksmithing',
-			'characterSkill:165':'Leatherworking',
-			'characterSkill:171':'Alchemy',
-			'characterSkill:182':'Herbalism',
-			'characterSkill:185':'Cooking',
-			'characterSkill:186':'Mining',
-			'characterSkill:197':'Tailoring',
-			'characterSkill:202':'Engineering',
-			'characterSkill:333':'Enchanting',
-			'characterSkill:356':'Fishing',
-			'characterSkill:393':'Skinning',
-			'characterSkill:755':'Jewelcrafting',
-			'characterSkill:762':'Riding',
-			'characterSkill:773':'Inscription',
-			'characterSkill:794':'Archeology',
-			
-			'characterClass:1':'Warrior',
-			'characterClass:2':'Paladin',
-			'characterClass:3':'Hunter',
-			'characterClass:4':'Rogue',
-			'characterClass:5':'Priest',
-			'characterClass:6':'Death Knight',
-			'characterClass:7':'Shaman',
-			'characterClass:8':'Mage',
-			'characterClass:9':'Warlock',
-			'characterClass:11':'Druid',
-			'characterRace:1':'Human',
-			'characterRace:2':'Orc',
-			'characterRace:3':'Dwarf',
-			'characterRace:4':'Night Elf',
-			'characterRace:5':'Forsaken',
-			'characterRace:6':'Tauren',
-			'characterRace:7':'Gnome',
-			'characterRace:8':'Troll',
-			'characterRace:9':'Goblin',
-			'characterRace:10':'Blood Elf',
-			'characterRace:11':'Draenei',
-			'characterRace:22':'Worgen',
-			
-			'factionSide:0':'Alliance',
-			'factionSide:1':'Horde',
-			
-			'realmType:pve':'PvE',
-			'realmType:pvp':'PvP',
-			'realmType:rp':'RP',
-			'realmType:rppvp':'RPPvP',
-			'realmQueue:false':'No queue',
-			'realmQueue:true':'Queue',
-			'realmStatus:false':'Offline',
-			'realmStatus:true':'Online',
-			'realmPopulation:low':'Low population',
-			'realmPopulation:medium':'Medium population',
-			'realmPopulation:high':'High population'
+			'itemIsAuctionable':'Can be auctioned',
+			'itemBind':{'1':'Binds when picked up','2':'Binds when equipped','3':'Binds when used'},
+			'itemStat':{'3':'Agility','4':'Strength','5':'Intellect','6':'Spirit','7':'Stamina'},
+			'itemSocket':{'BLUE':'Blue Socket','RED':'Red Socket','YELLOW':'Yellow Socket','META':'Meta Socket','ORANGE':'Orange Socket','PURPLE':'Purple Socket','GREEN':'Green Socket','PRISMATIC':'Prismatic Socket','HYDRAULIC':'Hydraulic Socket','COGWHEEL':'Cogwheel Socket'},
+			'itemClass':{
+				'0':{'0':'Consumeable','1':'Potion','2':'Elixir','3':'Flask','4':'Scroll','5':'Food & Drink','6':'Item Enhancement','7':'Bandage','8':'Other'},
+				'1':{'0':'Bag','1':'Soul Bag','2':'Herb Bag','3':'Enchanting Bag','4':'Engineering Bag','5':'Gem Bag','6':'Mining Bag','7':'Leatherworking Bag','8':'Inscription Bag','9':'Tackle Box'},
+				'2':{'0':'Axe'/*1H*/,'1':'Axe'/*2H*/,'2':'Bow','3':'Gun','4':'Mace'/*1H*/,'5':'Mace'/*2H*/,'6':'Polearm','7':'Sword'/*1H*/,'8':'Sword'/*2H*/,'10':'Staff','13':'Fist Weapon','14':'Miscellaneous','15':'Dagger','16':'Thrown','18':'Crossbow','19':'Wand','20':'Fishing Pole'},
+				'3':{'0':'Red Gem','1':'Blue Gem','2':'Yellow Gem','3':'Purple Gem','4':'Green Gem','5':'Orange Gem','6':'Meta Gem','7':'Simple Gem','8':'Prismatic Gem','9':'Hydraulic Gem','10':'Cogwheel Gem'},
+				'4':{'0':'Miscellaneous','1':'Cloth','2':'Leather','3':'Mail','4':'Plate','6':'Shield','7':'Libram','8':'Idol','9':'Totem','10':'Sigil','11':'Relic'},
+				'7':{'0':'Trade Goods','1':'Parts','2':'Explosives','3':'Devices','4':'Jewelcrafting','5':'Cloth','6':'Leather','7':'Metal & Stone','8':'Meat','9':'Herb','10':'Elemental','11':'Other','12':'Enchanting','13':'Materials','14':'Item Enchantment'},
+				'9':{'0':'Book','1':'Leatherworking','2':'Tailoring','3':'Engineering','4':'Blacksmithing','5':'Cooking','6':'Alchemy','7':'First Aid','8':'Enchanting','9':'Fishing','10':'Jewelcrafting','11':'Inscription'},
+				'12':{'0':'Quest Item'},
+				'13':{'0':'Key'},
+				'15':{'0':'Junk','1':'Reagent','2':'Pet','3':'Holiday','4':'Other','5':'Mount'},
+				'16':{'0':'Glyph','1':'Warrior','2':'Paladin','3':'Hunter','4':'Rogue','5':'Priest','6':'Death Knight','7':'Shaman','8':'Mage','9':'Warlock','11':'Druid'}
+			},
+			'inventoryType':{'1':'Head','2':'Neck','3':'Shoulder','4':'Shirt','5':'Chest','6':'Waist','7':'Legs','8':'Feet','9':'Wrist','10':'Hands','11':'Finger','12':'Trinket','13':'One-Hand','15':'Ranged'/*Bow*/,'16':'Back','17':'Two-Hand','18':'Bag','21':'Main-hand','22':'Off-hand','23':'Held in off-hand','25':'Ranged'/*Thrown*/,'26':'Ranged'/*Gun,Crossbow,Wand*/},
+			'characterSkill':{'129':'First Aid','164':'Blacksmithing','165':'Leatherworking','171':'Alchemy','182':'Herbalism','185':'Cooking','186':'Mining','197':'Tailoring','202':'Engineering','333':'Enchanting','356':'Fishing','393':'Skinning','755':'Jewelcrafting','762':'Riding','773':'Inscription','794':'Archeology'},
+			'characterClass':{'1':'Warrior','2':'Paladin','3':'Hunter','4':'Rogue','5':'Priest','6':'Death Knight','7':'Shaman','8':'Mage','9':'Warlock','11':'Druid'},
+			'characterRace':{'1':'Human','2':'Orc','3':'Dwarf','4':'Night Elf','5':'Forsaken','6':'Tauren','7':'Gnome','8':'Troll','9':'Goblin','10':'Blood Elf','11':'Draenei','22':'Worgen'},
+			'factionSide':{'0':'Alliance','1':'Horde'},
+			'realmType':{'pve':'PvE','pvp':'PvP','rp':'RP','rppvp':'RPPvP'},
+			'realmQueue':{'false':'No queue','true':'Queue'},
+			'realmStatus':{'false':'Offline','true':'Online'},
+			'realmPopulation':{'low':'Low population','medium':'Medium population','high':'High population'}
 		},
 		'es_MX': {
+			'meta': {
+				'locale': 'es_MX'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %> de <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %>, nivel <%= this.level %>',
+					'sri' : '<%= this.localize(["characterClass", this.class, this.gender]) %> de <%= this.localize(["characterRace", this.race, this.gender]) %>, nivel <%= this.level %>',
 					'ilvl': '<%= this.averageItemLevelEquipped %> nvl. de obj. promedio (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Hermandad <%= this.localize("factionSide:"+this.side) %>, nivel <%= this.level %>, <%= this.realm %>',
+					'sri'    : 'Hermandad <%= this.localize(["factionSide", this.side]) %>, nivel <%= this.level %>, <%= this.realm %>',
 					'members': '<%= this.membercount %> miembros'
 				}
 			},
@@ -1162,102 +949,104 @@ var WowDataTooltip = {
 			'loading-character':'Cargando carácter ...',
 			'loading-guild':'Carga del gremio ...',
 			'realm-not-found':'Reino que no se encuentra!',
-			'characterClass:1':{'gender:0':'Guerrero','gender:1':'Guerrera'},
-			'characterClass:2':{'gender:0':'Paladín','gender:1':'Paladín'},
-			'characterClass:3':{'gender:0':'Cazador','gender:1':'Cazadora'},
-			'characterClass:4':{'gender:0':'Pícaro','gender:1':'Pícara'},
-			'characterClass:5':{'gender:0':'Sacerdote','gender:1':'Sacerdotisa'},
-			'characterClass:6':{'gender:0':'Caballero de la Muerte','gender:1':'Caballero de la Muerte'},
-			'characterClass:7':{'gender:0':'Chamán','gender:1':'Chamán'},
-			'characterClass:8':{'gender:0':'Mago','gender:1':'Maga'},
-			'characterClass:9':{'gender:0':'Brujo','gender:1':'Bruja'},
-			'characterClass:11':{'gender:0':'Druida','gender:1':'Druida'},
-			'characterRace:1':{'gender:0':'Humano','gender:1':'Humana'},
-			'characterRace:2':{'gender:0':'Orco','gender:1':'Orco'},
-			'characterRace:3':{'gender:0':'Enano','gender:1':'Enana'},
-			'characterRace:4':{'gender:0':'Elfo de la noche','gender:1':'Elfa de la noche'},
-			'characterRace:5':{'gender:0':'No-muerto','gender:1':'No-muerta'},
-			'characterRace:6':{'gender:0':'Tauren','gender:1':'Tauren'},
-			'characterRace:7':{'gender:0':'Gnomo','gender:1':'Gnoma'},
-			'characterRace:8':{'gender:0':'Trol','gender:1':'Trol'},
-			'characterRace:9':{'gender:0':'Goblin','gender:1':'Goblin'},
-			'characterRace:10':{'gender:0':'Elfo de sangre','gender:1':'Elfa de sangre'},
-			'characterRace:11':{'gender:0':'Draenei','gender:1':'Draenei'},
-			'characterRace:22':{'gender:0':'Huargen','gender:1':'Huargen'},
-			'factionSide:0':'Alianza',
-			'factionSide:1':'Horda',
-			'realmType:pve':'PvE',
-			'realmType:pvp':'PvP',
-			'realmType:rp':'RP',
-			'realmType:rppvp':'RPPvP',
-			'realmQueue:false':'no hay cola',
-			'realmQueue:true':'cola',
-			'realmStatus:false':'fuera de línea',
-			'realmStatus:true':'en línea',
-			'realmPopulation:low':'población de bajos',
-			'realmPopulation:medium':'población media',
-			'realmPopulation:high':'población de alto'
+			'characterClass':{'1':{'0':'Guerrero','1':'Guerrera'},'2':{'0':'Paladín','1':'Paladín'},'3':{'0':'Cazador','1':'Cazadora'},'4':{'0':'Pícaro','1':'Pícara'},'5':{'0':'Sacerdote','1':'Sacerdotisa'},'6':{'0':'Caballero de la Muerte','1':'Caballero de la Muerte'},'7':{'0':'Chamán','1':'Chamán'},'8':{'0':'Mago','1':'Maga'},'9':{'0':'Brujo','1':'Bruja'},'11':{'0':'Druida','1':'Druida'}},
+			'characterRace':{'1':{'0':'Humano','1':'Humana'},'2':{'0':'Orco','1':'Orco'},'3':{'0':'Enano','1':'Enana'},'4':{'0':'Elfo de la noche','1':'Elfa de la noche'},'5':{'0':'No-muerto','1':'No-muerta'},'6':{'0':'Tauren','1':'Tauren'},'7':{'0':'Gnomo','1':'Gnoma'},'8':{'0':'Trol','1':'Trol'},'9':{'0':'Goblin','1':'Goblin'},'10':{'0':'Elfo de sangre','1':'Elfa de sangre'},'11':{'0':'Draenei','1':'Draenei'},'22':{'0':'Huargen','1':'Huargen'}},
+			'factionSide':{'0':'Alianza','1':'Horda'},
+			'realmType':{'pve':'PvE','pvp':'PvP','rp':'RP','rppvp':'RPPvP'},
+			'realmQueue':{'false':'no hay cola','true':'cola'},
+			'realmStatus':{'false':'fuera de línea','true':'en línea'},
+			'realmPopulation':{'low':'población de bajos','medium':'población media','high':'población de alto'}
 		},
 		'en_GB': {
+			'meta': {
+				'locale':'en_GB'
+			},
 			'templates': {
+				'item': {
+					'itemId':'Item ID: <%= this.id %>',
+					'heroic':'Heroic',
+					'maxCount':'Unique<% if(this.maxCount > 1) { %> (<%= this.maxCount %>)<% } %>',
+					'containerSlots':'<%= this.containerSlots %> Slot <%= this.localize(["itemClass", this.itemClass, this.itemSubClass]) %>',
+					'damage':'<%= this.minDamage %> - <%= this.maxDamage %> Damage',
+					'weaponSpeed':'Speed <%= this.weaponSpeed %>',
+					'dps':'(<%= this.dps.toFixed(2) %> damage per second)',
+					'baseArmor':'<%= this.baseArmor %> Armor',
+					'maxDurability':'Durability <%= this.maxDurability %> / <%= this.maxDurability %>',
+					'requiredLevel':'Requires Level <%= this.requiredLevel %>',
+					'requiredSkill':'Requires <%= this.localize(["characterSkill", this.requiredSkill]) %> (<%= this.requiredSkillRank %>)',
+					'itemLevel':'Item Level <%= this.itemLevel %>',
+					'allowableClasses':'Classes: <% for(var i=0; i<this.allowableClasses.length; i++) { var current = this.allowableClasses[i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this.localize(["characterClass", current])%></span><% } %>',
+					'allowableRaces':'Races: <% for(var i=0; i<this.allowableRaces.length; i++) { var current = this.allowableRaces[i]; %><% if(i > 0) { %>, <% } %><span><%= this.localize(["characterRace", current])%></span><% } %>',
+					'itemStat':{
+						'13':'Equip: Increases your dodge rating by <%= this.amount %>.',
+						'14':'Equip: Increases your parry rating by <%= this.amount %>.',
+						'31':'Equip: Increases your hit rating by <%= this.amount %>.',
+						'32':'Equip: Increases your critical strike rating by <%= this.amount %>.',
+						'35':'Equip: Increases your resilience rating by <%= this.amount %>.',
+						'36':'Equip: Increases your haste rating by <%= this.amount %>.',
+						'37':'Equip: Increases your expertise rating by <%= this.amount %>.',
+						'38':'Equip: Increases your attack power by <%= this.amount %>.',
+						'46':'Equip: Increases your health regeneration by <%= this.amount %>.',
+						'45':'Equip: Increases spell power by <%= this.amount %>.',
+						'47':'Equip: Increases spell penetration by <%= this.amount %>.',
+						'49':'Equip: Increases your mastery rating by <%= this.amount %>.'
+					},
+					'itemSpell':'Equip / Use / Chance on Hit: <%= this.spell.description %>',
+					'sellPrice':'<% var c = this.moneySplitter(this.sellPrice); %>Sell Price: <% if(c.gold > -1) { %><span class="icon-gold"><%= c.gold %></span><% } %><% if(c.silver > -1) { %><span class="icon-silver"><%= c.silver %></span><% } %><% if(c.copper) { %><span class="icon-copper"><%= c.copper %></span><% } else { %><span class="icon-copper">0</span><%} %>',
+					'stackable':'Stackable (<%= this.stackable %>)'
+				},
 				'character': {
-					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
-					'ilvl': '<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
+					'sri':'<%= this.level %> <%= this.localize(["characterRace", this.race]) %> <%= this.localize(["characterClass", this.class]) %>',
+					'ilvl':'<%= this.averageItemLevelEquipped %> average item level (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Level <%= this.level %> <%= this.localize("factionSide:"+this.side) %> Guild, <%= this.realm %>',
-					'members': '<%= this.membercount %> members'
+					'sri':'Level <%= this.level %> <%= this.localize(["factionSide", this.side]) %> Guild, <%= this.realm %>',
+					'members':'<%= this.membercount %> members'
 				}
 			},
-			'loading-realm'    : 'Loading realm...',
-			'loading-item'     : 'Loading item...',
-			'loading-character': 'Loading character...',
-			'loading-guild'    : 'Loading guild...',
-			'realm-not-found'  : 'Realm not found!',
-			'characterClass:1' : 'Warrior',
-			'characterClass:2' : 'Paladin',
-			'characterClass:3' : 'Hunter',
-			'characterClass:4' : 'Rogue',
-			'characterClass:5' : 'Priest',
-			'characterClass:6' : 'Death Knight',
-			'characterClass:7' : 'Shaman',
-			'characterClass:8' : 'Mage',
-			'characterClass:9' : 'Warlock',
-			'characterClass:11': 'Druid',
-			'characterRace:1'  : 'Human',
-			'characterRace:2'  : 'Orc',
-			'characterRace:3'  : 'Dwarf',
-			'characterRace:4'  : 'Night Elf',
-			'characterRace:5'  : 'Forsaken',
-			'characterRace:6'  : 'Tauren',
-			'characterRace:7'  : 'Gnome',
-			'characterRace:8'  : 'Troll',
-			'characterRace:9'  : 'Goblin',
-			'characterRace:10' : 'Blood Elf',
-			'characterRace:11' : 'Draenei',
-			'characterRace:22' : 'Worgen',
-			'factionSide:0'  : 'Alliance',
-			'factionSide:1'  : 'Horde',
-			'realmType:pve'         : 'PvE',
-			'realmType:pvp'         : 'PvP',
-			'realmType:rp'          : 'RP',
-			'realmType:rppvp'       : 'RPPvP',
-			'realmQueue:false'      : 'No queue',
-			'realmQueue:true'       : 'Queue',
-			'realmStatus:false'     : 'Offline',
-			'realmStatus:true'      : 'Online',
-			'realmPopulation:low'   : 'Low population',
-			'realmPopulation:medium': 'Medium population',
-			'realmPopulation:high'  : 'High population'
+			'loading-realm':'Loading realm...',
+			'loading-item':'Loading item...',
+			'loading-character':'Loading character...',
+			'loading-guild':'Loading guild...',
+			'realm-not-found':'Realm not found!',
+			'itemIsAuctionable':'Can be auctioned',
+			'itemBind':{'1':'Binds when picked up','2':'Binds when equipped','3':'Binds when used'},
+			'itemStat':{'3':'Agility','4':'Strength','5':'Intellect','6':'Spirit','7':'Stamina'},
+			'itemSocket':{'BLUE':'Blue Socket','RED':'Red Socket','YELLOW':'Yellow Socket','META':'Meta Socket','ORANGE':'Orange Socket','PURPLE':'Purple Socket','GREEN':'Green Socket','PRISMATIC':'Prismatic Socket','HYDRAULIC':'Hydraulic Socket','COGWHEEL':'Cogwheel Socket'},
+			'itemClass':{
+				'0':{'0':'Consumeable','1':'Potion','2':'Elixir','3':'Flask','4':'Scroll','5':'Food & Drink','6':'Item Enhancement','7':'Bandage','8':'Other'},
+				'1':{'0':'Bag','1':'Soul Bag','2':'Herb Bag','3':'Enchanting Bag','4':'Engineering Bag','5':'Gem Bag','6':'Mining Bag','7':'Leatherworking Bag','8':'Inscription Bag','9':'Tackle Box'},
+				'2':{'0':'Axe'/*1H*/,'1':'Axe'/*2H*/,'2':'Bow','3':'Gun','4':'Mace'/*1H*/,'5':'Mace'/*2H*/,'6':'Polearm','7':'Sword'/*1H*/,'8':'Sword'/*2H*/,'10':'Staff','13':'Fist Weapon','14':'Miscellaneous','15':'Dagger','16':'Thrown','18':'Crossbow','19':'Wand','20':'Fishing Pole'},
+				'3':{'0':'Red Gem','1':'Blue Gem','2':'Yellow Gem','3':'Purple Gem','4':'Green Gem','5':'Orange Gem','6':'Meta Gem','7':'Simple Gem','8':'Prismatic Gem','9':'Hydraulic Gem','10':'Cogwheel Gem'},
+				'4':{'0':'Miscellaneous','1':'Cloth','2':'Leather','3':'Mail','4':'Plate','6':'Shield','7':'Libram','8':'Idol','9':'Totem','10':'Sigil','11':'Relic'},
+				'7':{'0':'Trade Goods','1':'Parts','2':'Explosives','3':'Devices','4':'Jewelcrafting','5':'Cloth','6':'Leather','7':'Metal & Stone','8':'Meat','9':'Herb','10':'Elemental','11':'Other','12':'Enchanting','13':'Materials','14':'Item Enchantment'},
+				'9':{'0':'Book','1':'Leatherworking','2':'Tailoring','3':'Engineering','4':'Blacksmithing','5':'Cooking','6':'Alchemy','7':'First Aid','8':'Enchanting','9':'Fishing','10':'Jewelcrafting','11':'Inscription'},
+				'12':{'0':'Quest Item'},
+				'13':{'0':'Key'},
+				'15':{'0':'Junk','1':'Reagent','2':'Pet','3':'Holiday','4':'Other','5':'Mount'},
+				'16':{'0':'Glyph','1':'Warrior','2':'Paladin','3':'Hunter','4':'Rogue','5':'Priest','6':'Death Knight','7':'Shaman','8':'Mage','9':'Warlock','11':'Druid'}
+			},
+			'inventoryType':{'1':'Head','2':'Neck','3':'Shoulder','4':'Shirt','5':'Chest','6':'Waist','7':'Legs','8':'Feet','9':'Wrist','10':'Hands','11':'Finger','12':'Trinket','13':'One-Hand','15':'Ranged'/*Bow*/,'16':'Back','17':'Two-Hand','18':'Bag','21':'Main-hand','22':'Off-hand','23':'Held in off-hand','25':'Ranged'/*Thrown*/,'26':'Ranged'/*Gun,Crossbow,Wand*/},
+			'characterSkill':{'129':'First Aid','164':'Blacksmithing','165':'Leatherworking','171':'Alchemy','182':'Herbalism','185':'Cooking','186':'Mining','197':'Tailoring','202':'Engineering','333':'Enchanting','356':'Fishing','393':'Skinning','755':'Jewelcrafting','762':'Riding','773':'Inscription','794':'Archeology'},
+			'characterClass':{'1':'Warrior','2':'Paladin','3':'Hunter','4':'Rogue','5':'Priest','6':'Death Knight','7':'Shaman','8':'Mage','9':'Warlock','11':'Druid'},
+			'characterRace':{'1':'Human','2':'Orc','3':'Dwarf','4':'Night Elf','5':'Forsaken','6':'Tauren','7':'Gnome','8':'Troll','9':'Goblin','10':'Blood Elf','11':'Draenei','22':'Worgen'},
+			'factionSide':{'0':'Alliance','1':'Horde'},
+			'realmType':{'pve':'PvE','pvp':'PvP','rp':'RP','rppvp':'RPPvP'},
+			'realmQueue':{'false':'No queue','true':'Queue'},
+			'realmStatus':{'false':'Offline','true':'Online'},
+			'realmPopulation':{'low':'Low population','medium':'Medium population','high':'High population'}
 		},
 		'es_ES': {
+			'meta': {
+				'locale': 'es_ES'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %> <%= this.level %>',
+					'sri' : '<%= this.localize(["characterRace", this.race, this.gender]) %> <%= this.localize(["characterClass", this.class, this.gender]) %> <%= this.level %>',
 					'ilvl': '<%= this.averageItemLevelEquipped %> Nivel medio de objeto (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Hermandad (<%= this.localize("factionSide:"+this.side) %>), nivel <%= this.level %>, <%= this.realm %>',
+					'sri'    : 'Hermandad (<%= this.localize(["factionSide", this.side]) %>), nivel <%= this.level %>, <%= this.realm %>',
 					'members': '<%= this.membercount %> miembros'
 				}
 			},
@@ -1303,13 +1092,16 @@ var WowDataTooltip = {
 			'realmPopulation:high'  : 'población de alto'
 		},
 		'fr_FR': {
+			'meta': {
+				'locale': 'fr_FR'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> niv. <%= this.level %>',
+					'sri' : '<%= this.localize(["characterClass", this.class, this.gender]) %> <%= this.localize(["characterRace", this.race, this.gender]) %> niv. <%= this.level %>',
 					'ilvl': '<%= this.averageItemLevelEquipped %> Niveau moyen des objets (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Guilde de niveau <%= this.level %>, faction <%= this.localize("factionSide:"+this.side) %>, <%= this.realm %>',
+					'sri'    : 'Guilde de niveau <%= this.level %>, faction <%= this.localize(["factionSide", this.side]) %>, <%= this.realm %>',
 					'members': '<%= this.membercount %> membres'
 				}
 			},
@@ -1355,13 +1147,16 @@ var WowDataTooltip = {
 			'realmPopulation:high'  : 'élevée de la population'
 		},
 		'ru_RU': {
+			'meta': {
+				'locale': 'ru_RU'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>-<%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.level %> yp.',
+					'sri' : '<%= this.localize(["characterClass", this.class, this.gender]) %>-<%= this.localize(["characterRace", this.race, this.gender]) %> <%= this.level %> yp.',
 					'ilvl': '<%= this.averageItemLevelEquipped %> средний (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Гильдия <%= this.level %>-го ур. (<%= this.localize("factionSide:"+this.side) %>), <%= this.realm %>',
+					'sri'    : 'Гильдия <%= this.level %>-го ур. (<%= this.localize(["factionSide", this.side]) %>), <%= this.realm %>',
 					'members': 'Членов гильдии: <%= this.membercount %>'
 				}
 			},
@@ -1407,13 +1202,16 @@ var WowDataTooltip = {
 			'realmPopulation:high'  : 'Высокая населения'
 		},
 		'de_DE': {
+			'meta': {
+				'locale': 'de_DE'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.level %>, <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %>, <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'sri' : '<%= this.level %>, <%= this.localize(["characterRace", this.race, this.gender]) %>, <%= this.localize(["characterClass", this.class, this.gender]) %>',
 					'ilvl': '<%= this.averageItemLevelEquipped %> Durchschnittliche Gegenstandsstufe (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : 'Stufe <%= this.level %> <%= this.localize("factionSide:"+this.side) %>-Gilde, <%= this.realm %>',
+					'sri'    : 'Stufe <%= this.level %> <%= this.localize(["factionSide", this.side]) %>-Gilde, <%= this.realm %>',
 					'members': '<%= this.membercount %> Mitglieder'
 				}
 			},
@@ -1459,13 +1257,16 @@ var WowDataTooltip = {
 			'realmPopulation:high'  : 'Hohe Bevölkerung'
 		},
 		'ko_KR': {
+			'meta': {
+				'locale': 'ko_KR'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace", this.race]) %> <%= this.localize(["characterClass", this.class]) %>',
 					'ilvl': '<%= this.averageItemLevelEquipped %> 평균 아이템 레벨 (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : '<%= this.level %> 레벨 <%= this.localize("factionSide:"+this.side) %> 길드, <%= this.realm %>',
+					'sri'    : '<%= this.level %> 레벨 <%= this.localize(["factionSide", this.side]) %> 길드, <%= this.realm %>',
 					'members': '구성원 <%= this.membercount %>명'
 				}
 			},
@@ -1511,13 +1312,16 @@ var WowDataTooltip = {
 			'realmPopulation:high'  : '높은 인구'
 		},
 		'zh_TW': {
+			'meta': {
+				'locale': 'zh_TW'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace", this.race]) %> <%= this.localize(["characterClass", this.class]) %>',
 					'ilvl': '<%= this.averageItemLevelEquipped %> 平均物品等級 (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : '等級<%= this.level %><%= this.localize("factionSide:"+this.side) %>公會, <%= this.realm %>',
+					'sri'    : '等級<%= this.level %><%= this.localize(["factionSide", this.side]) %>公會, <%= this.realm %>',
 					'members': '共<%= this.membercount %>位成員'
 				}
 			},
@@ -1563,13 +1367,16 @@ var WowDataTooltip = {
 			'realmPopulation:high'  : '高人口'
 		},
 		'zh_CN': {
+			'meta': {
+				'locale': 'zh_CN'
+			},
 			'templates': {
 				'character': {
-					'sri' : '<%= this.level %> <%= this.localize(["characterRace:"+this.race, "gender:"+this.gender]) %> <%= this.localize(["characterClass:"+this.class, "gender:"+this.gender]) %>',
+					'sri' : '<%= this.level %> <%= this.localize(["characterRace", this.race]) %> <%= this.localize(["characterClass", this.class]) %>',
 					'ilvl': '<%= this.averageItemLevelEquipped %> 物品平均等级 (<%= this.averageItemLevel %>)'
 				},
 				'guild': {
-					'sri'    : '<%= this.level %> 级 <%= this.localize("factionSide:"+this.side) %> 公会, <%= this.realm %>',
+					'sri'    : '<%= this.level %> 级 <%= this.localize(["factionSide", this.side]) %> 公会, <%= this.realm %>',
 					'members': '<%= this.membercount %> 个成员'
 				}
 			},
@@ -1643,6 +1450,9 @@ var WowDataTooltip = {
 			'item'        : '<%= this.host %>#<%= this.itemid %>#<%= this.locale %>',
 			'character'   : '<%= this.host %>#<%= this.realm %>#<%= this.character %>#<%= this.locale %>',
 			'guild'       : '<%= this.host %>#<%= this.realm %>#<%= this.guild %>#<%= this.locale %>',			
+		},
+		'helper': {
+			'money': /^([0-9]+)([0-9]{2})([0-9]{2})$|([0-9]{1,2})([0-9]{2})$|([0-9]{1,2})$/
 		}
 	},
 	

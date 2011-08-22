@@ -20,6 +20,9 @@
 	
 	<h3>Item Tooltips Test</h3>
 	<ul>
+		<li><h4>Fallback language</h4></li>
+		<li><a href="http://eu.battle.net/wow/de/item/49623">German: Shadowmourne</a></li>
+		
 		<li><h4>Bindings</h4></li>
 		<li><a href="http://us.battle.net/wow/en/item/18266">Bound to Zone: Gordok Courtyard Key</a></li>
 		<li><a href="http://us.battle.net/wow/en/item/54536">Bound to Event: Satchel of Chilled Goods</a></li>
