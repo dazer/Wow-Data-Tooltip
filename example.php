@@ -3,7 +3,7 @@
 $data = array();
 $data['project']['homepage']  = 'http://code.google.com/p/wow-data-tooltip/';
 $data['download']['status']   = 'beta';
-$data['download']['revision'] = '49';
+$data['download']['revision'] = '62';
 $data['download']['link']     = 'http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-'.$data['download']['status'].'-r'.$data['download']['revision'].'.zip';
 
 $lang = 'en';
@@ -31,30 +31,38 @@ $repository_lang = array(
 		'reasons pro 2'           => '<a href="http://yepnopejs.com/" title="yepnope.js | A Conditional Loader For Your Polyfills!">Asynchronous resource loading</a> <span class="comment">( = page load time remains virtually unchanged )</span>',
 		'reasons pro 3'           => 'Based on <a href="http://jquery.com/" title="jQuery: The Write Less, Do More, JavaScript Library">jQuery</a> <span class="comment">( = Cross-browser compatible and reliable )</span>',
 		'reasons pro 4'           => 'Based on the tooltip addon <a href="http://craigsworks.com/projects/qtip2/" title="qTip2 - Pretty powerful tooltips" >qTip2</a> <span class="comment">( = up to date and higly flexible )</span>',
-		'reasons pro 5'           => 'Integrated mini-template engine: <a href="https://github.com/janl/mustache.js" title="janl / mustache.js" >mustache</a>',
+		'reasons pro 5'           => 'Integrated mini-template engine: <a href="http://aefxx.com/jquery-plugins/jqote2/" title="aefxx / jQote2" >jQote2</a> <span class="comment">( = very speedy and modular )</span>',
 		'reasons pro 6'           => 'Direct access to the new <a href="http://us.battle.net/wow/en/forum/2626217/" title="Community Platform API">Battle.net API</a> <span class="comment">( = most relevant and reliable data source )</span>',
 		'installation header'     => 'How do I install this thing?',
 		'installation step 1'     => '<a href="'.$data['download']['link'].'" title="Filedownload on Googlecode">Download the files</a>',
 		'installation step 2'     => 'Unzip and upload to your webserver',
-		'installation step 3'     => 'Populate config to match your server\'s path and include <code>wdt/WowDataTooltip.js</code> on your pages:',
+		'installation step 3'     => 'Populate config to match your server\'s path and include <code>wdt/WowDataTooltip.js</code> on your pages (Any omitted value will be set to it\'s default):',
 		'installation code 1'     => '<pre class="code">&lt;script type="text/javascript"&gt;
 	window.___WowDataTooltip_Config = {
 		\'files\': {
-			\'jquery.js\': \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',  // The jQuery library
-			\'qtip2.js\' : \'{Path to the contained /qtip2 directory}/jquery.qtip.min.js\',  // qTip2 javascript lib
-			\'qtip2.css\': \'{Path to the contained /qtip2 directory}/jquery.qtip.min.css\', // qTip2 css styles
-			\'wdt.css\'  : \'{Path to the contained /wdt directory}/WowDataTooltip.css\'       // WowDataTooltip css styles
+			\'jquery.js\' : \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',
+			\'qtip2.js\'  : \'{{webpath to qtip2 directory}}/jquery.qtip.min.js\',
+			\'qtip2.css\' : \'{{webpath to qtip2 directory}}/jquery.qtip.min.css\',
+			\'wdt.css\'   : \'{{webpath to wdt directory}}/WowDataTooltip.css\'
 		},
 		\'applyTo\': {
-			\'explicit\' : true, // Set to true if you want to apply tooltips to explicit flagged elements
-			\'battlenet\': true  // Set to true if you want to apply tooltips to all battle.net links
+			\'battlenet\': true, // Set to false to disable automatic battle.net link tooltips
+			\'explicit\' : true, // Set to false to disable explicit tooltips
 		},
-		\'extendedMode\': {
-			\'active\': true, // Set to true if you want to use the extended mode functionality
+		\'layout\': {
+			\'width\': {
+				\'realm\'    : 200, // Width of realm tooltips in pixels
+				\'item\'     : 425, // Width of item tooltips in pixels
+				\'character\': 325, // Width of character tooltips in pixels
+				\'guild\'    : 200  // Width of guild tooltips in pixels
+			}
+		},
+		\'extras\': {
+			\'applyCssColorToCaller\': false // Set to true to color the anchor element of any tooltip via css classes
 		}
 	};
 &lt;/script&gt;
-&lt;script type="text/javascript" src="{Path to the contained /wdt directory}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
+&lt;script type="text/javascript" src="{{webpath to wdt directory}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Character tooltips <span class="comment">( Description &amp; examples )</span>',
 		'char tt hint'            => 'Try it! Hold down [Shift] while a tooltip is displayed! :)',
 		'char tt what header'     => 'Which elements will be granted a tooltip?',
@@ -96,9 +104,17 @@ $repository_lang = array(
 		'guild tt i18n example 6' => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/guild/알렉스트라자/나는 쓰랄과 제이나의 불륜현장을 목격했다/">Hanguk: &lt;나는 쓰랄과 제이나의 불륜현장을 목격했다&gt; @ 알렉스트라자 (KR)</a>',
 		'guild tt i18n example 7' => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/guild/冬握湖/人在冏途身不由己/">Traditional chinese: &lt;人在冏途身不由己&gt; @ 冬握湖 (TW)</a>',
 		'guild tt i18n example 8' => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/guild/熔火之心/凌烟阁/">Simplified chinese: &lt;凌烟阁&gt; @ 熔火之心 (CN)</a>',
-		'item tt header'          => 'Item tooltips <span class="comment">( Under developement ^^ )</span>',
-		'item tt text 1'          => 'The item data API queries are only available to authenticated users at the moment.',
-		'item tt text 2'          => 'I have been granted access recently and I\'m now able to test this out... :)',
+		'item tt header'          => 'Item tooltips <span class="comment">( Description &amp; examples )</span>',
+		'item tt text 1'          => 'The item data API is now public but still missing some common information. This means that the item tooltips are now functional but not yet feature-complete.',
+		'item tt text 2'          => 'As soon as the item data API is updated I will be adding the missing information to the tooltips.',
+		'item tt what header'     => 'Which elements will be granted a tooltip?',
+		'item tt what text 1'     => 'An item tooltip is added to each hyperlink that points to a Battle.net item information page. E.g.',
+		'item tt what text 2'     => 'It\'s not important if that hyperlink is pointing to a subpage of a character profile:',
+		'item tt what text 3'     => 'You may also set up an item tooltip on any html element manually:',
+		'item tt what example 1'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/item/58133">http://eu.battle.net/wow/de/item/58133</a>',
+		'item tt what example 2'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/item/58133#tab=comments">http://eu.battle.net/wow/de/item/58133#tab=comments</a>',
+		'item tt what example 3'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/item/58133#tab=disenchantItems">http://eu.battle.net/wow/de/item/58133#tab=disenchantItems</a>',
+		'item tt what example 4'  => '<pre class="code">&lt;span data-wowdatatooltip="item:eu.58133(en)"&gt;Englisch: Mask of Vines @ EU&lt;/span&gt;</pre>',
 		'realm tt header'         => 'Realm Tooltips <span class="comment">( Description &amp; examples )</span>',
 		'realm tt text 1'         => 'Realm tooltips are now available, too.',
 		'realm tt text 2'         => 'Since there is no battle.net url that may be hijacked for realms, I included a way of adding explicit tooltips to any element:',
@@ -114,6 +130,7 @@ $repository_lang = array(
 		'issues 2'                => 'The labels for item level, guild info etc. are not yet localized and presented in english.',
 		'issues 3'                => 'Firefox seems to have some issues with binding of hotkeys to switch between simple and extended mode. :-/',
 		'issues 4'                => 'Because the included jQuery plugin qTip2 itself is quite new and not yet "stable" there may be some smaller issues with it. These should clean up as the project matures... *g*',
+		'issues 5'                => 'Localization is not yet complete. Only the locales "en_US", "en_GB" and "de_DE" are fully localized. If an element cannot be localized in any locale the system will fall back to "en_US".',
 	),
 	'de' => array(
 		'lang label'              => 'Deutsch',
@@ -128,30 +145,38 @@ $repository_lang = array(
 		'reasons pro 2'           => '<a href="http://yepnopejs.com/" title="yepnope.js | A Conditional Loader For Your Polyfills!">Asynchrones Laden von Ressourcen</a> <span class="comment">( = Ladezeit der Seite ändert sich nur minimal )</span>',
 		'reasons pro 3'           => 'Basiert auf <a href="http://jquery.com/" title="jQuery: The Write Less, Do More, JavaScript Library">jQuery</a> <span class="comment">( = Browserübergreifend und zuverlässig )</span>',
 		'reasons pro 4'           => 'Basiert auf <a href="http://craigsworks.com/projects/qtip2/" title="qTip2 - Pretty powerful tooltips" >qTip2</a> <span class="comment">( = Brandaktuell und sehr flexibel )</span>',
-		'reasons pro 5'           => 'Integrierte Mini-Template Engine: <a href="https://github.com/janl/mustache.js" title="janl / mustache.js" >mustache</a>',
+		'reasons pro 5'           => 'Integrierte Mini-Template Engine: <a href="http://aefxx.com/jquery-plugins/jqote2/" title="aefxx / jQote2" >jQote2</a> <span class="comment">( = sehr schnell und dabei doch modular )</span>',
 		'reasons pro 6'           => 'Direkter Zugriff auf die <a href="http://us.battle.net/wow/en/forum/2626217/" title="Community Platform API">Battle.net API</a> <span class="comment">( = Die aktuellste und zuverlässigste Datenquelle )</span>',
 		'installation header'     => 'Wie installiere ich dieses Ding?',
 		'installation step 1'     => '<a href="'.$data['download']['link'].'" title="Dateidownload auf googlecode">Herunterladen der Dateien</a>',
 		'installation step 2'     => 'Entpacken und auf den eigenen Webserver hochladen',
-		'installation step 3'     => 'Konfiguration an den eigenen Serverpfad anpassen und <code>wdt/WowDataTooltip.js</code> in die entsprechenden Webseiten einbinden:',
+		'installation step 3'     => 'Konfiguration an den eigenen Serverpfad anpassen und <code>wdt/WowDataTooltip.js</code> in die entsprechenden Webseiten einbinden (Werte die weggelassen werden, werden als Standard vorbelegt):',
 		'installation code 1'     => '<pre class="code">&lt;script type="text/javascript"&gt;
 	window.___WowDataTooltip_Config = {
 		\'files\': {
-			\'jquery.js\': \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\', // Die jQuery Bibliothek
-			\'qtip2.js\' : \'{Pfad zum enthaltenen /qtip2 Verzeichnis}/jquery.qtip.min.js\',  // qTip2 Javascript Plugon
-			\'qtip2.css\': \'{Pfad zum enthaltenen /qtip2 Verzeichnis}/jquery.qtip.min.css\', // qTip2 CSS Regeln
-			\'wdt.css\'  : \'{Pfad zum enthaltenen /wdt Verzeichnis}/WowDataTooltip.css\'     // WowDataTooltip CSS Regeln
+			\'jquery.js\' : \'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js\',
+			\'qtip2.js\'  : \'{{Webpfad zum qtip2 Verzeichnis}}/jquery.qtip.min.js\',
+			\'qtip2.css\' : \'{{Webpfad zum qtip2 Verzeichnis}}/jquery.qtip.min.css\',
+			\'wdt.css\'   : \'{{Webpfad zum wdt Verzeichnis}}/WowDataTooltip.css\'
 		},
 		\'applyTo\': {
-			\'explicit\' : true, // Auf true setzen um Tooltips bei allen explizit gekennzeichneten Elementen anzuzeigen
-			\'battlenet\': true  // Auf true setzen um Tooltips bei allen Battle.net Links anzuzeigen
+			\'battlenet\': true, // Auf false setzen um keine automatischen Tooltips auf Battle.net Links zu erzeugen
+			\'explicit\' : true, // Auf false setzen um keine expliziten Tooltips anzuzeigen
 		},
-		\'extendedMode\': {
-			\'active\': true, // Auf true setzen um den erweiterten Modus zu aktivieren
+		\'layout\': {
+			\'width\': {
+				\'realm\'    : 200, // Breite des Realm-Tooltips in Pixeln
+				\'item\'     : 425, // Breite des Gegenstands-Tooltips in Pixeln
+				\'character\': 325, // Breite des Charakter-Tooltips in Pixeln
+				\'guild\'    : 200  // Breite des Gilden-Tooltips in Pixeln
+			}
+		},
+		\'extras\': {
+			\'applyCssColorToCaller\': false // Auf true setzen wenn das Ankerelements eines Tooltips ebenfalls einen CSS Farbcode erhalten soll
 		}
 	};
 &lt;/script&gt;
-&lt;script type="text/javascript" src="{Pfad zum enthaltenen /wdt Verzeichnis}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
+&lt;script type="text/javascript" src="{{Webpfad zum wdt Verzeichnis}}/WowDataTooltip.js"&gt;&lt;/script&gt;</pre>',
 		'char tt header'          => 'Charakter Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span>',
 		'char tt hint'            => 'Probiert es aus: Haltet [Shift] gedrückt während ein Tooltip angezeigt wird! :)',
 		'char tt what header'     => 'Was wird mit einem Tooltip versehen?',
@@ -193,9 +218,17 @@ $repository_lang = array(
 		'guild tt i18n example 6' => '<a class="wdt-hover" href="http://kr.battle.net/wow/ko/guild/알렉스트라자/나는 쓰랄과 제이나의 불륜현장을 목격했다/">Hanguk: &lt;나는 쓰랄과 제이나의 불륜현장을 목격했다&gt; @ 알렉스트라자 (KR)</a>',
 		'guild tt i18n example 7' => '<a class="wdt-hover" href="http://tw.battle.net/wow/zh/guild/冬握湖/人在冏途身不由己/">Traditionelles Chinesisch: &lt;人在冏途身不由己&gt; @ 冬握湖 (TW)</a>',
 		'guild tt i18n example 8' => '<a class="wdt-hover" href="http://www.battlenet.com.cn/wow/zh/guild/熔火之心/凌烟阁/">Vereinfachtes Chinesisch: &lt;凌烟阁&gt; @ 熔火之心 (CN)</a>',
-		'item tt header'          => 'Item Tooltips <span class="comment">( In Arbeit ^^ )</span>',
-		'item tt text 1'          => 'Derzeit sind die API Funktionen für Items nur für authentifizierte Calls einsichtlich.',
-		'item tt text 2'          => 'Ich habe inzwischen Zugangsdaten erhalten und bin am Testen... :)',
+		'item tt header'          => 'Item Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span>',
+		'item tt text 1'          => 'Die Gegenstands API ist nun öffentlich verfügbar, allerdings fehlen ihr noch ein paar Daten. Dies bedeutet das die Item Tooltips nun ebenfalls live sind, aber die besagten Daten nicht dargestellt werden können.',
+		'item tt text 2'          => 'Sobald die Daten in den APIs verfügbar sind werde ich diese auch in den Tooltips anzeigen können.',
+		'item tt what header'     => 'Was wird mit einem Tooltip versehen?',
+		'item tt what text 1'     => 'Das WowDataTooltip Plugin verpasst jedem Link dessen URL auf einen Battle.net Gegenstand zeigt einen Tooltip. Zum Beispiel:',
+		'item tt what text 2'     => 'Dabei ist es auch nicht wichtig ob der Link über weitere Parameter verfügt:',
+		'item tt what text 3'     => 'Es ist ebenso möglich einem beliebigen HTML Element einen expliziten Tooltip zuzuweisen:',
+		'item tt what example 1'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/item/58133">http://eu.battle.net/wow/de/item/58133</a>',
+		'item tt what example 2'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/item/58133#tab=comments">http://eu.battle.net/wow/de/item/58133#tab=comments</a>',
+		'item tt what example 3'  => '<a class="wdt-hover" href="http://eu.battle.net/wow/de/item/58133#tab=disenchantItems">http://eu.battle.net/wow/de/item/58133#tab=disenchantItems</a>',
+		'item tt what example 4'  => '<pre class="code">&lt;span data-wowdatatooltip="item:eu.58133(en)"&gt;Englisch: Mask of Vines @ EU&lt;/span&gt;</pre>',
 		'realm tt header'         => 'Realm Tooltips <span class="comment">( Erklärung &amp; Beispiele )</span>',
 		'realm tt text 1'         => 'Realm Tooltips sind nun auch verfügbar!',
 		'realm tt text 2'         => 'Da es allerdings keine Battle.net Adressen gibt welche ich mit den Realms verknüpfen könnte, habe ich eine explizite Methode entwickelt um Tooltips zu beliebigen Elementen zuzuweisen:',
@@ -211,6 +244,7 @@ $repository_lang = array(
 		'issues 2'                => 'Die Labels für Itemlevel, Gildeninfo usw. sind noch nicht lokalisiert und werden in Englisch dargestellt.',
 		'issues 3'                => 'Firefox hat scheinbar Probleme mit dem Registrieren der Hotkeys für das Umschalten zwischen einfachem und erweitertem Modus. :-/',
 		'issues 4'                => 'Da das von mir verwendete Tooltip Addon qTip2 selbst nocht nicht "stable" ist sondern auch noch in Entwicklung ist kann es gelegentlich zu kleinen Fehlern in der Darstellung kommen. Diese sollten sich aber im Laufe der Zeit auswachsen... *g*',
+		'issues 5'                => 'Die Lokalisierung ist noch nicht abgeschlossen, bisher sind nur die Locales "en_US", "en_GB" und "de_DE" vollständig. Falls eine Übersetzung nicht vorhanden ist, so wird "en_US" alls Fallback heran gezogen.'
 	),
 );
 
@@ -486,6 +520,19 @@ function te($sid) {
 	<p><?php te('item tt text 1'); ?></p>
 	<p><?php te('item tt text 2'); ?></p>
 	
+	<h3><?php te('item tt what header'); ?></h3>
+	<p><?php te('item tt what text 1'); ?> <?php te('item tt what example 1'); ?></p>
+	<p><?php te('item tt what text 2'); ?></p>
+	<p>
+		<ul>
+			<li><?php te('item tt what example 2'); ?></li>
+			<li><?php te('item tt what example 3'); ?></li>
+		</ul>
+	</p>
+	
+	<p><?php te('item tt what text 3'); ?></p>
+	<p><?php te('item tt what example 4'); ?></p>
+	
 	<h2><?php te('issues header'); ?></h2>
 	<p>
 		<ol id="issues">
@@ -493,6 +540,7 @@ function te($sid) {
 			<li class="fixed"><?php te('issues 2'); ?></li>
 			<li class="fixed"><?php te('issues 3'); ?></li>
 			<li><?php te('issues 4'); ?></li>
+			<li><?php te('issues 5'); ?></li>
 		</ol>
 	</p>
 	

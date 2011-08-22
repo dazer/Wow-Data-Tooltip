@@ -60,7 +60,6 @@
 	<script type="text/javascript">
 		window.___WowDataTooltip_Config = {
 			'files': {
-				'jquote2.js': 'jqote2/jquery.jqote2.min.js',
 				'qtip2.js'  : 'qtip2/jquery.qtip.min.js',
 				'qtip2.css' : 'qtip2/jquery.qtip.min.css',
 				'wdt.css'   : 'wdt/WowDataTooltip.css'
@@ -72,8 +71,8 @@
 			'layout': {
 				'width': {
 					'realm'    : 200,
-					'item'     : 420,
-					'character': 300,
+					'item'     : 425,
+					'character': 325,
 					'guild'    : 200
 				}
 			}
