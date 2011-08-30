@@ -6,11 +6,11 @@ WowDataTooltip.addLocale('es_MX',{
 	},
 	'templates':{
 		'character':{
-			'sri':'<%= this.localize(["characterClass", this["class"], this["gender"]]) %> de <%= this.localize(["characterRace", this["race"], this["gender"]]) %>, nivel <%= this["level"] %>',
+			'sri':'<%= this._loc(["characterClass", this["class"], this["gender"]]) %> de <%= this._loc(["characterRace", this["race"], this["gender"]]) %>, nivel <%= this["level"] %>',
 			//'ilvl':'<%= this["averageItemLevelEquipped"] %> nvl. de obj. promedio (<%= this["averageItemLevel"] %>)'
 		},
 		'guild':{
-			'sri':'Hermandad <%= this.localize(["factionSide", this["side"]]) %>, nivel <%= this["level"] %>, <%= this["realm"] %>'
+			'sri':'Hermandad <%= this._loc(["factionSide", this["side"]]) %>, nivel <%= this["level"] %>, <%= this["realm"] %>'
 		}
 	}
 });

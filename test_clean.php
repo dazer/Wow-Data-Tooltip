@@ -105,7 +105,14 @@
 				'qtip2.css':'qtip2/jquery.qtip.min.css',
 				'wdt.css'  :'wdt/WowDataTooltip.css',
 				'locales'  :'wdt/locales/'
+			},
+			/*
+			'layout':{
+				'position':{
+					'target':'mouse'
+				}
 			}
+			*/
 		};
 	</script>
 	<script type="text/javascript" src="wdt/WowDataTooltip.js"></script>

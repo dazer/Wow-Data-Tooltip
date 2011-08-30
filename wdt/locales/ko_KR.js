@@ -4,11 +4,11 @@ WowDataTooltip.addLocale('ko_KR',{
 	},
 	'templates':{
 		'character':{
-			'sri':'<%= this["level"] %> <%= this.localize(["characterRace", this["race"]]) %> <%= this.localize(["characterClass", this["class"]]) %>',
+			'sri':'<%= this["level"] %> <%= this._loc(["characterRace", this["race"]]) %> <%= this._loc(["characterClass", this["class"]]) %>',
 			'ilvl':'<%= this.averageItemLevelEquipped %> 평균 아이템 레벨 (<%= this.averageItemLevel %>)'
 		},
 		'guild':{
-			'sri':'<%= this["level"] %> 레벨 <%= this.localize(["factionSide", this["side"]]) %> 길드, <%= this["realm"] %>',
+			'sri':'<%= this["level"] %> 레벨 <%= this._loc(["factionSide", this["side"]]) %> 길드, <%= this["realm"] %>',
 			'members':'구성원 <%= this["members"].length %>명'
 		}
 	},

@@ -4,11 +4,11 @@ WowDataTooltip.addLocale('zh_TW',{
 	},
 	'templates':{
 		'character':{
-			'sri':'<%= this["level"] %> <%= this.localize(["characterRace", this["race"]]) %> <%= this.localize(["characterClass", this["class"]]) %>',
+			'sri':'<%= this["level"] %> <%= this._loc(["characterRace", this["race"]]) %> <%= this._loc(["characterClass", this["class"]]) %>',
 			'ilvl':'<%= this.averageItemLevelEquipped %> 平均物品等級 (<%= this.averageItemLevel %>)'
 		},
 		'guild':{
-			'sri':'等級<%= this["level"] %><%= this.localize(["factionSide", this["side"]]) %>公會, <%= this["realm"] %>',
+			'sri':'等級<%= this["level"] %><%= this._loc(["factionSide", this["side"]]) %>公會, <%= this["realm"] %>',
 			'members':'共<%= this["members"].length %>位成員'
 		}
 	},

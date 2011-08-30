@@ -4,11 +4,11 @@ WowDataTooltip.addLocale('ru_RU',{
 	},
 	'templates':{
 		'character':{
-			'sri':'<%= this.localize(["characterClass", this["class"], this["gender"]]) %>-<%= this.localize(["characterRace", this["race"], this["gender"]]) %> <%= this["level"] %> yp.',
+			'sri':'<%= this._loc(["characterClass", this["class"], this["gender"]]) %>-<%= this._loc(["characterRace", this["race"], this["gender"]]) %> <%= this["level"] %> yp.',
 			'ilvl':'<%= this.averageItemLevelEquipped %> средний (<%= this.averageItemLevel %>)'
 		},
 		'guild':{
-			'sri':'Гильдия <%= this["level"] %>-го ур. (<%= this.localize(["factionSide", this["side"]]) %>), <%= this["realm"] %>',
+			'sri':'Гильдия <%= this["level"] %>-го ур. (<%= this._loc(["factionSide", this["side"]]) %>), <%= this["realm"] %>',
 			'members':'Членов гильдии: <%= this["members"].length %>'
 		}
 	},

@@ -259,11 +259,6 @@ var WowDataTooltip={
 				'my':this.getSetting(['layout','position','my']),
 				'at':this.getSetting(['layout','position','at']),
 				'target':this.getSetting(['layout','position','target']),
-				/*
-				'my':'bottom middle',
-				'at':'top middle',
-				'target':false,
-				*/
 				'viewport':jQuery(window),
 				'effect':false
 			},
@@ -287,14 +282,14 @@ var WowDataTooltip={
 		if(validated){
 			jQuery(element).qtip('api').set('style.width',WowDataTooltip.getSetting(['layout','width',scheme]));
 			content=jQuery.jqote(
-				this.getTemplate('default',scheme),
-				jQuery.extend(true,{},this.getMetaTVars(loc,scheme),validated,add)
+				this.getTemplate('core',scheme),
+				jQuery.extend(true,{},this.getTemplateTools(loc),validated,add)
 			);
 		}else{
 			jQuery(element).qtip('api').set('style.width',WowDataTooltip.getSetting(['layout','width','404']));
 			content=jQuery.jqote(
-				this.getTemplate('default',(scheme+'-404')),
-				jQuery.extend(true,{},this.getMetaTVars(loc,(scheme+'-404')),params,add)
+				this.getTemplate('core',(scheme+'-404')),
+				jQuery.extend(true,{},this.getTemplateTools(loc),params,add)
 			);
 		}
 		jQuery(element).qtip('api').set('content.text',content);
@@ -420,21 +415,30 @@ var WowDataTooltip={
 		}
 		return result||'';
 	},
-	getMetaTVars:function(loc,scheme){
+	getTemplateTools:function(loc){
 		return{
 			'extendedActive':this.getSetting(['extendedMode','active']),
 			'extendedKeyCodeLabel':this.getSetting(['extendedMode','keyCodeLabel']),
-			localize:function(route){
-				return WowDataTooltip.localize(loc,route);
+			'_sub':function(template,data){
+				return jQuery.jqote(
+					WowDataTooltip.getTemplate('fragments',template),
+					jQuery.extend(true,{},WowDataTooltip.getTemplateTools(loc),data)
+				);
 			},
-			subrender:function(route,data){
+			'_subLoc':function(route,data){
 				if(typeof route==='string'){
 					route=[route];
 				}
-				route.unshift('templates',scheme);
-				return jQuery.jqote(WowDataTooltip.localize(loc,route),data);
+				route.unshift('templates');
+				return jQuery.jqote(
+					WowDataTooltip.localize(loc,route),
+					jQuery.extend(true,{},WowDataTooltip.getTemplateTools(loc),data)
+				);
 			},
-			renderCoins:function(total){
+			'_loc':function(route){
+				return WowDataTooltip.localize(loc,route);
+			},
+			'_renderCoins':function(total){
 				var temp=total.toString();
 				var result=temp.match(WowDataTooltip['patterns']['helper']['money']);
 				var split={'gold':-1,'silver':-1,'copper':0};
@@ -447,13 +451,7 @@ var WowDataTooltip={
 						split={'gold':-1,'silver':-1,'copper':parseInt(result[6])};
 					}
 				}
-				var template=(
-					'<% if(this["gold"] > -1) { %><span class="icon-gold"><%= this["gold"] %></span><% } %>' +
-					'<% if(this["silver"] > -1) { %><span class="icon-silver"><%= this["silver"] %></span><% } %>' +
-					'<% if(this["copper"]) { %><span class="icon-copper"><%= this["copper"] %></span><% } else { %>' +
-					'<span class="icon-copper">0</span><% } %>'
-				);
-				return jQuery.jqote(template,split);
+				return jQuery.jqote(WowDataTooltip.getTemplate('fragments','coins'),split);
 			},
 		};
 	},
@@ -508,192 +506,200 @@ var WowDataTooltip={
 		}
 	},
 	'templates':{
-		'default':{
+		'core':{
 			'realm':(
-				'<div class="tooltip-realm template-default">' +
-					'<div class="type crealmtype-<%= this["type"] %>"><%= this.localize(["realmType", this["type"]]) %></div>' +
+				'<div class="tooltip-realm">' +
+					'<div class="type crealmtype-<%= this["type"] %>"><%= this._loc(["realmType", this["type"]]) %></div>' +
 					'<div class="row name"><%= this["name"] %></div>' +
 					'<div class="row battlegroup"><%= this["battlegroup"] %></div>' +
-					'<div class="row status"><span class="crealmstatus-<%= this["status"] %>"><%= this.localize(["realmStatus", this["status"]]) %></span><% if(this["queue"]) { %> (<span class="crealmqueue-<%= this["queue"] %>"><%= this.localize(["realmQueue", this["queue"]]) %></span>)<% } %></div>' +
-					'<div class="row population"><%= this.localize(["realmPopulation", this["population"]]) %></div>' +
+					'<div class="row status"><span class="crealmstatus-<%= this["status"] %>"><%= this._loc(["realmStatus", this["status"]]) %></span><% if(this["queue"]) { %> (<span class="crealmqueue-<%= this["queue"] %>"><%= this._loc(["realmQueue", this["queue"]]) %></span>)<% } %></div>' +
+					'<div class="row population"><%= this._loc(["realmPopulation", this["population"]]) %></div>' +
 				'</div>'				
 			),
 			'realm-404':(
-				'<div class="tooltip-realm tooltip-404 template-default">' +
-					'<div class="title">404<span class="sub"> / <%= this.localize("realm-not-found") %></span></div>' +
-					'<div class="row realm"><span class="label"><%= this.localize("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
-					'<div class="row region"><span class="label"><%= this.localize("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
+				'<div class="tooltip-realm tooltip-404">' +
+					'<div class="title">404<span class="sub"> / <%= this._loc("realm-not-found") %></span></div>' +
+					'<div class="row realm"><span class="label"><%= this._loc("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
+					'<div class="row region"><span class="label"><%= this._loc("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
 			    '</div>'
 			),
 			'quest':(
-				'<div class="tooltip-quest template-default">' +
+				'<div class="tooltip-quest">' +
 					'<div class="row level"><%= this["level"] %></div>' +
 					'<div class="row name"><%= this["title"] %></div>' +
 					'<div class="row category"><%= this["category"] %></div>' +
-					'<div class="row reqLevel"><%= this.subrender("reqLevel", this) %></div>' +
-					'<% if(this["suggestedPartyMembers"] > 1) { %><%= this.subrender("suggestedPartyMembers", this) %><% } %>' +
+					'<div class="row reqLevel"><%= this._subLoc(["quest","reqLevel"], this) %></div>' +
+					'<% if(this["suggestedPartyMembers"] > 1) { %><%= this._subLoc(["quest","suggestedPartyMembers"], this) %><% } %>' +
 				'</div>'				
 			),
 			'quest-404':(
-				'<div class="tooltip-quest tooltip-404 template-default">' +
-					'<div class="title">404<span class="sub"> / <%= this.localize("quest-not-found") %></span></div>' +
-					'<div class="row quest"><span class="label"><%= this.localize("label-quest") %></span> <span class="value"><%= this["questid"] %></span></div>' +
-					'<div class="row region"><span class="label"><%= this.localize("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
+				'<div class="tooltip-quest tooltip-404">' +
+					'<div class="title">404<span class="sub"> / <%= this._loc("quest-not-found") %></span></div>' +
+					'<div class="row quest"><span class="label"><%= this._loc("label-quest") %></span> <span class="value"><%= this["questid"] %></span></div>' +
+					'<div class="row region"><span class="label"><%= this._loc("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
 			    '</div>'
 			),
 			'item':(
-				'<div class="tooltip-item template-default">' +
+				'<div class="tooltip-item">' +
 		    		'<img class="icon" src="<%= this["path_host_media"] %>/wow/icons/56/<% if(this["icon"]) { %><%= this["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg" />' +
-			    	 /* --- START simple mode -------------------------------- */
+			    	 // --- START simple mode -----------------------------------
 					'<div class="data wdt-show-only-simple">' +
 						'<div class="row name cquality-<%= this["quality"] %>"><%= this["name"] %></div>' +
-						'<% if(this["heroic"]) { %><div class="row heroic"><%= this.subrender("heroic", this) %></div><% } %>' +
+						'<% if(this["heroic"]) { %><div class="row heroic"><%= this._subLoc(["item","heroic"], this) %></div><% } %>' +
 						'<% if(this["boundZone"]) { %><div class="row boundZone"><%= this["boundZone"]["name"] %></div><% } %>' +
-						'<% if(this["itemBind"]) { %><div class="row itemBind"><%= this.localize(["itemBind", this["itemBind"]]) %></div><% } %>' +
-						'<% if(this["maxCount"]) { %><div class="row maxCount"><%= this.subrender("maxCount", this) %></div><% } %>' +
+						'<% if(this["itemBind"]) { %><div class="row itemBind"><%= this._loc(["itemBind", this["itemBind"]]) %></div><% } %>' +
+						'<% if(this["maxCount"]) { %><div class="row maxCount"><%= this._subLoc(["item","maxCount"], this) %></div><% } %>' +
 						'<div class="row classification">' +
 							'<% if(this["containerSlots"]) { %>' +
-								'<div class="itemClass"><%= this.subrender("containerSlots", this) %></div>' +
+								'<div class="itemClass"><%= this._subLoc(["item","containerSlots"], this) %></div>' +
 							'<% } else { %>' +
-								'<% if(this["equippable"]) { %><div class="inventoryType"><%= this.localize(["inventoryType", this["inventoryType"]]) %></div><% } %>' +
-								'<div class="itemClass"><%= this.localize(["itemClass", this["itemClass"], this["itemSubClass"]]) %></div>' +
+								'<% if(this["equippable"]) { %><div class="inventoryType"><%= this._loc(["inventoryType", this["inventoryType"]]) %></div><% } %>' +
+								'<div class="itemClass"><%= this._loc(["itemClass", this["itemClass"], this["itemSubClass"]]) %></div>' +
 							'<% } %>' +
 						'</div>' +
-						'<% if(this["baseArmor"]) { %><div class="row baseArmor"><%= this.subrender("baseArmor", this) %></div><% } %>' +
+						'<% if(this["baseArmor"]) { %><div class="row baseArmor"><%= this._subLoc(["item","baseArmor"], this) %></div><% } %>' +
 						'<% if(this["weaponInfo"]) { %>' +
 							'<div class="weaponInfo">' +
-								'<% if(this["weaponInfo"]["damage"]) { for(var i=0; i<this["weaponInfo"]["damage"].length; i++) { var current = this["weaponInfo"]["damage"][i]; %><div class="row damage"><%= this.subrender("damage", current) %></div><% } } %>' +
-								'<div class="weaponSpeed"><%= this.subrender("weaponSpeed", this["weaponInfo"]) %></div>' +
-								'<div class="row dps"><%= this.subrender("dps", this["weaponInfo"]) %></div>' +
+								'<% if(this["weaponInfo"]["damage"]) { for(var i=0; i<this["weaponInfo"]["damage"].length; i++) { var current = this["weaponInfo"]["damage"][i]; %><div class="row damage"><%= this._subLoc(["item","damage"], current) %></div><% } } %>' +
+								'<div class="weaponSpeed"><%= this._subLoc(["item","weaponSpeed"], this["weaponInfo"]) %></div>' +
+								'<div class="row dps"><%= this._subLoc(["item","dps"], this["weaponInfo"]) %></div>' +
 							'</div>' +
 						'<% } %>' +
-						'<% if(this["bonusStats"]) { for(var i=0; i<this["bonusStats"].length; i++) { var current = this["bonusStats"][i]; if(current["stat"] in WowDataTooltip["maps"]["item"]["primaryStats"]) { %><div class="row primaryStat"><% if(current["amount"] >= 0) { %>+<% } %><%= current["amount"] %> <%= this.localize(["itemStat", current["stat"]]) %></div><% } } } %>' +
+						'<% if(this["bonusStats"]) { for(var i=0; i<this["bonusStats"].length; i++) { var current = this["bonusStats"][i]; if(current["stat"] in WowDataTooltip["maps"]["item"]["primaryStats"]) { %><div class="row primaryStat"><% if(current["amount"] >= 0) { %>+<% } %><%= current["amount"] %> <%= this._loc(["itemStat", current["stat"]]) %></div><% } } } %>' +
 						'<% if(this["gemInfo"]) { %><div class="row gemInfo"><%= this["gemInfo"]["bonus"]["name"] %></div><% } %>' +
-						'<% if(this["socketInfo"]) { %><div class="socketInfo"><% if(this["socketInfo"]["sockets"]) { for(var i=0; i<this["socketInfo"]["sockets"].length; i++) { var current = this["socketInfo"]["sockets"][i]; %><div class="row socket"><span class="icon-socket socket-<%= current["type"] %>"><span class="empty"></span><span class="frame"></span></span> <%= this.localize(["itemSocket", current["type"]]) %></div><% } } %></div><% } %>' +
-						'<% if(this["maxDurability"]) { %><div class="row maxDurability"><%= this.subrender("maxDurability", this) %></div><% } %>' +
-						'<% if(this["allowableClasses"]) { %><div class="row allowableClasses"><%= this.subrender("allowableClasses", this) %></div><% } %>' +
-						'<% if(this["allowableRaces"]) { %><div class="row allowableRaces"><%= this.subrender("allowableRaces", this) %></div><% } %>' +
-						'<% if(this["requiredLevel"]) { %><div class="row requiredLevel"><%= this.subrender("requiredLevel", this) %></div><% } %>' +
-						'<% if(this["requiredSkill"]) { %><div class="row requiredSkill"><%= this.subrender("requiredSkill", this) %></div><% } %>' +
-						'<% if(this["requiredAbility"]) { %><div class="row requiredAbility"><%= this.subrender("requiredAbility", this) %></div><% } %>' +
-						'<% if(this["minFactionId"]) { %><div class="row minFactionId"><%= this.subrender("minFactionId", this) %></div><% } %>' +
-						'<% if(this["itemLevel"]) { %><div class="row itemLevel"><%= this.subrender("itemLevel", this) %></div><% } %>' +
-						'<% if(this["bonusStats"]) { for(var i=0; i<this["bonusStats"].length; i++) { var current = this["bonusStats"][i]; if(current["stat"] in WowDataTooltip["maps"]["item"]["secondaryStats"]) { %><div class="row secondaryStat"><%= this.subrender(["itemStat", current["stat"]], current) %></div><% } } } %>' +
-						'<% if(this["itemSpells"]) { for(var i=0; i<this["itemSpells"].length; i++) { var current = this["itemSpells"][i]; if(current["spell"]["description"]) { %><div class="row secondaryStat"><%= this.subrender("itemSpell", current) %></div><% } } } %>' +
+						'<% if(this["socketInfo"]) { %><div class="socketInfo"><% if(this["socketInfo"]["sockets"]) { for(var i=0; i<this["socketInfo"]["sockets"].length; i++) { var current = this["socketInfo"]["sockets"][i]; %><div class="row socket"><span class="icon-socket socket-<%= current["type"] %>"><span class="empty"></span><span class="frame"></span></span> <%= this._loc(["itemSocket", current["type"]]) %></div><% } } %></div><% } %>' +
+						'<% if(this["maxDurability"]) { %><div class="row maxDurability"><%= this._subLoc(["item","maxDurability"], this) %></div><% } %>' +
+						'<% if(this["allowableClasses"]) { %><div class="row allowableClasses"><%= this._subLoc(["item","allowableClasses"], this) %></div><% } %>' +
+						'<% if(this["allowableRaces"]) { %><div class="row allowableRaces"><%= this._subLoc(["item","allowableRaces"], this) %></div><% } %>' +
+						'<% if(this["requiredLevel"]) { %><div class="row requiredLevel"><%= this._subLoc(["item","requiredLevel"], this) %></div><% } %>' +
+						'<% if(this["requiredSkill"]) { %><div class="row requiredSkill"><%= this._subLoc(["item","requiredSkill"], this) %></div><% } %>' +
+						'<% if(this["requiredAbility"]) { %><div class="row requiredAbility"><%= this._subLoc(["item","requiredAbility"], this) %></div><% } %>' +
+						'<% if(this["minFactionId"]) { %><div class="row minFactionId"><%= this._subLoc(["item","minFactionId"], this) %></div><% } %>' +
+						'<% if(this["itemLevel"]) { %><div class="row itemLevel"><%= this._subLoc(["item","itemLevel"], this) %></div><% } %>' +
+						'<% if(this["bonusStats"]) { for(var i=0; i<this["bonusStats"].length; i++) { var current = this["bonusStats"][i]; if(current["stat"] in WowDataTooltip["maps"]["item"]["secondaryStats"]) { %><div class="row secondaryStat"><%= this._subLoc(["item","itemStat",current["stat"]], current) %></div><% } } } %>' +
+						'<% if(this["itemSpells"]) { for(var i=0; i<this["itemSpells"].length; i++) { var current = this["itemSpells"][i]; if(current["spell"]["description"]) { %><div class="row secondaryStat"><%= this._subLoc(["item","itemSpell"], current) %></div><% } } } %>' +
 						'<% if(this["description"]) { %><div class="row description">&quot;<%= this["description"] %>&quot;</div><% } %>' +
-				    	'<% if(this["extendedActive"]) { %><div class="row info-meta"><%= this.subrender("extendedInactive", this) %></div><% } %>' +
+				    	'<% if(this["extendedActive"]) { %><div class="row info-meta"><%= this._subLoc(["item","extendedInactive"], this) %></div><% } %>' +
 					'</div>' +
-					 /* --- END simple mode ---------------------------------- */
-					 /* --- START extended mode ------------------------------ */
+					// --- END simple mode -------------------------------------
+					// --- START extended mode ---------------------------------
 				    '<% if(this["extendedActive"]) { %>' +
 						'<div class="data wdt-show-only-extended">' +
 							'<div class="row name cquality-<%= this["quality"] %>"><%= this["name"] %></div>' +
-							'<div class="row id"><%= this.subrender("itemId", this) %></div>' +
-							'<% if(this["stackable"] > 1) { %><div class="row stackable"><%= this.subrender("stackable", this) %></div><% } %>' +
+							'<div class="row id"><%= this._subLoc(["item","itemId"], this) %></div>' +
+							'<% if(this["stackable"] > 1) { %><div class="row stackable"><%= this._subLoc(["item","stackable"], this) %></div><% } %>' +
 							// itemSource, maybe...
-							'<div class="row sellPrice"><%= this.subrender("sellPrice", this) %></div>' +
-							'<% if(this["isAuctionable"]) { %><div class="row isAuctionable"><%= this.localize("itemIsAuctionable") %></div><% } %>' +
-							'<div class="row info-meta"><%= this.subrender("extendedActive", this) %></div>' +
+							'<div class="row sellPrice"><%= this._subLoc(["item","sellPrice"], this) %></div>' +
+							'<% if(this["isAuctionable"]) { %><div class="row isAuctionable"><%= this._loc("itemIsAuctionable") %></div><% } %>' +
+							'<div class="row info-meta"><%= this._subLoc(["item","extendedActive"], this) %></div>' +
 				    	'</div>' +
 			    	'<% } %>' +
-					 /* --- END extended mode -------------------------------- */
+					// --- END extended mode -----------------------------------
 				'</div>'
 			),
 			'item-404':(
-				'<div class="tooltip-item tooltip-404 template-default">' +
-					'<div class="title">404<span class="sub"> / <%= this.localize("item-not-found") %></span></div>' +
-					'<div class="row item"><span class="label"><%= this.localize("label-item") %></span> <span class="value"><%= this["itemid"] %></span></div>' +
-					'<div class="row region"><span class="label"><%= this.localize("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
+				'<div class="tooltip-item tooltip-404">' +
+					'<div class="title">404<span class="sub"> / <%= this._loc("item-not-found") %></span></div>' +
+					'<div class="row item"><span class="label"><%= this._loc("label-item") %></span> <span class="value"><%= this["itemid"] %></span></div>' +
+					'<div class="row region"><span class="label"><%= this._loc("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
 			    '</div>'
 			),
 			'character':(
-				'<div class="tooltip-character template-default">' +
+				'<div class="tooltip-character">' +
 			    	'<img class="thumbnail" src="<%= this["path_host"] %>/static-render/<%= this["region"] %>/<%= this["thumbnail"] %>?alt=/wow/static/images/2d/avatar/<%= this["race"] %>-<%= this["gender"] %>.jpg" />' +
 			    	 /* --- START simple mode -------------------------------- */
 					'<div class="data wdt-show-only-simple">' +
 			    		'<div class="row name cclass-<%= this["class"] %>"><%= this["name"] %></div>' +
-			    		'<div class="row sri"><%= this.subrender("sri", this) %></div>' +
-						'<% if(this["talents"]) { for(var i=0; i<this["talents"].length; i++) { var current = this["talents"][i]; %><div class="row talentspec <% if(current["selected"]) { %> active<% } %>"><img class="icon-talentspec" src="<%= this["path_host_media"] %>/wow/icons/18/<% if(current["icon"]) { %><%= current["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <% if(current["name"]) { %><%= current["name"] %><% } else { %><%= this.localize("unused") %><% } %></div><% } } %>' +
+			    		'<div class="row sri"><%= this._subLoc(["character","sri"], this) %></div>' +
+						'<% if(this["talents"]) { for(var i=0; i<this["talents"].length; i++) { var current = this["talents"][i]; %><div class="row talentspec <% if(current["selected"]) { %> active<% } %>"><img class="icon-talentspec" src="<%= this["path_host_media"] %>/wow/icons/18/<% if(current["icon"]) { %><%= current["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <% if(current["name"]) { %><%= current["name"] %><% } else { %><%= this._loc("unused") %><% } %></div><% } } %>' +
 						'<% if(this["guild"]) { %><div class="row guild"><div class="guildname">&lt;<%= this["guild"]["name"] %>&gt;<% if(this["guild"]["level"]) { %><span class="guildlevel"> (<%= this["guild"]["level"] %>)</span><% } %></div></div><% } %>' +
 						'<div class="row realm"><%= this["realm"] %></div>' +
 						'<div class="row achievementpoints"><span class="icon-achievenemtpoints"><%= this["achievementPoints"] %></span></div>' +
-				    	'<% if(this["extendedActive"]) { %><div class="row info-meta"><%= this.subrender("extendedInactive", this) %></div><% } %>' +
+				    	'<% if(this["extendedActive"]) { %><div class="row info-meta"><%= this._subLoc(["character","extendedInactive"], this) %></div><% } %>' +
 			    	'</div>' +
 					 /* --- END simple mode ---------------------------------- */
 					 /* --- START extended mode ------------------------------ */
 				    '<% if(this["extendedActive"]) { %>' +
 						'<div class="data wdt-show-only-extended">' +
 				    		'<div class="row name cclass-<%= this["class"] %>"><%= this["name"] %></div>' +
-							'<% if(this["items"]) { %><div class="row itemlevel"><%= this.subrender("ilvl", this["items"]) %></div><% } %>' +
+							'<% if(this["items"]) { %><div class="row itemlevel"><%= this._subLoc(["character","ilvl"], this["items"]) %></div><% } %>' +
 							'<% if(this["professions"]) { %><div class="professions">' +
 								'<% if(this["professions"]["primary"]) { for(var i=0; i<this["professions"]["primary"].length; i++) { var current = this["professions"]["primary"][i]; if(current["rank"] > 0) { %><div class="row profession-primary"><img class="icon-profession" src="<%= this["path_host_media"] %>/wow/icons/18/<% if(current["icon"]) { %><%= current["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current["name"] %>: <%= current["rank"] %></div><% } } } %>' +
 								'<% if(this["professions"]["secondary"]) { for(var i=0; i<this["professions"]["secondary"].length; i++) { var current = this["professions"]["secondary"][i]; if(current["rank"] > 0) { %><div class="row profession-secondary"><img class="icon-profession" src="<%= this["path_host_media"] %>/wow/icons/18/<% if(current["icon"]) { %><%= current["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current["name"] %>: <%= current["rank"] %></div><% } } } %>' +
 							'</div><% } %>' +
-							'<% if(this["mounts"]) { %><div class="row mounts"><%= this.subrender("mounts", this) %></div><% } %>' +
-							'<% if(this["companions"]) { %><div class="row companions"><%= this.subrender("companions", this) %></div><% } %>' +
-							'<div class="row info-meta"><%= this.subrender("extendedActive", this) %></div>' +
+							'<% if(this["mounts"]) { %><div class="row mounts"><%= this._subLoc(["character","mounts"], this) %></div><% } %>' +
+							'<% if(this["companions"]) { %><div class="row companions"><%= this._subLoc(["character","companions"], this) %></div><% } %>' +
+							'<div class="row info-meta"><%= this._subLoc(["character","extendedActive"], this) %></div>' +
 				    	'</div>' +
 			    	'<% } %>' +
 					 /* --- END extended mode -------------------------------- */
 			    '</div>'
 			),
 			'character-404':(
-				'<div class="tooltip-character tooltip-404 template-default">' +
-					'<div class="title">404<span class="sub"> / <%= this.localize("character-not-found") %></span></div>' +
-					'<div class="row character"><span class="label"><%= this.localize("label-character") %></span> <span class="value"><%= this["character"] %></span></div>' +
-					'<div class="row realm"><span class="label"><%= this.localize("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
-					'<div class="row region"><span class="label"><%= this.localize("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
+				'<div class="tooltip-character tooltip-404">' +
+					'<div class="title">404<span class="sub"> / <%= this._loc("character-not-found") %></span></div>' +
+					'<div class="row character"><span class="label"><%= this._loc("label-character") %></span> <span class="value"><%= this["character"] %></span></div>' +
+					'<div class="row realm"><span class="label"><%= this._loc("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
+					'<div class="row region"><span class="label"><%= this._loc("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
 			    '</div>'
 			),
 			'guild':(
-				'<div class="tooltip-guild template-default">' +
+				'<div class="tooltip-guild">' +
 	    			'<div class="row name cside-<%= this["side"] %>"><%= this["name"] %></div>' +
-		    		'<div class="row sri"><%= this.subrender("sri", this) %></div>' +
-					'<% if(this["members"]) { %><div class="guild-members"><%= this.subrender("members", this) %></div><% } %>' +
+		    		'<div class="row sri"><%= this._subLoc(["guild","sri"], this) %></div>' +
+					'<% if(this["members"]) { %><div class="guild-members"><%= this._subLoc(["guild","members"], this) %></div><% } %>' +
 					'<div class="row achievementpoints"><span class="icon-achievenemtpoints"><%= this["achievementPoints"] %></span></div>' +
 				'</div>'
 			),
 			'guild-404':(
-				'<div class="tooltip-guild tooltip-404 template-default">' +
-					'<div class="title">404<span class="sub"> / <%= this.localize("guild-not-found") %></span></div>' +
-					'<div class="row guild"><span class="label"><%= this.localize("label-guild") %></span> <span class="value"><%= this["guild"] %></span></div>' +
-					'<div class="row realm"><span class="label"><%= this.localize("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
-					'<div class="row region"><span class="label"><%= this.localize("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
+				'<div class="tooltip-guild tooltip-404">' +
+					'<div class="title">404<span class="sub"> / <%= this._loc("guild-not-found") %></span></div>' +
+					'<div class="row guild"><span class="label"><%= this._loc("label-guild") %></span> <span class="value"><%= this["guild"] %></span></div>' +
+					'<div class="row realm"><span class="label"><%= this._loc("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
+					'<div class="row region"><span class="label"><%= this._loc("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
 			    '</div>'
 			),
 			'arena':(
 				/* --- Extended mode is inline to avoid duplicate content --- */
-				'<div class="tooltip-arena template-default">' +
-					'<div class="rank-current"><%= this.subrender("rank-current", this) %></div>' +
+				'<div class="tooltip-arena">' +
+					'<div class="rank-current"><%= this._subLoc(["arena","rank-current"], this) %></div>' +
 					'<div class="row name cside-<%= this["side"] %>"><%= this["name"] %></div>' +
-					'<% if(this["extendedActive"]) { %><div class="row view-mode wdt-show-only-extended"><%= this.localize("view-mode-arena-current") %></div><% } %>' +
-					'<div class="row view-mode wdt-show-only-simple"><%= this.localize("view-mode-arena-season") %></div>' +
-					'<div class="row sri"><%= this.subrender("sri", this) %></div>' +
-					'<div class="row rank-previous"><%= this.subrender("rank-previous", this) %></div>' +
-					'<div class="row rating-team"><%= this.subrender("rating-team", this) %></div>' +
-					'<% if(this["extendedActive"]) { %><div class="row matches wdt-show-only-extended"><%= this.subrender("matches-current", this) %></div><% } %>' +
-					'<div class="row matches wdt-show-only-simple"><%= this.subrender("matches-season", this) %></div>' +
+					'<% if(this["extendedActive"]) { %><div class="row view-mode wdt-show-only-extended"><%= this._loc("view-mode-arena-current") %></div><% } %>' +
+					'<div class="row view-mode wdt-show-only-simple"><%= this._loc("view-mode-arena-season") %></div>' +
+					'<div class="row sri"><%= this._subLoc(["arena","sri"], this) %></div>' +
+					'<div class="row rank-previous"><%= this._subLoc(["arena","rank-previous"], this) %></div>' +
+					'<div class="row rating-team"><%= this._subLoc(["arena","rating-team"], this) %></div>' +
+					'<% if(this["extendedActive"]) { %><div class="row matches wdt-show-only-extended"><%= this._subLoc(["arena","matches-current"], this) %></div><% } %>' +
+					'<div class="row matches wdt-show-only-simple"><%= this._subLoc(["arena","matches-season"], this) %></div>' +
 					'<% if(this["members"]) { %><div class="members"><% for(var i=0; i<this["members"].length; i++) { var current = this["members"][i]; %>' +
 					'<div class="row member<% if(i % 2 == 0) { %> alt<% } %>">' +
-							'<% if(this["extendedActive"]) { %><div class="matches wdt-show-only-extended"><%= this.subrender("matches-current-short", current) %></div><% } %>' +
-							'<div class="matches wdt-show-only-simple"><%= this.subrender("matches-season-short", current) %></div>' +
+							'<% if(this["extendedActive"]) { %><div class="matches wdt-show-only-extended"><%= this._subLoc(["arena","matches-current-short"], current) %></div><% } %>' +
+							'<div class="matches wdt-show-only-simple"><%= this._subLoc(["arena","matches-season-short"], current) %></div>' +
 							'<img src="<%= this["path_host_media"] %>/wow/icons/18/race_<%= current["character"]["race"] %>_<%= current["character"]["gender"] %>.jpg" /> ' +
 							'<img src="<%= this["path_host_media"] %>/wow/icons/18/class_<%= current["character"]["class"] %>.jpg" /> ' +
 							'<span class="cclass-<%= current["character"]["class"] %><% if(current["rank"]==0) { %> icon-leader-pvp<% } %>"><%= current["character"]["name"] %></span> <span class="rating-personal">(<%= current["personalRating"] %>)</span>' +
 						'</div>' +
 					'<% } %></div><% } %>' +
-					'<% if(this["extendedActive"]) { %><div class="row info-meta wdt-show-only-extended"><%= this.subrender("extendedActive", this) %></div><% } %>' +
-					'<% if(this["extendedActive"]) { %><div class="row info-meta wdt-show-only-simple"><%= this.subrender("extendedInactive", this) %></div><% } %>' +
+					'<% if(this["extendedActive"]) { %><div class="row info-meta wdt-show-only-extended"><%= this._subLoc(["arena","extendedActive"], this) %></div><% } %>' +
+					'<% if(this["extendedActive"]) { %><div class="row info-meta wdt-show-only-simple"><%= this._subLoc(["arena","extendedInactive"], this) %></div><% } %>' +
 				'</div>'
 			),
 			'arena-404':(
-				'<div class="tooltip-arena tooltip-404 template-default">' +
-					'<div class="title">404<span class="sub"> / <%= this.localize("arena-not-found") %></span></div>' +
-					'<div class="row teamname"><span class="label"><%= this.localize("label-teamname") %></span> <span class="value"><%= this["teamname"] %></span></div>' +
-					'<div class="row teamsize"><span class="label"><%= this.localize("label-teamsize") %></span> <span class="value"><%= this["teamsize"] %></span></div>' +
-					'<div class="row realm"><span class="label"><%= this.localize("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
-					'<div class="row region"><span class="label"><%= this.localize("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
+				'<div class="tooltip-arena tooltip-404">' +
+					'<div class="title">404<span class="sub"> / <%= this._loc("arena-not-found") %></span></div>' +
+					'<div class="row teamname"><span class="label"><%= this._loc("label-teamname") %></span> <span class="value"><%= this["teamname"] %></span></div>' +
+					'<div class="row teamsize"><span class="label"><%= this._loc("label-teamsize") %></span> <span class="value"><%= this["teamsize"] %></span></div>' +
+					'<div class="row realm"><span class="label"><%= this._loc("label-realm") %></span> <span class="value"><%= this["realm"] %></span></div>' +
+					'<div class="row region"><span class="label"><%= this._loc("label-region") %></span> <span class="value"><%= this["region"] %></span></div>' +
 			    '</div>'
+			)
+		},
+		'fragments':{
+			'coins':(
+				'<% if(this["gold"] > -1) { %><span class="icon-gold"><%= this["gold"] %></span><% } %>' +
+				'<% if(this["silver"] > -1) { %><span class="icon-silver"><%= this["silver"] %></span><% } %>' +
+				'<% if(this["copper"]) { %><span class="icon-copper"><%= this["copper"] %></span><% } else { %>' +
+				'<span class="icon-copper">0</span><% } %>'
 			)
 		}
 	},
@@ -709,19 +715,19 @@ var WowDataTooltip={
 					'itemId':'Item ID: <%= this["id"] %>',
 					'heroic':'Heroic',
 					'maxCount':'Unique<% if(this["maxCount"] > 1) { %> (<%= this["maxCount"] %>)<% } %>',
-					'containerSlots':'<%= this["containerSlots"] %> Slot <%= this.localize(["itemClass", this["itemClass"], this["itemSubClass"]]) %>',
+					'containerSlots':'<%= this["containerSlots"] %> Slot <%= this._loc(["itemClass", this["itemClass"], this["itemSubClass"]]) %>',
 					'damage':'<%= this["minDamage"] %> - <%= this["maxDamage"] %> Damage',
 					'weaponSpeed':'Speed <%= this["weaponSpeed"] %>',
 					'dps':'(<%= this["dps"].toFixed(2) %> damage per second)',
 					'baseArmor':'<%= this["baseArmor"] %> Armor',
 					'maxDurability':'Durability <%= this["maxDurability"] %> / <%= this["maxDurability"] %>',
 					'requiredLevel':'Requires Level <%= this["requiredLevel"] %>',
-					'requiredSkill':'Requires <%= this.localize(["characterSkill", this["requiredSkill"]]) %> (<%= this["requiredSkillRank"] %>)',
+					'requiredSkill':'Requires <%= this._loc(["characterSkill", this["requiredSkill"]]) %> (<%= this["requiredSkillRank"] %>)',
 					'requiredAbility':'Requires <%= this["requiredAbility"]["name"] %>',
-					'minFactionId':'Requires Faction ID <%= this["minFactionId"] %> - <%= this.localize(["reputationLevel", this["minReputation"]]) %>',
+					'minFactionId':'Requires Faction ID <%= this["minFactionId"] %> - <%= this._loc(["reputationLevel", this["minReputation"]]) %>',
 					'itemLevel':'Item Level <%= this["itemLevel"] %>',
-					'allowableClasses':'Classes: <% for(var i=0; i<this["allowableClasses"].length; i++) { var current = this["allowableClasses"][i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this.localize(["characterClass", current])%></span><% } %>',
-					'allowableRaces':'Races: <% for(var i=0; i<this["allowableRaces"].length; i++) { var current = this["allowableRaces"][i]; %><% if(i > 0) { %>, <% } %><span><%= this.localize(["characterRace", current])%></span><% } %>',
+					'allowableClasses':'Classes: <% for(var i=0; i<this["allowableClasses"].length; i++) { var current = this["allowableClasses"][i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this._loc(["characterClass", current])%></span><% } %>',
+					'allowableRaces':'Races: <% for(var i=0; i<this["allowableRaces"].length; i++) { var current = this["allowableRaces"][i]; %><% if(i > 0) { %>, <% } %><span><%= this._loc(["characterRace", current])%></span><% } %>',
 					'itemStat':{
 						'13':'Equip: Increases your dodge rating by <%= this["amount"] %>.',
 						'14':'Equip: Increases your parry rating by <%= this["amount"] %>.',
@@ -737,13 +743,13 @@ var WowDataTooltip={
 						'49':'Equip: Increases your mastery rating by <%= this["amount"] %>.'
 					},
 					'itemSpell':'Equip / Use / Chance on Hit: <%= this["spell"]["description"] %>',
-					'sellPrice':'Sell Price: <%= this.renderCoins(this["sellPrice"]) %>',
+					'sellPrice':'Sell Price: <%= this._renderCoins(this["sellPrice"]) %>',
 					'stackable':'Stackable (<%= this["stackable"] %>)',
 					'extendedInactive':'Hold [<%= this["extendedKeyCodeLabel"] %>] to switch modes!',
 					'extendedActive':'Release [<%= this["extendedKeyCodeLabel"] %>] to switch modes!'
 				},
 				'character':{
-					'sri':'<%= this["level"] %> <%= this.localize(["characterRace", this["race"]]) %> <%= this.localize(["characterClass", this["class"]]) %>',
+					'sri':'<%= this["level"] %> <%= this._loc(["characterRace", this["race"]]) %> <%= this._loc(["characterClass", this["class"]]) %>',
 					'ilvl':'<%= this["averageItemLevelEquipped"] %> average item level (<%= this["averageItemLevel"] %>)',
 					'mounts':'Mounts: <%= this["mounts"].length %>',
 					'companions':'Companions: <%= this["companions"].length %>',
@@ -751,11 +757,11 @@ var WowDataTooltip={
 					'extendedActive':'Release [<%= this["extendedKeyCodeLabel"] %>] to switch modes!'
 				},
 				'guild':{
-					'sri':'Level <%= this["level"] %> <%= this.localize(["factionSide", this["side"]]) %> Guild, <%= this["realm"] %>',
+					'sri':'Level <%= this["level"] %> <%= this._loc(["factionSide", this["side"]]) %> Guild, <%= this["realm"] %>',
 					'members':'<%= this["members"].length %> members'
 				},
 				'arena':{
-					'sri':'<%= this["teamsize"] %>v<%= this["teamsize"] %> <%= this.localize(["factionSide", this["side"]]) %> Arena Team, <%= this["realm"] %>',
+					'sri':'<%= this["teamsize"] %>v<%= this["teamsize"] %> <%= this._loc(["factionSide", this["side"]]) %> Arena Team, <%= this["realm"] %>',
 					'rating-team':'Rating: <%= this["rating"] %>',
 					'rank-current':'Rank #<%= this["ranking"] %>',
 					'rank-previous':'Last week\'s rank: <% if(this["lastSessionRanking"] > 0) { %>#<%= this["lastSessionRanking"] %><% } else { %>None<% } %>',

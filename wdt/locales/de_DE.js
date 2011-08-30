@@ -11,19 +11,19 @@ WowDataTooltip.addLocale('de_DE',{
 			'itemId':'Gegenstands ID: <%= this["id"] %>',
 			'heroic':'Heroisch',
 			'maxCount':'Einzigartig<% if(this["maxCount"] > 1) { %> (<%= this["maxCount"] %>)<% } %>',
-			'containerSlots':'<%= this["containerSlots"] %> Platz <%= this.localize(["itemClass", this["itemClass"], this["itemSubClass"]]) %>',
+			'containerSlots':'<%= this["containerSlots"] %> Platz <%= this._loc(["itemClass", this["itemClass"], this["itemSubClass"]]) %>',
 			'damage':'<%= this["minDamage"] %> - <%= this["maxDamage"] %> Schaden',
 			'weaponSpeed':'Geschwindigkeit <%= this["weaponSpeed"] %>',
 			'dps':'(<%= this["dps"].toFixed(2) %> Schaden pro Sekunde)',
 			'baseArmor':'<%= this["baseArmor"] %> Rüstung',
 			'maxDurability':'Haltbarkeit <%= this["maxDurability"] %> / <%= this["maxDurability"] %>',
 			'requiredLevel':'Erfordert Stufe <%= this["requiredLevel"] %>',
-			'requiredSkill':'Erfordert <%= this.localize(["characterSkill", this["requiredSkill"]]) %> (<%= this[requiredSkillRank] %>)',
+			'requiredSkill':'Erfordert <%= this._loc(["characterSkill", this["requiredSkill"]]) %> (<%= this[requiredSkillRank] %>)',
 			'requiredAbility':'Erfordert <%= this["requiredAbility"]["name"] %>',
-			'minFactionId':'Erfordert Fraktion ID <%= this["minFactionId"] %> - <%= this.localize(["reputationLevel", this["minReputation"]]) %>',
+			'minFactionId':'Erfordert Fraktion ID <%= this["minFactionId"] %> - <%= this._loc(["reputationLevel", this["minReputation"]]) %>',
 			'itemLevel':'Gegenstandsstufe <%= this["itemLevel"] %>',
-			'allowableClasses':'Klassen: <% for(var i=0; i<this["allowableClasses"].length; i++) { var current = this["allowableClasses"][i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this.localize(["characterClass", current, "0"])%></span><% } %>',
-			'allowableRaces':'Rassen: <% for(var i=0; i<this["allowableRaces"].length; i++) { var current = this["allowableRaces"][i]; %><% if(i > 0) { %>, <% } %><span><%= this.localize(["characterRace", current, "0"])%></span><% } %>',
+			'allowableClasses':'Klassen: <% for(var i=0; i<this["allowableClasses"].length; i++) { var current = this["allowableClasses"][i]; %><% if(i > 0) { %>, <% } %><span class="cclass-<%= current %>"><%= this._loc(["characterClass", current, "0"])%></span><% } %>',
+			'allowableRaces':'Rassen: <% for(var i=0; i<this["allowableRaces"].length; i++) { var current = this["allowableRaces"][i]; %><% if(i > 0) { %>, <% } %><span><%= this._loc(["characterRace", current, "0"])%></span><% } %>',
 			'itemStat':{
 				'13':'Anlegen: Erhöht eure Ausweichwertung um <%= this["amount"] %>.',
 				'14':'Anlegen: Erhöht eure Parrierwertung um <%= this["amount"] %>.',
@@ -39,13 +39,13 @@ WowDataTooltip.addLocale('de_DE',{
 				'49':'Anlegen: Erhöht eure Meisterschaftswertung um <%= this["amount"] %>.'
 			},
 			'itemSpell':'Anlegen / Benutzen / Chance beim Treffer: <%= this["spell"]["description"] %>',
-			'sellPrice':'Verkaufspreis: <%= this.renderCoins(this["sellPrice"]) %>',
+			'sellPrice':'Verkaufspreis: <%= this._renderCoins(this["sellPrice"]) %>',
 			'stackable':'Stapelbar (<%= this["stackable"] %>)',
 			'extendedInactive':'[<%= this["extendedKeyCodeLabel"] %>] gedrückt halten um den Modus zu wechseln!',
 			'extendedActive':'[<%= this["extendedKeyCodeLabel"] %>] loslassen um den Modus zu wechseln!'
 		},
 		'character':{
-			'sri':'<%= this["level"] %>, <%= this.localize(["characterRace", this["race"], this["gender"]]) %>, <%= this.localize(["characterClass", this["class"], this["gender"]]) %>',
+			'sri':'<%= this["level"] %>, <%= this._loc(["characterRace", this["race"], this["gender"]]) %>, <%= this._loc(["characterClass", this["class"], this["gender"]]) %>',
 			'ilvl':'<%= this["averageItemLevelEquipped"] %> Durchschnittliche Gegenstandsstufe (<%= this["averageItemLevel"] %>)',
 			'mounts':'Reittiere: <%= this["mounts"].length %>',
 			'companions':'Begleiter: <%= this["companions"].length %>',
@@ -53,11 +53,11 @@ WowDataTooltip.addLocale('de_DE',{
 			'extendedActive':'[<%= this["extendedKeyCodeLabel"] %>] loslassen um den Modus zu wechseln!'
 		},
 		'guild':{
-			'sri':'Stufe <%= this["level"] %> <%= this.localize(["factionSide", this["side"]]) %>-Gilde, <%= this["realm"] %>',
+			'sri':'Stufe <%= this["level"] %> <%= this._loc(["factionSide", this["side"]]) %>-Gilde, <%= this["realm"] %>',
 			'members':'<%= this["members"].length %> Mitglieder'
 		},
 		'arena':{
-			'sri':'<%= this["teamsize"] %>v<%= this["teamsize"] %> <%= this.localize(["factionSide", this["side"]]) %> Arenateam, <%= this["realm"] %>',
+			'sri':'<%= this["teamsize"] %>v<%= this["teamsize"] %> <%= this._loc(["factionSide", this["side"]]) %> Arenateam, <%= this["realm"] %>',
 			'rating-team':'Wertung: <%= this["rating"] %>',
 			'rank-current':'Rang #<%= this["ranking"] %>',
 			'rank-previous':'Rang der letzten Woche: <% if(this["lastSessionRanking"] > 0) { %>#<%= this["lastSessionRanking"] %><% } else { %>Keiner<% } %>',
