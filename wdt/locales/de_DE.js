@@ -49,6 +49,7 @@ WowDataTooltip.addLocale('de_DE',{
 			'ilvl':'<%= this["averageItemLevelEquipped"] %> Durchschnittliche Gegenstandsstufe (<%= this["averageItemLevel"] %>)',
 			'mounts':'Reittiere: <%= this["mounts"].length %>',
 			'companions':'Begleiter: <%= this["companions"].length %>',
+			'lastModified':'Stand von: <%= this._renderDateTime(this["lastModified"]) %>',
 			'extendedInactive':'[<%= this["extendedKeyCodeLabel"] %>] gedrückt halten um den Modus zu wechseln!',
 			'extendedActive':'[<%= this["extendedKeyCodeLabel"] %>] loslassen um den Modus zu wechseln!'
 		},

@@ -353,6 +353,13 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 	padding: 4px 4px 4px 98px;
 }
 
+.tooltip-character .achievementpoints {
+	float: right;
+	font-size: 14px;
+	color: #C09A67;
+	padding-left: 10px;
+}
+
 .tooltip-character .name {
 	font-size: 14px;
 	font-weight: bold;
@@ -361,7 +368,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 }
 
 .tooltip-character .itemlevel {
-	color: #00FFB1;
+	color: #C09A67;
 }
 
 .tooltip-character .guild {
@@ -384,7 +391,7 @@ body.wdt-show-extended .wdt-tooltip span.wdt-show-only-extended {
 	color: #996600;
 }
 
-.tooltip-character .achievementpoints {
+.tooltip-character .lastModified {
 	color: #C09A67;
 }
 

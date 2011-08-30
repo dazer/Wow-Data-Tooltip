@@ -213,7 +213,7 @@ var WowDataTooltip={
 				if(content!==false){
 					this.addTip(element,content,WowDataTooltip.getSetting(['layout','width',scheme]));
 				}else{
-					this.addTip(element,this.localize(this.getLocaleData(params['locale']),('loading-'+scheme)),WowDataTooltip.getSetting(['layout','width',scheme]));
+					this.addTip(element,this.localize(params['locale'],('loading-'+scheme)),WowDataTooltip.getSetting(['layout','width',scheme]));
 					jQuery.jsonp({
 						url:apicall,
 						callbackParameter:'jsonp',
@@ -271,7 +271,6 @@ var WowDataTooltip={
 	},
 	buildTooltip:function(scheme,params,element,data){
 		var content='';
-		var loc=this.getLocaleData(params['locale']);
 		var mediahost=this.getMediahostFromRegion(params['region']);
 		var add={
 			'path_host':'http://'+params['host'],
@@ -283,20 +282,20 @@ var WowDataTooltip={
 			jQuery(element).qtip('api').set('style.width',WowDataTooltip.getSetting(['layout','width',scheme]));
 			content=jQuery.jqote(
 				this.getTemplate('core',scheme),
-				jQuery.extend(true,{},this.getTemplateTools(loc),validated,add)
+				jQuery.extend(true,{},this.getTemplateTools(params['locale']),validated,add)
 			);
 		}else{
 			jQuery(element).qtip('api').set('style.width',WowDataTooltip.getSetting(['layout','width','404']));
 			content=jQuery.jqote(
 				this.getTemplate('core',(scheme+'-404')),
-				jQuery.extend(true,{},this.getTemplateTools(loc),params,add)
+				jQuery.extend(true,{},this.getTemplateTools(params['locale']),params,add)
 			);
 		}
 		jQuery(element).qtip('api').set('content.text',content);
 		WowDataTooltip.addToCache('template',scheme,hash,content);
 	},
 	validateData:function(scheme,data){
-		if(data===undefined){
+		if(typeof data==='undefined'){
 			return false;
 		}
 		if(scheme==='realm'){
@@ -365,8 +364,8 @@ var WowDataTooltip={
 		}
 		return result;
 	},
-	localize:function(repository,keys){
-		var crep=repository;
+	localize:function(locale,keys){
+		var crep=this.getLocaleData(locale);
 		var temp=crep;
 		var result=undefined;
 		if(typeof keys==='string'){
@@ -415,14 +414,14 @@ var WowDataTooltip={
 		}
 		return result||'';
 	},
-	getTemplateTools:function(loc){
+	getTemplateTools:function(locale){
 		return{
 			'extendedActive':this.getSetting(['extendedMode','active']),
 			'extendedKeyCodeLabel':this.getSetting(['extendedMode','keyCodeLabel']),
 			'_sub':function(template,data){
 				return jQuery.jqote(
 					WowDataTooltip.getTemplate('fragments',template),
-					jQuery.extend(true,{},WowDataTooltip.getTemplateTools(loc),data)
+					jQuery.extend(true,{},WowDataTooltip.getTemplateTools(locale),data)
 				);
 			},
 			'_subLoc':function(route,data){
@@ -431,12 +430,12 @@ var WowDataTooltip={
 				}
 				route.unshift('templates');
 				return jQuery.jqote(
-					WowDataTooltip.localize(loc,route),
-					jQuery.extend(true,{},WowDataTooltip.getTemplateTools(loc),data)
+					WowDataTooltip.localize(locale,route),
+					jQuery.extend(true,{},WowDataTooltip.getTemplateTools(locale),data)
 				);
 			},
 			'_loc':function(route){
-				return WowDataTooltip.localize(loc,route);
+				return WowDataTooltip.localize(locale,route);
 			},
 			'_renderCoins':function(total){
 				var temp=total.toString();
@@ -452,6 +451,10 @@ var WowDataTooltip={
 					}
 				}
 				return jQuery.jqote(WowDataTooltip.getTemplate('fragments','coins'),split);
+			},
+			'_renderDateTime':function(datetime){
+				var dto=new Date(datetime);
+				return dto.toLocaleString();
 			}
 		};
 	},
@@ -609,26 +612,28 @@ var WowDataTooltip={
 			    	'<img class="thumbnail" src="<%= this["path_host"] %>/static-render/<%= this["region"] %>/<%= this["thumbnail"] %>?alt=/wow/static/images/2d/avatar/<%= this["race"] %>-<%= this["gender"] %>.jpg" />' +
 			    	 /* --- START simple mode -------------------------------- */
 					'<div class="data wdt-show-only-simple">' +
+						'<div class="achievementpoints"><span class="icon-achievenemtpoints"><%= this["achievementPoints"] %></span></div>' +
 			    		'<div class="row name cclass-<%= this["class"] %>"><%= this["name"] %></div>' +
 			    		'<div class="row sri"><%= this._subLoc(["character","sri"], this) %></div>' +
 						'<% if(this["talents"]) { for(var i=0; i<this["talents"].length; i++) { var current = this["talents"][i]; %><div class="row talentspec <% if(current["selected"]) { %> active<% } %>"><img class="icon-talentspec" src="<%= this["path_host_media"] %>/wow/icons/18/<% if(current["icon"]) { %><%= current["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <% if(current["name"]) { %><%= current["name"] %><% } else { %><%= this._loc("unused") %><% } %></div><% } } %>' +
 						'<% if(this["guild"]) { %><div class="row guild"><div class="guildname">&lt;<%= this["guild"]["name"] %>&gt;<% if(this["guild"]["level"]) { %><span class="guildlevel"> (<%= this["guild"]["level"] %>)</span><% } %></div></div><% } %>' +
 						'<div class="row realm"><%= this["realm"] %></div>' +
-						'<div class="row achievementpoints"><span class="icon-achievenemtpoints"><%= this["achievementPoints"] %></span></div>' +
+						'<% if(this["items"]) { %><div class="row itemlevel"><%= this._subLoc(["character","ilvl"], this["items"]) %></div><% } %>' +
 				    	'<% if(this["extendedActive"]) { %><div class="row info-meta"><%= this._subLoc(["character","extendedInactive"], this) %></div><% } %>' +
 			    	'</div>' +
 					 /* --- END simple mode ---------------------------------- */
 					 /* --- START extended mode ------------------------------ */
 				    '<% if(this["extendedActive"]) { %>' +
 						'<div class="data wdt-show-only-extended">' +
+							'<div class="achievementpoints"><span class="icon-achievenemtpoints"><%= this["achievementPoints"] %></span></div>' +
 				    		'<div class="row name cclass-<%= this["class"] %>"><%= this["name"] %></div>' +
-							'<% if(this["items"]) { %><div class="row itemlevel"><%= this._subLoc(["character","ilvl"], this["items"]) %></div><% } %>' +
 							'<% if(this["professions"]) { %><div class="professions">' +
 								'<% if(this["professions"]["primary"]) { for(var i=0; i<this["professions"]["primary"].length; i++) { var current = this["professions"]["primary"][i]; if(current["rank"] > 0) { %><div class="row profession-primary"><img class="icon-profession" src="<%= this["path_host_media"] %>/wow/icons/18/<% if(current["icon"]) { %><%= current["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current["name"] %>: <%= current["rank"] %></div><% } } } %>' +
 								'<% if(this["professions"]["secondary"]) { for(var i=0; i<this["professions"]["secondary"].length; i++) { var current = this["professions"]["secondary"][i]; if(current["rank"] > 0) { %><div class="row profession-secondary"><img class="icon-profession" src="<%= this["path_host_media"] %>/wow/icons/18/<% if(current["icon"]) { %><%= current["icon"] %><% } else { %>inv_misc_questionmark<% } %>.jpg"/> <%= current["name"] %>: <%= current["rank"] %></div><% } } } %>' +
 							'</div><% } %>' +
 							'<% if(this["mounts"]) { %><div class="row mounts"><%= this._subLoc(["character","mounts"], this) %></div><% } %>' +
 							'<% if(this["companions"]) { %><div class="row companions"><%= this._subLoc(["character","companions"], this) %></div><% } %>' +
+							'<div class="row lastModified"><%= this._subLoc(["character","lastModified"], this) %></div>' +
 							'<div class="row info-meta"><%= this._subLoc(["character","extendedActive"], this) %></div>' +
 				    	'</div>' +
 			    	'<% } %>' +
@@ -753,6 +758,7 @@ var WowDataTooltip={
 					'ilvl':'<%= this["averageItemLevelEquipped"] %> average item level (<%= this["averageItemLevel"] %>)',
 					'mounts':'Mounts: <%= this["mounts"].length %>',
 					'companions':'Companions: <%= this["companions"].length %>',
+					'lastModified':'Last modified: <%= this._renderDateTime(this["lastModified"]) %>',
 					'extendedInactive':'Hold [<%= this["extendedKeyCodeLabel"] %>] to switch modes!',
 					'extendedActive':'Release [<%= this["extendedKeyCodeLabel"] %>] to switch modes!'
 				},
