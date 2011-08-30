@@ -250,7 +250,7 @@ var WowDataTooltip={
 					var tooltip=api.elements.tooltip;
 					tooltip.bind('tooltipshow',function(event,api){WowDataTooltip.addToActiveTooltips(api.id);});
 					tooltip.bind('tooltiphide',function(event,api){WowDataTooltip.removeFromActiveTooltips(api.id);});
-				},
+				}
 			},
 			'content':{
 				'text':tipcontent
@@ -452,7 +452,7 @@ var WowDataTooltip={
 					}
 				}
 				return jQuery.jqote(WowDataTooltip.getTemplate('fragments','coins'),split);
-			},
+			}
 		};
 	},
 	addToCache:function(type,scheme,hash,content){
