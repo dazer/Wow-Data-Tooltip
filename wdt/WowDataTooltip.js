@@ -25,7 +25,7 @@ if(!window.yepnope) {
 }
 
 var WowDataTooltip={
-	'version':'1.3.2',
+	'version':'1.3.3',
 	'config':{
 		'merged':{},
 		'user':window.___WowDataTooltip_Config||{},
