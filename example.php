@@ -1,10 +1,8 @@
 <?php
 
 $data = array();
-$data['project']['homepage']  = 'http://code.google.com/p/wow-data-tooltip/';
-$data['download']['status']   = 'beta';
-$data['download']['revision'] = '73';
-$data['download']['link']     = 'http://code.google.com/p/wow-data-tooltip/downloads/detail?name=wdt-'.$data['download']['status'].'-r'.$data['download']['revision'].'.zip';
+$data['project']['homepage']  = 'https://github.com/darkspotinthecorner/Wow-Data-Tooltip';
+$data['download']['link']     = 'https://github.com/darkspotinthecorner/Wow-Data-Tooltip/archives/master';
 
 $lang = 'en';
 

@@ -25,6 +25,7 @@ if(!window.yepnope) {
 }
 
 var WowDataTooltip={
+	'version':'1.3.2',
 	'config':{
 		'merged':{},
 		'user':window.___WowDataTooltip_Config||{},
@@ -104,6 +105,34 @@ var WowDataTooltip={
 		}
 		if(typeof cfgu['locales']!=='undefined'){
 			cfgm['locales']=cfgu['locales'];
+		}
+		if(typeof cfgu['advanced']!=='undefined'){
+			// Allow core templates to be overriden
+			if(typeof cfgu['advanced']['templates.core.realm']!=='undefined') this['templates']['core']['realm']=cfgu['advanced']['templates.core.realm'];
+			if(typeof cfgu['advanced']['templates.core.realm-404']!=='undefined') this['templates']['core']['realm-404']=cfgu['advanced']['templates.core.realm-404'];
+			if(typeof cfgu['advanced']['templates.core.quest']!=='undefined') this['templates']['core']['quest']=cfgu['advanced']['templates.core.quest'];
+			if(typeof cfgu['advanced']['templates.core.quest-404']!=='undefined') this['templates']['core']['quest-404']=cfgu['advanced']['templates.core.quest-404'];
+			if(typeof cfgu['advanced']['templates.core.item']!=='undefined') this['templates']['core']['item']=cfgu['advanced']['templates.core.item'];
+			if(typeof cfgu['advanced']['templates.core.item-404']!=='undefined') this['templates']['core']['item-404']=cfgu['advanced']['templates.core.item-404'];
+			if(typeof cfgu['advanced']['templates.core.character']!=='undefined') this['templates']['core']['character']=cfgu['advanced']['templates.core.character'];
+			if(typeof cfgu['advanced']['templates.core.character-404']!=='undefined') this['templates']['core']['character-404']=cfgu['advanced']['templates.core.character-404'];
+			if(typeof cfgu['advanced']['templates.core.guild']!=='undefined') this['templates']['core']['guild']=cfgu['advanced']['templates.core.guild'];
+			if(typeof cfgu['advanced']['templates.core.guild-404']!=='undefined') this['templates']['core']['guild-404']=cfgu['advanced']['templates.core.guild-404'];
+			if(typeof cfgu['advanced']['templates.core.arena']!=='undefined') this['templates']['core']['arena']=cfgu['advanced']['templates.core.arena'];
+			if(typeof cfgu['advanced']['templates.core.arena-404']!=='undefined') this['templates']['core']['arena-404']=cfgu['advanced']['templates.core.arena-404'];
+			// Allow fragment templates to be overriden
+			if(typeof cfgu['advanced']['templates.fragments']!=='undefined'){
+				for(key in cfgu['advanced']['templates.fragments']){
+					this['templates']['fragments'][key]=cfgu['advanced']['templates.fragments'][key];
+				}
+			}
+			// Allow api paths to be overriden
+			if(typeof cfgu['advanced']['patterns.api.realm']!=='undefined') this['patterns']['api']['realm']=cfgu['advanced']['patterns.api.realm'];
+			if(typeof cfgu['advanced']['patterns.api.quest']!=='undefined') this['patterns']['api']['quest']=cfgu['advanced']['patterns.api.quest'];
+			if(typeof cfgu['advanced']['patterns.api.item']!=='undefined') this['patterns']['api']['item']=cfgu['advanced']['patterns.api.item'];
+			if(typeof cfgu['advanced']['patterns.api.character']!=='undefined') this['patterns']['api']['character']=cfgu['advanced']['patterns.api.character'];
+			if(typeof cfgu['advanced']['patterns.api.guild']!=='undefined') this['patterns']['api']['guild']=cfgu['advanced']['patterns.api.guild'];
+			if(typeof cfgu['advanced']['patterns.api.arena']!=='undefined') this['patterns']['api']['arena']=cfgu['advanced']['patterns.api.arena'];
 		}
 		this.config['merged']=cfgm;
 	},
@@ -848,8 +877,8 @@ var WowDataTooltip={
 			'arena':/http:\/\/(us\.battle\.net|eu\.battle\.net|kr\.battle\.net|tw\.battle\.net|www\.battlenet\.com\.cn)\/wow\/(en|de|fr|es|ru|ko|zh)\/arena\/([^\/]+)\/(2v2|3v3|5v5)\/([^\/#]+).*/
 		},
 		'api':{
-			'data.classes':'http://<%= this["host"] %>/api/wow/data/character/classes?locale=<%= this["locale"] %>',
-			'data.races':'http://<%= this["host"] %>/api/wow/data/character/races?locale=<%= this["locale"] %>',
+			'data-classes':'http://<%= this["host"] %>/api/wow/data/character/classes?locale=<%= this["locale"] %>',
+			'data-races':'http://<%= this["host"] %>/api/wow/data/character/races?locale=<%= this["locale"] %>',
 			'realm':'http://<%= this["host"] %>/api/wow/realm/status?realm=<%= this["realm"] %>&locale=<%= this["locale"] %>',
 			'quest':'http://<%= this["host"] %>/api/wow/quest/<%= this["questid"] %>?locale=<%= this["locale"] %>',
 			'item':'http://<%= this["host"] %>/api/wow/item/<%= this["itemid"] %>?locale=<%= this["locale"] %>',
@@ -858,8 +887,8 @@ var WowDataTooltip={
 			'arena':'http://<%= this["host"] %>/api/wow/arena/<%= this["realm"] %>/<%= this["teamsize"] %>/<%= this["teamname"] %>?locale=<%= this["locale"] %>'
 		},
 		'hash':{
-			'data.classes':'<%= this["host"] %>#<%= this["locale"] %>',
-			'data.races':'<%= this["host"] %>#<%= this["locale"] %>',
+			'data-classes':'<%= this["host"] %>#<%= this["locale"] %>',
+			'data-races':'<%= this["host"] %>#<%= this["locale"] %>',
 			'realm':'<%= this["host"] %>#<%= this["realm"] %>#<%= this["locale"] %>',
 			'quest':'<%= this["host"] %>#<%= this["questid"] %>#<%= this["locale"] %>',
 			'item':'<%= this["host"] %>#<%= this["itemid"] %>#<%= this["locale"] %>',

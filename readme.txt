@@ -4,7 +4,7 @@ elements.
 
 Copyright (C) 2011  Martin Gelder (darkspotinthecorner {at} gmail {dot} com)
 
-Project Homepage: http://code.google.com/p/wow-data-tooltip/
+Project Homepage: https://github.com/darkspotinthecorner/Wow-Data-Tooltip
        Demo Page: http://dev.dsitc.de/demos/wow-data-tooltip/
 
 --------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ From qtip2:
 Installation:
 ------------------------------------------------------------
 
-1. Download here: http://code.google.com/p/wow-data-tooltip/downloads/list
+1. Download here: https://github.com/darkspotinthecorner/Wow-Data-Tooltip/archives/master
 
 2. Unzip and upload to your webserver
 
